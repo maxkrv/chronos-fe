@@ -30,6 +30,7 @@ module.exports = {
   plugins: ['@typescript-eslint', 'react', 'react-hooks', 'simple-import-sort'],
   rules: {
     'react/react-in-jsx-scope': 'off',
+    'react/prop-types': 'off',
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error'
   }

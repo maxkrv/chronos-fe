@@ -31,14 +31,13 @@ export const apiClient = ky.create({
     beforeRetry: [
       async ({ request, error }) => {
         if ((error as any).statusCode !== 401) return;
+        const refreshToken = getRefreshToken();
 
         if (request.url.includes('auth/refresh')) {
           removeTokens();
           window.location.href = '/';
           return;
         }
-
-        const refreshToken = getRefreshToken();
 
         if (!refreshToken) return;
 
