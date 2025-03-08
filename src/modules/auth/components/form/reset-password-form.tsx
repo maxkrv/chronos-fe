@@ -9,10 +9,11 @@ import { z } from 'zod';
 import { Button } from '@/shared/components/ui/button';
 import { Label } from '@/shared/components/ui/label';
 import { PasswordInput } from '@/shared/components/ui/password-input';
-import { removeTokens } from '@/shared/lib/utils';
+import { useAuth } from '@/shared/store/auth.store';
+import { useUserStore } from '@/shared/store/user.store';
 
-import { passwordValidation } from '../../auth.interface';
-import { AuthService } from '../../auth.service';
+import { passwordValidation } from '../../interfaces/auth.interface';
+import { AuthService } from '../../services/auth.service';
 
 const ResetPasswordSchema = z
   .object({
@@ -31,6 +32,8 @@ interface ResetPasswordFormProps {
 
 export const ResetPasswordForm: FC<ResetPasswordFormProps> = ({ token }) => {
   const navigate = useNavigate();
+  const { deleteTokens } = useAuth();
+  const { setUser } = useUserStore();
 
   const {
     handleSubmit,
@@ -46,7 +49,8 @@ export const ResetPasswordForm: FC<ResetPasswordFormProps> = ({ token }) => {
     onSuccess: () => {
       toast('Password reset successful');
       toast('You can now log in with your new password');
-      removeTokens();
+      deleteTokens();
+      setUser(null);
       navigate('/login', {
         replace: true
       });

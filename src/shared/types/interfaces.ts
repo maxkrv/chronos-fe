@@ -13,6 +13,17 @@ export interface PaginationResponse<T> {
   };
 }
 
+export interface ErrorResponse {
+  message: {
+    message: string;
+    error: string;
+    statusCode: number;
+  };
+  path: string;
+  timestamp: string;
+  status: number;
+}
+
 export const EmailSchema = z.object({
   email: z.string().email().trim().min(1, { message: 'Email is required' })
 });

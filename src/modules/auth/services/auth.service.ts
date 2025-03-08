@@ -1,7 +1,7 @@
 import { apiClient } from '@/shared/api/api';
 import { EmailDto } from '@/shared/types/interfaces';
 
-import { LoginDto, RegisterDto, ResetPasswordDto, TokenPair } from './auth.interface';
+import { LoginDto, RegisterDto, ResetPasswordDto, TokenPair } from '../interfaces/auth.interface';
 
 export class AuthService {
   static async login(dto: LoginDto): Promise<TokenPair> {
@@ -24,13 +24,11 @@ export class AuthService {
     return apiClient.post(`auth/activate/${token}`).json();
   }
 
-  static async logout() {
-    const refreshToken = localStorage.getItem('refreshToken');
-
+  static async logout(token: string) {
     return await apiClient
       .post('auth/logout', {
         headers: {
-          Authorization: `Bearer ${refreshToken}`
+          Authorization: `Bearer ${token}`
         }
       })
       .json();

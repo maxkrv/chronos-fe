@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { USER_ACTIVATION } from '@/shared/constants/query-keys';
 
-import { AuthService } from '../auth.service';
+import { AuthService } from '../services/auth.service';
 
 export const ActivateAccountPage = () => {
   const { token } = useParams();

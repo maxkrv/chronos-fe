@@ -1,12 +1,12 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import App from './App';
+import { App } from './app';
 import { ActivateAccountPage } from './modules/auth/pages/activate-account-page';
 import { ForgotPasswordPage } from './modules/auth/pages/forgot-password-page';
 import { LoginPage } from './modules/auth/pages/login-page';
 import { ResetPasswordPage } from './modules/auth/pages/reset-password-page';
 import { SignUpPage } from './modules/auth/pages/sign-up-page';
-import { HomePage } from './modules/home/home-page';
+import { HomePage } from './modules/home/pages/home-page';
 import { AuthGuard } from './shared/guard/auth-guard';
 
 const router = createBrowserRouter([
@@ -46,6 +46,6 @@ const router = createBrowserRouter([
   }
 ]);
 
-export function Router() {
+export const Router = () => {
   return <RouterProvider router={router} />;
-}
+};

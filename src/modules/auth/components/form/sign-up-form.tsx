@@ -9,27 +9,30 @@ import { Button } from '@/shared/components/ui/button';
 import { Input } from '@/shared/components/ui/input';
 import { PasswordInput } from '@/shared/components/ui/password-input';
 import { USER_ME } from '@/shared/constants/query-keys';
-import { addTokens } from '@/shared/lib/utils';
+import { useAuth } from '@/shared/store/auth.store';
 
-import { RegisterDto, RegisterSchema } from '../../auth.interface';
-import { AuthService } from '../../auth.service';
+import { RegisterDto, RegisterSchema } from '../../interfaces/auth.interface';
+import { AuthService } from '../../services/auth.service';
 
 export const SignUpForm = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  const { setTokens } = useAuth();
 
   const {
     handleSubmit,
     register,
     formState: { isValid, errors }
   } = useForm<RegisterDto>({
-    resolver: zodResolver(RegisterSchema)
+    resolver: zodResolver(RegisterSchema),
+    mode: 'all'
   });
 
   const { mutate, isPending } = useMutation({
     mutationFn: AuthService.register,
     onSuccess: (data) => {
-      addTokens(data);
+      setTokens(data);
       queryClient.invalidateQueries({ queryKey: [USER_ME] });
       navigate('/');
       toast('Account created successfully');
@@ -85,13 +88,13 @@ export const SignUpForm = () => {
           />
         </div>
         <Button type="submit" className="w-full" isLoading={isPending} disabled={!isValid || isPending}>
-          Login
+          Sign up
         </Button>
       </div>
       <div className="text-center text-sm">
-        Don&apos;t have an account?{' '}
-        <Link to={'/sign-up'} className="underline underline-offset-4">
-          Sign up
+        Have an account?{' '}
+        <Link to={'/login'} className="underline underline-offset-4">
+          Login
         </Link>
       </div>
     </form>

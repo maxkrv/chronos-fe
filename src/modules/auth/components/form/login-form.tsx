@@ -9,14 +9,16 @@ import { Input } from '@/shared/components/ui/input';
 import { Label } from '@/shared/components/ui/label';
 import { PasswordInput } from '@/shared/components/ui/password-input';
 import { USER_ME } from '@/shared/constants/query-keys';
-import { addTokens } from '@/shared/lib/utils';
+import { useAuth } from '@/shared/store/auth.store';
 
-import { LoginDto, LoginSchema } from '../../auth.interface';
-import { AuthService } from '../../auth.service';
+import { LoginDto, LoginSchema } from '../../interfaces/auth.interface';
+import { AuthService } from '../../services/auth.service';
 
 export const LoginForm = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  const { setTokens } = useAuth();
 
   const {
     handleSubmit,
@@ -29,7 +31,7 @@ export const LoginForm = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: AuthService.login,
     onSuccess: (data) => {
-      addTokens(data);
+      setTokens(data);
       queryClient.invalidateQueries({ queryKey: [USER_ME] });
       navigate('/');
       toast('Logged in successfully');

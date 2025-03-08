@@ -9,7 +9,7 @@ import { Button } from '@/shared/components/ui/button';
 import { Input } from '@/shared/components/ui/input';
 import { EmailDto, EmailSchema } from '@/shared/types/interfaces';
 
-import { AuthService } from '../../auth.service';
+import { AuthService } from '../../services/auth.service';
 
 export const ForgotPasswordForm = () => {
   const navigate = useNavigate();
