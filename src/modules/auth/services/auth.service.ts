@@ -1,11 +1,12 @@
 import { apiClient } from '@/shared/api/api';
+import { EmailDto } from '@/shared/types/interfaces';
 
-import { EmailDto, LoginDto, RegisterDto, ResetPasswordDto, TokenPair } from './auth.interface';
+import { LoginDto, RegisterDto, ResetPasswordDto, TokenPair } from '../interfaces/auth.interface';
 
 export class AuthService {
   static async login(dto: LoginDto): Promise<TokenPair> {
     return apiClient
-      .post('auth/login', {
+      .post<TokenPair>('auth/login', {
         json: dto
       })
       .json();
@@ -13,7 +14,7 @@ export class AuthService {
 
   static async register(dto: RegisterDto): Promise<TokenPair> {
     return apiClient
-      .post('auth/register', {
+      .post<TokenPair>('auth/register', {
         json: dto
       })
       .json();
@@ -23,13 +24,11 @@ export class AuthService {
     return apiClient.post(`auth/activate/${token}`).json();
   }
 
-  static async logout() {
-    const refreshToken = localStorage.getItem('refreshToken');
-
+  static async logout(token: string) {
     return await apiClient
       .post('auth/logout', {
         headers: {
-          Authorization: `Bearer ${refreshToken}`
+          Authorization: `Bearer ${token}`
         }
       })
       .json();

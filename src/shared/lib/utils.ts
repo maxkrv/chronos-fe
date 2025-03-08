@@ -1,26 +1,25 @@
 import { type ClassValue, clsx } from 'clsx';
+import { toast } from 'sonner';
 import { twMerge } from 'tailwind-merge';
 
-import { TokenPair } from '@/modules/auth/auth.interface';
+import { authStore } from '../store/auth.store';
+import { ErrorResponse } from '../types/interfaces';
 
 export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs));
 };
 
-export const addTokens = (data: TokenPair) => {
-  localStorage.setItem('accessToken', data.accessToken);
-  localStorage.setItem('refreshToken', data.refreshToken);
+export const isLoggedIn = () => {
+  return authStore.getState().isLoggedIn();
 };
 
-export const removeTokens = () => {
-  localStorage.removeItem('accessToken');
-  localStorage.removeItem('refreshToken');
-};
+export const handleErrorMessage = (error: ErrorResponse) => {
+  console.log('🚀 ~ handleErrorMessage ~ error:', error);
+  const messagesToIgnore: string[] = ['Refresh', 'Unauthorized', 'undefined'];
 
-export const getAccessToken = () => {
-  return localStorage.getItem('accessToken');
-};
+  if (messagesToIgnore.some((message) => error.message.message.toLowerCase().includes(message.toLowerCase()))) return;
 
-export const getRefreshToken = () => {
-  return localStorage.getItem('refreshToken');
+  toast(error.message.message, {
+    richColors: true
+  });
 };

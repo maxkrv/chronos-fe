@@ -1,4 +1,4 @@
-import { notifications } from '@mantine/notifications';
+import { toast } from 'sonner';
 
 interface Data {
   title: string;
@@ -25,10 +25,7 @@ export const useShare = () => {
     }
 
     await window.navigator.clipboard.writeText(url);
-    notifications.show({
-      message,
-      color: 'green'
-    });
+    toast(message);
   };
 
   return handleShare;
