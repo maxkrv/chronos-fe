@@ -34,7 +34,7 @@ export const SignUpForm = () => {
     onSuccess: (data) => {
       setTokens(data);
       queryClient.invalidateQueries({ queryKey: [USER_ME] });
-      navigate('/');
+      navigate('/calendar');
       toast('Account created successfully');
       toast('Please check your email to verify your account');
     }

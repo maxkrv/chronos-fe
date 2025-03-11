@@ -30,7 +30,7 @@ export const apiClient = ky.create({
     ],
     beforeRetry: [
       async ({ request, error }) => {
-        if ((error as any).statusCode !== 401) return;
+        if ((error as any).status !== 401) return;
         const refreshToken = authStore.getState().tokens?.refreshToken;
 
         if (request.url.includes('auth/refresh')) {

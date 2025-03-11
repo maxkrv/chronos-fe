@@ -14,7 +14,6 @@ export const isLoggedIn = () => {
 };
 
 export const handleErrorMessage = (error: ErrorResponse) => {
-  console.log('🚀 ~ handleErrorMessage ~ error:', error);
   const messagesToIgnore: string[] = ['Refresh', 'Unauthorized', 'undefined'];
 
   if (messagesToIgnore.some((message) => error.message.message.toLowerCase().includes(message.toLowerCase()))) return;

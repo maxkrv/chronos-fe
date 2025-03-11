@@ -4,12 +4,15 @@ import { CgSpinner } from 'react-icons/cg';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { USER_ACTIVATION } from '@/shared/constants/query-keys';
+import { useUserStore } from '@/shared/store/user.store';
 
 import { AuthService } from '../services/auth.service';
 
 export const ActivateAccountPage = () => {
   const { token } = useParams();
   const navigate = useNavigate();
+
+  const { updateUser } = useUserStore();
 
   const { isError, isSuccess, isLoading } = useQuery({
     queryKey: [USER_ACTIVATION, token],
@@ -22,8 +25,9 @@ export const ActivateAccountPage = () => {
   useEffect(() => {
     if (isSuccess) {
       setTimeout(() => {
-        navigate('/');
-      }, 3000);
+        updateUser({ isActive: true });
+        navigate('/calendar', { replace: true });
+      }, 2000);
     }
   }, [isSuccess]);
 
@@ -48,6 +52,9 @@ export const ActivateAccountPage = () => {
         <div className="flex flex-col items-center gap-4">
           <h1 className="text-2xl font-bold">Success</h1>
           <p className="text-balance text-sm text-muted-foreground">Your account has been activated</p>
+          <p className="text-balance text-sm text-muted-foreground">
+            You will be redirected to the calendar in 2 seconds
+          </p>
         </div>
       )}
     </div>

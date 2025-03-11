@@ -33,7 +33,7 @@ export const LoginForm = () => {
     onSuccess: (data) => {
       setTokens(data);
       queryClient.invalidateQueries({ queryKey: [USER_ME] });
-      navigate('/');
+      navigate('/calendar');
       toast('Logged in successfully');
     }
   });

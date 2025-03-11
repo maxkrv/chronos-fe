@@ -18,6 +18,7 @@ export const authStore = createStore(
       tokens: null,
       setTokens: (tokens) => set({ tokens }),
       isLoggedIn: () => !!get().tokens?.accessToken && !!get().tokens?.refreshToken,
+      setIsLoggedIn: () => set({ tokens: get().tokens }),
       deleteTokens: () => set({ tokens: null })
     }),
     { name: TOKENS_STORAGE_KEY, storage: createJSONStorage(() => localStorage) }
