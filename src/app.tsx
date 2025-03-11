@@ -6,14 +6,17 @@ import { Toaster } from 'sonner';
 import { UserService } from './modules/user/user.service';
 import { BoxBordersSwitch } from './shared/components/dev/box-borders-switch';
 import { TailwindIndicator } from './shared/components/dev/tailwindIndicator';
+import { LoadingOverlay } from './shared/components/loading-overlay';
+import { NotActivatedAccount } from './shared/components/not-activated-account';
 import { USER_ME } from './shared/constants/query-keys';
-import { isLoggedIn } from './shared/lib/utils';
+import { useAuth } from './shared/store/auth.store';
 import { useUserStore } from './shared/store/user.store';
 
 export const App = () => {
-  const { updateUser } = useUserStore();
+  const { user, setUser } = useUserStore();
+  const { isLoggedIn } = useAuth();
 
-  const { isSuccess, data } = useQuery({
+  const { data, isSuccess, isLoading } = useQuery({
     queryKey: [USER_ME],
     queryFn: UserService.me,
     enabled: isLoggedIn()
@@ -21,13 +24,14 @@ export const App = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      updateUser(data);
+      setUser(data);
     }
   }, [isSuccess]);
 
   return (
     <>
-      <Outlet />
+      {user && !user?.isActive && <NotActivatedAccount />}
+      {isLoading ? <LoadingOverlay /> : <Outlet />}
       <Toaster expand />
 
       <TailwindIndicator />

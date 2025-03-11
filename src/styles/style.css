@@ -122,3 +122,10 @@
     @apply bg-background text-foreground;
   }
 }
+
+#root {
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  min-height: 100dvh;
+}
