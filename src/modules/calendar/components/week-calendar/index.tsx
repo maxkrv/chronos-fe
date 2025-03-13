@@ -16,7 +16,7 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({ events, fromDay = new Date
   return (
     <div className="border flex flex-col p-2 gap-6 min-w-4xl">
       <WeekCalendarHeader fromDay={fromDay} days={days} />
-      <div className="border-t-3 h-140 overflow-x-scroll scrollbar-none">
+      <div className="border-t-3 overflow-x-scroll scrollbar-none">
         <div className="grid grid-cols-[5rem_1fr] w-full">
           <SideTime />
           <div className="py-3">
