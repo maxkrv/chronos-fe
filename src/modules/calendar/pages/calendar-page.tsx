@@ -3,6 +3,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/shared/componen
 import { AppHeader } from '@/shared/layouts/app-header';
 import { ContentLayout } from '@/shared/layouts/content-layout';
 
+import { events } from '../../../__mock__/events';
 import { CalendarSidebar } from '../components/calendar-sidebar';
 import { WeekCalendar } from '../components/week-calendar';
 
@@ -23,7 +24,7 @@ export const CalendarPage = () => {
           </AppHeader>
 
           <div className="flex flex-1 flex-col gap-4 p-4">
-            <WeekCalendar />
+            <WeekCalendar events={events} days={7} fromDay={new Date('2025-03-01T00:00:00Z')} />
           </div>
         </SidebarInset>
       </SidebarProvider>

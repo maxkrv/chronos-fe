@@ -21,6 +21,8 @@ export const EventReminder: FC<EventReminderProps> = ({ event, indentTop, onUpda
   const handleDragStart = (e: React.MouseEvent) => {
     e.preventDefault();
     initialRef.current = { startY: e.clientY, originalOffset: startOffset };
+    const controller = new AbortController();
+    const signal = controller.signal;
 
     const handleMouseMove = (moveEvent: MouseEvent) => {
       const delta = moveEvent.clientY - initialRef.current.startY;
@@ -31,13 +33,12 @@ export const EventReminder: FC<EventReminderProps> = ({ event, indentTop, onUpda
     };
 
     const handleMouseUp = () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
+      controller.abort();
       triggerSave();
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('mousemove', handleMouseMove, { signal });
+    window.addEventListener('mouseup', handleMouseUp, { signal });
   };
 
   useEffect(() => {

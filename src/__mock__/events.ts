@@ -8,8 +8,8 @@ export const events: ICalendarEvent[] = [
     updatedAt: new Date('2025-03-02T11:00:00Z'),
     description: 'Annual check-up with Dr. Smith.',
     color: '#FF5733',
-    startAt: new Date('2025-03-01T14:00:00Z'),
-    endAt: new Date('2025-03-01T15:00:00Z'),
+    startAt: new Date('2025-02-27T22:00:00Z'),
+    endAt: new Date('2025-02-28T03:00:00Z'),
     category: 'ARRANGEMENT',
     calendarId: 1,
     creatorId: 101
@@ -30,7 +30,7 @@ export const events: ICalendarEvent[] = [
   },
   {
     id: 3,
-    name: 'Weekly Team Meeting (Sprint 3)Weekly Team Meeting (Sprint 3)',
+    name: 'Weekly Team Meeting (Sprint 3)',
     createdAt: new Date('2025-02-25T09:00:00Z'),
     updatedAt: new Date('2025-03-03T09:00:00Z'),
     description: 'Sprint review and planning.',
@@ -77,11 +77,76 @@ export const events: ICalendarEvent[] = [
     updatedAt: new Date('2025-03-01T00:00:00Z'),
     description: "John's birthday celebration.",
     color: '#FFA500',
-    startAt: new Date('2025-03-20T00:00:00Z'),
-    endAt: new Date('2025-03-20T23:59:00Z'),
+    startAt: new Date('2025-03-02T02:00:00Z'),
+    endAt: undefined,
     repeatAfter: 365 * 24 * 60 * 60 * 1000, // Repeats yearly
     category: 'REMINDER',
     calendarId: 3,
     creatorId: 104
+  },
+  {
+    id: 7,
+    name: 'Client Meeting',
+    createdAt: new Date('2025-02-27T09:00:00Z'),
+    updatedAt: new Date('2025-02-27T10:00:00Z'),
+    description: 'Discussion about the new contract.',
+    color: '#007FFF',
+    startAt: new Date('2025-02-27T14:00:00Z'),
+    endAt: new Date('2025-02-27T15:30:00Z'),
+    category: 'ARRANGEMENT',
+    calendarId: 1,
+    creatorId: 105
+  },
+  {
+    id: 8,
+    name: 'Grocery Shopping',
+    createdAt: new Date('2025-02-28T11:00:00Z'),
+    updatedAt: new Date('2025-02-28T12:00:00Z'),
+    description: 'Buy essentials for the week.',
+    color: '#00FFAA',
+    startAt: new Date('2025-02-28T17:00:00Z'),
+    endAt: new Date('2025-02-28T18:00:00Z'),
+    category: 'TASK',
+    calendarId: 1,
+    creatorId: 101
+  },
+  {
+    id: 9,
+    name: 'Coding Bootcamp Session',
+    createdAt: new Date('2025-03-03T08:00:00Z'),
+    updatedAt: new Date('2025-03-03T10:00:00Z'),
+    description: 'Advanced JavaScript concepts.',
+    color: '#FF00FF',
+    startAt: new Date('2025-03-03T19:00:00Z'),
+    endAt: new Date('2025-03-03T21:00:00Z'),
+    category: 'ARRANGEMENT',
+    calendarId: 2,
+    creatorId: 106
+  },
+  {
+    id: 10,
+    name: 'Dentist Appointment',
+    createdAt: new Date('2025-02-20T12:00:00Z'),
+    updatedAt: new Date('2025-02-25T14:00:00Z'),
+    description: 'Teeth cleaning and checkup.',
+    color: '#FF6699',
+    startAt: new Date('2025-03-05T10:00:00Z'),
+    endAt: new Date('2025-03-05T11:30:00Z'),
+    category: 'ARRANGEMENT',
+    calendarId: 1,
+    creatorId: 107
+  },
+  {
+    id: 11,
+    name: 'Team Lunch',
+    createdAt: new Date('2025-02-28T09:00:00Z'),
+    updatedAt: new Date('2025-03-01T09:30:00Z'),
+    description: 'Lunch with colleagues.',
+    color: '#33A1C9',
+    startAt: new Date('2025-03-01T12:30:00Z'),
+    endAt: new Date('2025-03-01T14:00:00Z'),
+    category: 'ARRANGEMENT',
+    calendarId: 2,
+    creatorId: 108
   }
 ];

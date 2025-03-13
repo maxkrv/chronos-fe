@@ -6,6 +6,7 @@ import { isLoggedIn } from '@/shared/lib/utils';
 import { useAuth } from '@/shared/store/auth.store';
 import { useUserStore } from '@/shared/store/user.store';
 
+import { events } from '../../../__mock__/events';
 import { AuthService } from '../../auth/services/auth.service';
 import { WeekCalendar } from '../../calendar/components/week-calendar';
 
@@ -31,7 +32,7 @@ export const HomePage = () => {
   return (
     <div>
       {isLoggedIn() && <Button onClick={handleLogout}>logout</Button>}
-      <WeekCalendar></WeekCalendar>
+      <WeekCalendar events={events} days={7} fromDay={new Date('2025-02-27T00:00:00Z')} />
     </div>
   );
 };

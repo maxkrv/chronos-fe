@@ -3,7 +3,7 @@ import { useToggle } from 'usehooks-ts';
 
 import dayjs from '../../../../../shared/lib/dayjs';
 import { cn } from '../../../../../shared/lib/utils';
-import { CALENDAR_DAY_HEIGHT, CALENDAR_HOUR_HEIGHT } from '../hour';
+import { CALENDAR_DAY_HEIGHT, CALENDAR_HOUR_HEIGHT, CALENDAR_MINUTE_HEIGHT } from '../hour';
 import { MINUTES_IN_DAY } from '../now';
 import { CalendarEvent } from './event';
 import { EventContent } from './event-content';
@@ -23,6 +23,7 @@ interface EventCardProps extends React.ComponentProps<typeof CalendarEvent> {
   eventHeight: number;
   indentTop: number;
 }
+const PIXELS_PER_5_MIN = CALENDAR_MINUTE_HEIGHT * 5;
 
 export const EventCard: FC<EventCardProps> = ({ eventHeight, indentTop, event, attendees, onUpdate }) => {
   const [height, setHeight] = useState(eventHeight);
@@ -38,7 +39,7 @@ export const EventCard: FC<EventCardProps> = ({ eventHeight, indentTop, event, a
     const signal = controller.signal;
 
     const handleMouseMove = (moveEvent: MouseEvent) => {
-      const delta = moveEvent.clientY - initialRef.current.startY;
+      const delta = Math.floor((moveEvent.clientY - initialRef.current.startY) / PIXELS_PER_5_MIN) * PIXELS_PER_5_MIN;
 
       if (direction === 'top') {
         setHeight(
@@ -79,7 +80,7 @@ export const EventCard: FC<EventCardProps> = ({ eventHeight, indentTop, event, a
     const signal = controller.signal;
 
     const handleMouseMove = (moveEvent: MouseEvent) => {
-      const delta = moveEvent.clientY - initialRef.current.startY;
+      const delta = Math.floor((moveEvent.clientY - initialRef.current.startY) / PIXELS_PER_5_MIN) * PIXELS_PER_5_MIN;
 
       setStartOffset(Math.max(Math.min(initialRef.current.originalOffset + delta, CALENDAR_DAY_HEIGHT - height), 0));
     };
