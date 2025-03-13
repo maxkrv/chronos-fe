@@ -1,5 +1,12 @@
+import 'react';
+
 import { z } from 'zod';
 
+declare module 'react' {
+  interface CSSProperties {
+    [key: `--${string}`]: string | number;
+  }
+}
 export interface PaginationDto {
   page?: number;
   limit?: number;
