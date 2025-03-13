@@ -1,4 +1,5 @@
 import dayjs, { Dayjs } from 'dayjs';
+import { FC } from 'react';
 import { FaTasks } from 'react-icons/fa';
 import { SiGooglemeet } from 'react-icons/si';
 
@@ -14,7 +15,7 @@ interface EventContentProps extends React.HTMLAttributes<HTMLDivElement> {
   attendees?: User[];
   height: number;
 }
-export const EventContent = ({ event, attendees, height, className, ...props }: EventContentProps) => (
+export const EventContent: FC<EventContentProps> = ({ event, attendees, height, className, ...props }) => (
   <div {...props} className={cn('flex flex-col w-full gap-1 min-h-1.5 cursor-move', className)}>
     <div className="m-0 p-0 overflow-hidden grow flex">
       <p

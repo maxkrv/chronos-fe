@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '../../../../../shared/components/ui/avatar';
 import { cn } from '../../../../../shared/lib/utils';
@@ -7,11 +7,15 @@ import { User } from '../../../../user/user.interface';
 interface AttendeeAvatarsProps extends React.HTMLAttributes<HTMLDivElement> {
   attendees?: User[];
 }
-export const AttendeeAvatars = ({ attendees, className, ...props }: AttendeeAvatarsProps) => {
+
+export const AttendeeAvatars: FC<AttendeeAvatarsProps> = ({ attendees, className, ...props }) => {
   const [visibleAvatars, setVisibleAvatars] = useState(0);
   const avatarContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     const updateVisibleAvatars = () => {
       if (avatarContainerRef.current) {
         const containerWidth = avatarContainerRef.current.offsetWidth;
@@ -22,8 +26,9 @@ export const AttendeeAvatars = ({ attendees, className, ...props }: AttendeeAvat
     };
 
     updateVisibleAvatars();
-    window.addEventListener('resize', updateVisibleAvatars);
-    return () => window.removeEventListener('resize', updateVisibleAvatars);
+    window.addEventListener('resize', updateVisibleAvatars, { signal });
+
+    return () => controller.abort();
   }, [attendees]);
 
   const hiddenAttendees = Math.max((attendees?.length || 0) - visibleAvatars, 0);

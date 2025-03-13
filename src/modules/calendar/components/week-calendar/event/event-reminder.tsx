@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { useToggle } from 'usehooks-ts';
 
 import { ICalendarEvent } from '../../../calendar.interface';
@@ -12,7 +12,7 @@ interface EventReminderProps {
   onUpdate: (event: ICalendarEvent) => void;
 }
 
-export const EventReminder = ({ event, indentTop, onUpdate }: EventReminderProps) => {
+export const EventReminder: FC<EventReminderProps> = ({ event, indentTop, onUpdate }) => {
   const REMINDER_HEIGHT = 40;
   const [saveState, triggerSave] = useToggle();
   const [startOffset, setStartOffset] = useState(indentTop);

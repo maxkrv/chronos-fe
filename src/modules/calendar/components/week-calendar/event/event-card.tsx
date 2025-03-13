@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { useToggle } from 'usehooks-ts';
 
 import dayjs from '../../../../../shared/lib/dayjs';
@@ -8,25 +8,23 @@ import { MINUTES_IN_DAY } from '../now';
 import { CalendarEvent } from './event';
 import { EventContent } from './event-content';
 
-const ResizeHandle = ({
-  onMouseDown,
-  className
-}: {
+interface ResizeHandleProps {
   onMouseDown: (e: React.MouseEvent) => void;
   className?: string;
-}) => (
+}
+
+const ResizeHandle: FC<ResizeHandleProps> = ({ onMouseDown, className }) => (
   <div className={cn('w-full flex h-2 text-current cursor-row-resize', className)} onMouseDown={onMouseDown}>
     <div className="border-y-2 w-8 h-1.25 border-current m-auto" />
   </div>
 );
 
-export const EventCard = ({
-  eventHeight,
-  indentTop,
-  event,
-  attendees,
-  onUpdate
-}: React.ComponentProps<typeof CalendarEvent> & { eventHeight: number; indentTop: number }) => {
+interface EventCardProps extends React.ComponentProps<typeof CalendarEvent> {
+  eventHeight: number;
+  indentTop: number;
+}
+
+export const EventCard: FC<EventCardProps> = ({ eventHeight, indentTop, event, attendees, onUpdate }) => {
   const [height, setHeight] = useState(eventHeight);
   const [startOffset, setStartOffset] = useState(indentTop);
   const initialRef = useRef({ startY: 0, originalHeight: eventHeight, originalOffset: indentTop });
@@ -36,6 +34,8 @@ export const EventCard = ({
   const handleResizeStart = (e: React.MouseEvent, direction: 'top' | 'bottom') => {
     e.preventDefault();
     initialRef.current = { startY: e.clientY, originalHeight: height, originalOffset: startOffset };
+    const controller = new AbortController();
+    const signal = controller.signal;
 
     const handleMouseMove = (moveEvent: MouseEvent) => {
       const delta = moveEvent.clientY - initialRef.current.startY;
@@ -64,18 +64,19 @@ export const EventCard = ({
     };
 
     const handleMouseUp = () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
+      controller.abort();
       triggerSave();
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('mousemove', handleMouseMove, { signal });
+    window.addEventListener('mouseup', handleMouseUp, { signal });
   };
 
   const handleDragStart = (e: React.MouseEvent) => {
     e.preventDefault();
     initialRef.current = { startY: e.clientY, originalHeight: height, originalOffset: startOffset };
+    const controller = new AbortController();
+    const signal = controller.signal;
 
     const handleMouseMove = (moveEvent: MouseEvent) => {
       const delta = moveEvent.clientY - initialRef.current.startY;
@@ -84,13 +85,12 @@ export const EventCard = ({
     };
 
     const handleMouseUp = () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
+      controller.abort();
       triggerSave();
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('mousemove', handleMouseMove, { signal });
+    window.addEventListener('mouseup', handleMouseUp, { signal });
   };
 
   useEffect(() => {

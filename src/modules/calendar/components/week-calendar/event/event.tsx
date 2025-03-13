@@ -1,3 +1,5 @@
+import { FC } from 'react';
+
 import dayjs from '../../../../../shared/lib/dayjs';
 import { User } from '../../../../user/user.interface';
 import { ICalendarEvent } from '../../../calendar.interface';
@@ -6,14 +8,7 @@ import { MINUTES_IN_DAY } from '../now';
 import { EventCard } from './event-card';
 import { EventReminder } from './event-reminder';
 
-interface CalendarEventProps {
-  event: ICalendarEvent;
-  day: Date;
-  attendees?: User[];
-  onUpdate: (event: ICalendarEvent) => void;
-}
-
-function getReminderOccurrenceToday(startAt: Date, repeatAfter?: number, nowTime: Date = new Date()): Date | null {
+const getReminderOccurrenceToday = (startAt: Date, repeatAfter?: number, nowTime: Date = new Date()): Date | null => {
   if (!repeatAfter || repeatAfter <= 0) return null;
   const now = dayjs(nowTime);
   const todayStart = now.startOf('day');
@@ -30,9 +25,16 @@ function getReminderOccurrenceToday(startAt: Date, repeatAfter?: number, nowTime
   if (nextOccurrence.isBetween(todayStart, todayEnd, null, '[)')) return nextOccurrence.toDate();
 
   return null;
+};
+
+interface CalendarEventProps {
+  event: ICalendarEvent;
+  day: Date;
+  attendees?: User[];
+  onUpdate: (event: ICalendarEvent) => void;
 }
 
-export const CalendarEvent = ({ event, day, attendees, onUpdate }: CalendarEventProps) => {
+export const CalendarEvent: FC<CalendarEventProps> = ({ event, day, attendees, onUpdate }) => {
   const now = dayjs(day);
   const startIsToday = dayjs(event.startAt).isSame(now, 'day');
   const endIsToday = dayjs(event.endAt).isSame(now, 'day');
