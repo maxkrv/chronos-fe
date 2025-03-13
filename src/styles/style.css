@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 
 @plugin "tailwindcss-animate";
+@plugin "tailwind-scrollbar";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -112,6 +113,16 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-mix-primary-10: color-mix(in srgb, currentColor 10%, var(--color-background));
+  --color-mix-primary-20: color-mix(in srgb, currentColor 20%, var(--color-background));
+  --color-mix-primary-30: color-mix(in srgb, currentColor 30%, var(--color-background));
+  --color-mix-primary-40: color-mix(in srgb, currentColor 40%, var(--color-background));
+  --color-mix-primary-50: color-mix(in srgb, currentColor 50%, var(--color-background));
+  --color-mix-primary-60: color-mix(in srgb, currentColor 60%, var(--color-background));
+  --color-mix-primary-70: color-mix(in srgb, currentColor 70%, var(--color-background));
+  --color-mix-primary-80: color-mix(in srgb, currentColor 80%, var(--color-background));
+  --color-mix-primary-90: color-mix(in srgb, currentColor 90%, var(--color-background));
 }
 
 @layer base {

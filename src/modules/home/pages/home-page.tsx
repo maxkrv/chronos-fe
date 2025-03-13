@@ -7,6 +7,7 @@ import { useAuth } from '@/shared/store/auth.store';
 import { useUserStore } from '@/shared/store/user.store';
 
 import { AuthService } from '../../auth/services/auth.service';
+import { WeekCalendar } from '../../calendar/components/week-calendar';
 
 export const HomePage = () => {
   const navigate = useNavigate();
@@ -27,5 +28,10 @@ export const HomePage = () => {
     deleteTokens();
   };
 
-  return <div>{isLoggedIn() && <Button onClick={handleLogout}>logout</Button>}</div>;
+  return (
+    <div>
+      {isLoggedIn() && <Button onClick={handleLogout}>logout</Button>}
+      <WeekCalendar></WeekCalendar>
+    </div>
+  );
 };

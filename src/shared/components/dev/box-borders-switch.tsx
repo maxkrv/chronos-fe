@@ -27,12 +27,7 @@ export const BoxBordersSwitch: React.FC = () => {
   }, [show]);
 
   return (
-    <Toggle
-      pressed={show}
-      onPressedChange={toggle}
-      className="absolute left-1 bottom-8"
-      size={'sm'}
-      variant={'outline'}>
+    <Toggle pressed={show} onPressedChange={toggle} className="fixed left-1 bottom-8" size={'sm'} variant={'outline'}>
       <FaCube />
     </Toggle>
   );
