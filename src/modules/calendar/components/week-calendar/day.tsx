@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 
 import { users } from '../../../../__mock__/users';
 import { ICalendarEvent } from '../../calendar.interface';
-import { CalendarEvent } from './event/event';
+import { CalendarEvent } from './event';
 import { CALENDAR_DAY_HEIGHT, Hour } from './hour';
 
 interface DayProps {
