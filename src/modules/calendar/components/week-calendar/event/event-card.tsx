@@ -5,8 +5,8 @@ import dayjs from '../../../../../shared/lib/dayjs';
 import { cn } from '../../../../../shared/lib/utils';
 import { CALENDAR_DAY_HEIGHT, CALENDAR_HOUR_HEIGHT, CALENDAR_MINUTE_HEIGHT } from '../hour';
 import { MINUTES_IN_DAY } from '../now';
-import { CalendarEvent } from './event';
 import { EventContent } from './event-content';
+import { CalendarEvent } from './index.tsx';
 
 interface ResizeHandleProps {
   onMouseDown: (e: React.MouseEvent) => void;
