@@ -7,7 +7,7 @@ import { useAuth } from '@/shared/store/auth.store';
 import { useUserStore } from '@/shared/store/user.store';
 
 import { AuthService } from '../../auth/services/auth.service';
-import { MonthCalendar } from '../../calendar/components/month-calendar';
+import { YearCalendar } from '../../calendar/components/year-calendar';
 
 export const HomePage = () => {
   const navigate = useNavigate();
@@ -31,7 +31,9 @@ export const HomePage = () => {
   return (
     <div>
       {isLoggedIn() && <Button onClick={handleLogout}>logout</Button>}
-      <MonthCalendar month={new Date('2025-03-27T00:00:00Z')} />
+      <YearCalendar year={new Date()} />
+      {/* <MonthCalendar month={new Date()} events={events} /> */}
+      {/* <WeekCalendar events={events} /> */}
     </div>
   );
 };

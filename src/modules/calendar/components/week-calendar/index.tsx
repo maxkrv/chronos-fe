@@ -7,14 +7,14 @@ import { WeekCalendarHeader } from './header';
 import { NowMarker } from './now';
 import { SideTime } from './side-time';
 interface WeekCalendarProps {
-  events: ICalendarEvent[];
+  events?: ICalendarEvent[];
   fromDay?: Date;
   days?: 1 | 2 | 3 | 4 | 5 | 6 | 7;
 }
 
-export const WeekCalendar: FC<WeekCalendarProps> = ({ events, fromDay = new Date(), days = 7 }) => {
+export const WeekCalendar: FC<WeekCalendarProps> = ({ events = [], fromDay = new Date(), days = 7 }) => {
   return (
-    <div className="border flex flex-col p-2 gap-6 min-w-4xl">
+    <div className="border flex flex-col p-2 gap-3 min-w-4xl">
       <WeekCalendarHeader fromDay={fromDay} days={days} />
       <div className="border-t-3 overflow-x-scroll scrollbar-none">
         <div className="grid grid-cols-[5rem_1fr] w-full">
