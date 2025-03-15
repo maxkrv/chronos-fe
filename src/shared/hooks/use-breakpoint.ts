@@ -13,27 +13,27 @@ const params = {
   [Breakpoint.DESKTOP]: 1280
 };
 
-export function useLaptop() {
-  return useMediaQuery(`(min-width: ${params[Breakpoint.LAPTOP]}px)`);
+export function useIsLaptop() {
+  return useMediaQuery(`(max-width: ${params[Breakpoint.LAPTOP]}px)`);
 }
 
-export function useTablet() {
-  return useMediaQuery(`(min-width: ${params[Breakpoint.TABLET]}px)`);
+export function useIsTablet() {
+  return useMediaQuery(`(max-width: ${params[Breakpoint.TABLET]}px)`);
 }
 
-export function useMobile() {
-  return useMediaQuery(`(min-width: ${params[Breakpoint.MOBILE]}px)`);
+export function useIsMobile() {
+  return useMediaQuery(`(max-width: ${params[Breakpoint.MOBILE]}px)`);
 }
 
-export function useDesktop() {
-  return useMediaQuery(`(min-width: ${params[Breakpoint.DESKTOP]}px)`);
+export function useIsDesktop() {
+  return useMediaQuery(`(max-width: ${params[Breakpoint.DESKTOP]}px)`);
 }
 
 export function useBreakpoint() {
   return {
-    isMobile: useMobile(),
-    isTablet: useTablet(),
-    isLaptop: useLaptop(),
-    isDesktop: useDesktop()
+    isMobile: useIsMobile(),
+    isTablet: useIsTablet(),
+    isLaptop: useIsLaptop(),
+    isDesktop: useIsDesktop()
   };
 }

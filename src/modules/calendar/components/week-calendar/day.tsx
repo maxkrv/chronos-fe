@@ -17,7 +17,7 @@ export const Day: FC<DayProps> = ({ events, day }) => {
   }
 
   return (
-    <div className="w-full flex flex-col relative overflow-hidden" style={{ maxHeight: CALENDAR_DAY_HEIGHT }}>
+    <div className="w-full flex flex-col relative overflow-hidden min-w-24" style={{ maxHeight: CALENDAR_DAY_HEIGHT }}>
       {Array.from({ length: 24 }).map((_, i) => (
         <Hour key={i} />
       ))}

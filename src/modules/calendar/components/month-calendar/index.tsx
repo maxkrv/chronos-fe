@@ -31,16 +31,20 @@ export const MonthCalendar: FC<MonthCalendarProps> = ({ month = new Date(), even
   const days = startOfMonth.diff(startOfWeek, 'day') + daysInMonth + endOfMonth.endOf('week').diff(endOfMonth, 'day');
 
   return (
-    <div className="flex flex-col gap-3 @container/calendar min-w-xs">
+    <div className="flex flex-col gap-3 @container/calendar h-full min-w-3xs">
       <MonthCalendarHeader />
-      <div className="grid grid-cols-7 gap-2  @max-lg:gap-1 border-t-3 pt-2 h-140 overflow-x-scroll scrollbar-none justify-center items-center max-h-fit grid-auth-rows-[1fr]">
+      <div className="grid grid-cols-7 gap-2  @max-lg:gap-1 border-t-3 pt-2 overflow-x-scroll scrollbar-none justify-center items-center max-h-fit grid-auth-rows-[1fr]">
         {Array.from({ length: days }).map((_, i) => {
           const d = startOfWeek.add(i, 'day').toDate();
           return (
             <MonthCalendarDay
               key={i}
               day={d}
-              events={Math.round(Math.random()) ? events : []}
+              events={
+                Math.round(Math.random())
+                  ? events.slice(Math.random() * events.length, Math.random() * events.length)
+                  : []
+              }
               hideEvents={hideEvents}
               isActualMonth={startOfMonth.isSame(d, 'month')}
             />
