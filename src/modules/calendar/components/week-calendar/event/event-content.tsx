@@ -9,7 +9,7 @@ import { ICalendarEvent } from '../../../calendar.interface';
 import { CALENDAR_HOUR_HEIGHT } from '../hour';
 import { AttendeeAvatars } from './attendee-avatars';
 
-const getFormattedHour = (date: Date | Dayjs | string) => dayjs(date).format('hh:mm');
+const getFormattedHour = (date: Date | Dayjs | string) => dayjs(date).format('HH:mm');
 interface EventContentProps extends React.HTMLAttributes<HTMLDivElement> {
   event: ICalendarEvent;
   attendees?: User[];
@@ -21,7 +21,8 @@ export const EventContent: FC<EventContentProps> = ({ event, attendees, height, 
       <p
         className={cn(
           'overflow-hidden leading-4 grow truncate',
-          height > CALENDAR_HOUR_HEIGHT && 'text-clip',
+          height > CALENDAR_HOUR_HEIGHT &&
+            'text-clip  [mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_70%,rgba(0,0,0,0))] ',
           height < CALENDAR_HOUR_HEIGHT * 0.75 && 'my-auto'
         )}>
         <span className="inline-flex gap-2 size-4 mr-2 items-center">

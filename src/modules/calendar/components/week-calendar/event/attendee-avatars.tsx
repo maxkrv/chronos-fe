@@ -20,7 +20,7 @@ export const AttendeeAvatars: FC<AttendeeAvatarsProps> = ({ attendees, className
       if (avatarContainerRef.current) {
         const containerWidth = avatarContainerRef.current.offsetWidth;
         const avatarSize = 16;
-        const maxAvatars = Math.floor(containerWidth / avatarSize) - 1;
+        const maxAvatars = Math.floor(containerWidth / avatarSize) - 2;
         setVisibleAvatars(Math.max(0, Math.min(attendees?.length || 0, maxAvatars)));
       }
     };
