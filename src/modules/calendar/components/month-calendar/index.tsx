@@ -1,15 +1,17 @@
 import dayjs from 'dayjs';
 import { FC } from 'react';
 
-import { events } from '../../../../__mock__/events';
+import { ICalendarEvent } from '../../calendar.interface';
 import { MonthCalendarDay } from './day';
 import { MonthCalendarHeader } from './header';
 
 interface MonthCalendarProps {
-  month: Date;
+  month?: Date;
+  events?: ICalendarEvent[];
+  hideEvents?: boolean;
 }
 
-export const MonthCalendar: FC<MonthCalendarProps> = ({ month }) => {
+export const MonthCalendar: FC<MonthCalendarProps> = ({ month = new Date(), events = [], hideEvents = false }) => {
   const startOfMonth = dayjs(month)
     .startOf('month')
     .startOf('day')
@@ -29,12 +31,20 @@ export const MonthCalendar: FC<MonthCalendarProps> = ({ month }) => {
   const days = startOfMonth.diff(startOfWeek, 'day') + daysInMonth + endOfMonth.endOf('week').diff(endOfMonth, 'day');
 
   return (
-    <div className="flex flex-col gap-4 @container/calendar">
+    <div className="flex flex-col gap-3 @container/calendar min-w-xs">
       <MonthCalendarHeader />
-      <div className="grid grid-cols-7 gap-2  @max-lg:gap-1 border-t-3 pt-2 h-140 overflow-x-scroll scrollbar-none justify-center items-center max-h-fit">
+      <div className="grid grid-cols-7 gap-2  @max-lg:gap-1 border-t-3 pt-2 h-140 overflow-x-scroll scrollbar-none justify-center items-center max-h-fit grid-auth-rows-[1fr]">
         {Array.from({ length: days }).map((_, i) => {
           const d = startOfWeek.add(i, 'day').toDate();
-          return <MonthCalendarDay key={i} day={d} events={events} isActualMonth={startOfMonth.isSame(d, 'month')} />;
+          return (
+            <MonthCalendarDay
+              key={i}
+              day={d}
+              events={Math.round(Math.random()) ? events : []}
+              hideEvents={hideEvents}
+              isActualMonth={startOfMonth.isSame(d, 'month')}
+            />
+          );
         })}
       </div>
     </div>
