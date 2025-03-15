@@ -14,10 +14,12 @@ export const Navbar = () => {
   const { pathname } = useLocation();
 
   return (
-    <nav>
+    <nav className="mx-1">
       {ITEMS.map((item, index) => (
         <Link to={item.path} key={index}>
-          <Button variant={pathname === item.path ? 'default' : 'ghost'}>{item.icon}</Button>
+          <Button variant={pathname === item.path ? 'default' : 'ghost'} size="icon">
+            {item.icon}
+          </Button>
         </Link>
       ))}
     </nav>

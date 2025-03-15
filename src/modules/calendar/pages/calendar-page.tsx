@@ -10,17 +10,12 @@ import { WeekCalendar } from '../components/week-calendar';
 export const CalendarPage = () => {
   return (
     <ContentLayout>
-      <SidebarProvider
-        style={
-          {
-            '--sidebar-width': '300px'
-          } as React.CSSProperties
-        }>
+      <SidebarProvider>
         <CalendarSidebar />
         <SidebarInset>
           <AppHeader>
-            <SidebarTrigger className="-ml-1 md:hidden" />
-            <Separator orientation="vertical" className="mr-2 h-4 md:hidden" />
+            <SidebarTrigger className="-ml-1" />
+            <Separator orientation="vertical" className="mr-2 h-4" />
           </AppHeader>
 
           <div className="flex flex-1 flex-col gap-4 p-4">
