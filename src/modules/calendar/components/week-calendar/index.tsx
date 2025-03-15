@@ -14,9 +14,9 @@ interface WeekCalendarProps {
 
 export const WeekCalendar: FC<WeekCalendarProps> = ({ events = [], fromDay = new Date(), days = 7 }) => {
   return (
-    <div className="border flex flex-col p-2 gap-3 min-w-4xl">
+    <div className="flex flex-col p-2 gap-3 min-w-4xl h-full">
       <WeekCalendarHeader fromDay={fromDay} days={days} />
-      <div className="border-t-3 overflow-x-scroll scrollbar-none">
+      <div className="border-t-3 overflow-x-scroll scrollbar-none grow h-full">
         <div className="grid grid-cols-[5rem_1fr] w-full">
           <SideTime />
           <div className="py-3">

@@ -18,7 +18,7 @@ export const CalendarPage = () => {
             <Separator orientation="vertical" className="mr-2 h-4" />
           </AppHeader>
 
-          <div className="flex flex-1 flex-col gap-4 p-4">
+          <div className="flex flex-col gap-4 p-2 h-[calc(100vh-4rem)]">
             <WeekCalendar events={events} days={7} fromDay={new Date('2025-03-01T00:00:00Z')} />
           </div>
         </SidebarInset>
