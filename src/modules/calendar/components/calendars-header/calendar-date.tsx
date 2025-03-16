@@ -3,17 +3,6 @@ import dayjs from 'dayjs';
 import { useDatePicker } from '../../stores/date-picker-store';
 import { CalendarView } from './calendar-select';
 
-const getDateText = (view: CalendarView, from?: Date): string => {
-  switch (view) {
-    case CalendarView.WEEK:
-      return dayjs(from).format('MMM, YYYY');
-    case CalendarView.MONTH:
-      return dayjs(from).format('MMMM YYYY');
-    case CalendarView.YEAR:
-      return dayjs(from).format('YYYY');
-  }
-};
-
 export const CalendarDate = () => {
   const { store, selectedDays } = useDatePicker();
 
@@ -27,5 +16,11 @@ export const CalendarDate = () => {
     );
   }
 
-  return <div className="text-lg font-semibold text-center">{getDateText(store.view, store.selectedDate?.from)}</div>;
+  return (
+    <div className="text-lg font-semibold text-center">
+      {store.view === CalendarView.WEEK && dayjs(store.selectedDate?.from).format('MMM, YYYY')}
+      {store.view === CalendarView.MONTH && dayjs(store.month).format('MMMM YYYY')}
+      {store.view === CalendarView.YEAR && dayjs(store.year).format('YYYY')}
+    </div>
+  );
 };

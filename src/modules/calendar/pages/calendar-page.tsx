@@ -20,7 +20,9 @@ export const CalendarPage = () => {
   const calendarViews: Record<CalendarView, ReactNode> = {
     [CalendarView.WEEK]: <WeekCalendar events={events} days={selectedDays} fromDay={store.selectedDate?.from} />,
     [CalendarView.MONTH]: <MonthCalendar events={events} month={store.month} />,
-    [CalendarView.YEAR]: <YearCalendar className="h-full min-w-fit overflow-x-scroll scrollbar-none grow" />
+    [CalendarView.YEAR]: (
+      <YearCalendar className="h-full min-w-fit overflow-x-scroll scrollbar-none grow" year={store.year} />
+    )
   };
 
   return (

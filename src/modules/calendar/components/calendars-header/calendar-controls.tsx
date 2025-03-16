@@ -8,24 +8,30 @@ import { CalendarView } from './calendar-select';
 export const CalendarControls = () => {
   const { store, selectedDays } = useDatePicker();
 
-  // const onToday = () => {
-  //   const oldView = store.view;
-  //   store.setSelectedDate({
-  //     from:
-  //       selectedDays > 1
-  //         ? dayjs()
-  //             .subtract(selectedDays / 2, 'day')
-  //             .toDate()
-  //         : new Date(),
-  //     to:
-  //       selectedDays > 1
-  //         ? dayjs()
-  //             .add(selectedDays / 2, 'day')
-  //             .toDate()
-  //         : undefined
-  //   });
-  //   store.setView(oldView);
-  // };
+  const onToday = () => {
+    if (store.view === CalendarView.WEEK) {
+      if (selectedDays > 1) {
+        store.setSelectedDate({
+          from: dayjs()
+            .subtract(selectedDays / 2 - 1, 'day')
+            .toDate(),
+          to: dayjs()
+            .add(selectedDays / 2, 'day')
+            .toDate()
+        });
+        return;
+      }
+      store.setSelectedDate({ from: dayjs().toDate() });
+      return;
+    }
+    if (store.view === CalendarView.MONTH) {
+      store.setMonth(dayjs().toDate());
+      return;
+    }
+    if (store.view === CalendarView.YEAR) {
+      store.setYear(dayjs().toDate());
+    }
+  };
 
   const onPrev = () => {
     if (store.view === CalendarView.MONTH) {
@@ -70,10 +76,7 @@ export const CalendarControls = () => {
   };
   return (
     <div className="flex gap-2">
-      <Button
-        variant={'outline'}
-        className="max-sm:hidden"
-        onClick={() => store.setSelectedDate({ from: dayjs().toDate() })}>
+      <Button variant={'outline'} className="max-sm:hidden" onClick={onToday}>
         Today
       </Button>
       <Button variant={'outline'} size={'icon'} onClick={onPrev}>
