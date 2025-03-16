@@ -22,3 +22,9 @@ export const handleErrorMessage = (error: ErrorResponse) => {
     richColors: true
   });
 };
+
+export const preventDecimals = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  if (e.key === '.' || e.key === 'Decimal' || e.key === 'Minus' || e.key === '-' || e.key === 'e') {
+    e.preventDefault();
+  }
+};
