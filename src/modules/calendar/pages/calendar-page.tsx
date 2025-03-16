@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useMemo } from 'react';
 
 import { Separator } from '@/shared/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/shared/components/ui/sidebar';
@@ -17,13 +17,16 @@ import { useDatePicker } from '../stores/date-picker-store';
 export const CalendarPage = () => {
   const { store, selectedDays } = useDatePicker();
 
-  const calendarViews: Record<CalendarView, ReactNode> = {
-    [CalendarView.WEEK]: <WeekCalendar events={events} days={selectedDays} fromDay={store.selectedDate?.from} />,
-    [CalendarView.MONTH]: <MonthCalendar events={events} month={store.month} />,
-    [CalendarView.YEAR]: (
-      <YearCalendar className="h-full min-w-fit overflow-x-scroll scrollbar-none grow" year={store.year} />
-    )
-  };
+  const calendarViews: Record<CalendarView, ReactNode> = useMemo(
+    () => ({
+      [CalendarView.WEEK]: <WeekCalendar events={events} days={selectedDays} fromDay={store.selectedDate?.from} />,
+      [CalendarView.MONTH]: <MonthCalendar events={events} month={store.month} />,
+      [CalendarView.YEAR]: (
+        <YearCalendar className="h-full min-w-fit overflow-x-scroll scrollbar-none grow" year={store.year} />
+      )
+    }),
+    [store.month, store.selectedDate?.from, store.year, selectedDays]
+  );
 
   return (
     <ContentLayout>
