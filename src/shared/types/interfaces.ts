@@ -37,8 +37,5 @@ export const EmailSchema = z.object({
 export type EmailDto = z.infer<typeof EmailSchema>;
 
 export interface Color {
-  id: string;
-  name: string;
   value: string;
-  ringColor?: string;
 }

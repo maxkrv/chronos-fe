@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Label } from '@radix-ui/react-label';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { FC } from 'react';
@@ -15,10 +16,25 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/shared/components/ui/
 import { ScrollArea, ScrollBar } from '@/shared/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select';
 import { Textarea } from '@/shared/components/ui/textarea';
-import { cn } from '@/shared/lib/utils';
+import { cn, preventDecimals } from '@/shared/lib/utils';
 
 import { AddEventDto, AddEventFormProps, AddEventSchema, EventCategory, RepeatType } from '../../calendar.interface';
 import { DEFAULT_COLORS } from '../../constants/calendar.const';
+
+const MOCK_CALENDARS = [
+  {
+    id: 1,
+    name: 'General'
+  },
+  {
+    id: 2,
+    name: 'Personal'
+  },
+  {
+    id: 3,
+    name: 'Family'
+  }
+];
 
 export const AddEventForm: FC<AddEventFormProps> = ({ startDate, endDate }) => {
   const {
@@ -29,11 +45,13 @@ export const AddEventForm: FC<AddEventFormProps> = ({ startDate, endDate }) => {
     setValue,
     getValues
   } = useForm<AddEventDto>({
+    mode: 'all',
     resolver: zodResolver(AddEventSchema),
     defaultValues: {
       category: EventCategory.TASK,
       startAt: startDate,
       endAt: endDate,
+      repeatType: RepeatType.NONE,
       calendarId: 1 // replace with actual calendarId
     }
   });
@@ -65,21 +83,41 @@ export const AddEventForm: FC<AddEventFormProps> = ({ startDate, endDate }) => {
         <Input {...register('title')} id="title" placeholder="New event title" errorMessage={errors.title?.message} />
       </div>
 
-      <div className="grid gap-2">
-        <Select
-          onValueChange={(value) => setValue('category', value as EventCategory)}
-          defaultValue={watch('category')}>
-          <SelectTrigger>
-            <SelectValue placeholder="Select a verified email to display" />
-          </SelectTrigger>
-          <SelectContent>
-            {Object.values(EventCategory).map((category) => (
-              <SelectItem key={category} value={category}>
-                {category}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <div className="flex gap-2">
+        <div className="grid gap-2 flex-1">
+          <Label>Category</Label>
+
+          <Select
+            onValueChange={(value) => setValue('category', value as EventCategory)}
+            defaultValue={watch('category')}>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.values(EventCategory).map((category) => (
+                <SelectItem key={category} value={category}>
+                  {category}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="grid gap-2 flex-1">
+          <Label>Calendar</Label>
+          <Select onValueChange={(value) => setValue('calendarId', +value)} defaultValue={String(watch('calendarId'))}>
+            <SelectTrigger className="flex! w-full line-clamp-1 truncate">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {MOCK_CALENDARS.map((calendar) => (
+                <SelectItem key={calendar.id} value={String(calendar.id)}>
+                  {calendar.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="grid gap-2">
@@ -204,12 +242,17 @@ export const AddEventForm: FC<AddEventFormProps> = ({ startDate, endDate }) => {
       <div className="grid gap-2">
         <div className="flex items-center gap-2">
           <Input
-            {...register('repeatAfter')}
+            {...register('repeatAfter', {
+              setValueAs: (v) => (v === '' ? undefined : parseInt(v, 10))
+            })}
             type="number"
             placeholder="Repeat after"
             icon={<TbRepeat className="opacity-50" />}
             iconPosition="left"
-            min={1}
+            min={0}
+            step={1}
+            inputMode="numeric"
+            onKeyDown={preventDecimals}
           />
 
           <Select
@@ -265,11 +308,15 @@ export const AddEventForm: FC<AddEventFormProps> = ({ startDate, endDate }) => {
         />
       </div>
 
-      <ColorSelector
-        value={watch('color')}
-        onValueChange={(value) => setValue('color', value)}
-        colors={DEFAULT_COLORS}
-      />
+      <div className="grid gap-2">
+        <ColorSelector
+          value={watch('color')}
+          onValueChange={(value) => setValue('color', value)}
+          colors={DEFAULT_COLORS}
+        />
+
+        {errors.color?.message && <p className="text-sm text-red-500">{errors.color.message}</p>}
+      </div>
 
       <Button type="submit">Create</Button>
     </form>

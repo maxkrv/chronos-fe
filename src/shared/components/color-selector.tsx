@@ -18,7 +18,7 @@ interface ColorSelectorProps {
 export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
   ({ colors, defaultValue, value, onValueChange, onChange, className, disabled, ...props }, ref) => {
     const handleValueChange = (newValue: string) => {
-      const selectedColor = colors.find((color) => color.id === newValue);
+      const selectedColor = colors.find((color) => color.value === newValue);
       if (selectedColor) {
         onChange?.(selectedColor);
         onValueChange?.(selectedColor.value);
@@ -28,15 +28,15 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
     return (
       <RadioGroup
         ref={ref}
-        defaultValue={defaultValue || (colors.length > 0 ? colors[0].id : '')}
+        defaultValue={defaultValue || (colors.length > 0 ? colors[0].value : '')}
         value={value}
         onValueChange={handleValueChange}
         className={cn('flex items-center gap-3', className)}
         disabled={disabled}
         {...props}>
         {colors.map((color) => (
-          <div key={color.id} className="relative">
-            <RadioGroupItem value={color.id} id={`color-${color.value}`} className="sr-only" />
+          <div key={color.value} className="relative">
+            <RadioGroupItem value={color.value} id={`color-${color.value}`} className="sr-only" />
             <Label
               htmlFor={`color-${color.value}`}
               className={cn(
@@ -52,7 +52,7 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
                 style={{
                   borderWidth: '2px',
                   borderStyle: 'solid',
-                  borderColor: color.ringColor || color.value
+                  borderColor: color.value
                 }}
               />
             </Label>
