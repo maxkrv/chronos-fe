@@ -10,11 +10,11 @@ import {
   SidebarHeader
 } from '@/shared/components/ui/sidebar';
 
-import { useDatePickerStore } from '../stores/date-picker-store';
+import { useDatePicker } from '../stores/date-picker-store';
 import { CalendarAccordion } from './calendar-accordion';
 
 export const CalendarSidebar = () => {
-  const { selectedDate, setSelectedDate, month, setMonth } = useDatePickerStore();
+  const { store } = useDatePicker();
 
   return (
     <Sidebar collapsible="icon" className="hidden flex-1 md:flex bg-background max-h-dvh sticky top-0">
@@ -27,10 +27,12 @@ export const CalendarSidebar = () => {
             <Calendar
               mode="range"
               className="flex justify-center min-h-82"
-              selected={selectedDate}
-              onSelect={setSelectedDate}
-              month={month}
-              onMonthChange={(month) => setMonth(month)}
+              selected={store.selectedDate}
+              onSelect={store.setSelectedDate}
+              month={store.month}
+              onMonthChange={(month) => {
+                store.setMonth(month), store.setYear(month);
+              }}
             />
             <div className="p-4">
               <Input icon={<IoMdSearch size={20} />} iconPosition="left" placeholder="Search" />

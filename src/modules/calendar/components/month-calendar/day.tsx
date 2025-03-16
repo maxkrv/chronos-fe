@@ -20,7 +20,7 @@ export const MonthCalendarDay: FC<MonthCalendarDayProps> = ({ day, events, isAct
           'bg-[repeating-linear-gradient(135deg,var(--color-accent),var(--color-accent)_10px,var(--color-white)_10px,var(--color-white)_20px)] text-muted-foreground',
         dayjs(day).isToday() && 'text-primary-foreground bg-primary'
       )}>
-      <div className={cn('flex flex-col justify-center items-center gap-1  min-h-17', hideEvents && 'hidden')}>
+      <div className={cn('flex flex-col items-center gap-1  min-h-17', hideEvents && 'hidden')}>
         <MonthCalendarDayTasks events={events} />
         <MonthCalendarDayMeetings events={events} />
         <MonthCalendarDayReminders events={events} />

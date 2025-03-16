@@ -25,7 +25,7 @@ export const YearCalendar: FC<YearCalendarProps> = ({ year = new Date(), classNa
   return (
     <div
       className={cn(
-        'grid w-full grid-flow-row grid-cols-[repeat(auto-fill,_20rem)] grid-rows-[auto] justify-around gap-10',
+        'grid w-full grid-flow-row grid-cols-[repeat(auto-fill,_20rem)] grid-rows-[auto] justify-around gap-10 max-sm:grid-cols-1, max-sm:gap-4 max-md:grid-cols-[repeat(auto-fill,_17rem)]',
         className
       )}>
       {Array.from({ length: MONTHS_IN_YEAR }).map((_, index) => {

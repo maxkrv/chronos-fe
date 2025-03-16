@@ -31,7 +31,7 @@ export const MonthCalendar: FC<MonthCalendarProps> = ({ month = new Date(), even
   const days = startOfMonth.diff(startOfWeek, 'day') + daysInMonth + endOfMonth.endOf('week').diff(endOfMonth, 'day');
 
   return (
-    <div className="flex flex-col gap-3 @container/calendar h-full min-w-3xs">
+    <div className="flex flex-col gap-3 @container/calendar h-full">
       <MonthCalendarHeader />
       <div className="grid grid-cols-7 gap-2  @max-lg:gap-1 border-t-3 pt-2 overflow-x-scroll scrollbar-none justify-center items-center max-h-fit grid-auth-rows-[1fr]">
         {Array.from({ length: days }).map((_, i) => {
