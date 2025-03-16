@@ -1,6 +1,7 @@
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
+import { forwardRef } from 'react';
 import { CgSpinner } from 'react-icons/cg';
 
 import { cn } from '@/shared/lib/utils';
@@ -38,14 +39,18 @@ type ButtonProps = React.ComponentProps<'button'> &
     isLoading?: boolean;
   };
 
-function Button({ className, variant, size, asChild = false, isLoading, children, ...props }: ButtonProps) {
-  const Comp = asChild ? Slot : 'button';
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, asChild = false, isLoading, children, ...props }, ref) => {
+    const Comp = asChild ? Slot : 'button';
 
-  return (
-    <Comp data-slot="button" className={cn(buttonVariants({ variant, size, className }))} {...props}>
-      {isLoading && <CgSpinner className="animate-spin" />}
-      {children}
-    </Comp>
-  );
-}
+    return (
+      <Comp ref={ref} data-slot="button" className={cn(buttonVariants({ variant, size, className }))} {...props}>
+        {isLoading && <CgSpinner className="animate-spin" />}
+        {children}
+      </Comp>
+    );
+  }
+);
+Button.displayName = 'Button';
+
 export { Button, buttonVariants };

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { Separator } from '@/shared/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/shared/components/ui/sidebar';
@@ -39,13 +39,15 @@ export const CalendarPage = () => {
     setView(dayPickerStore.selectedDate ? CalendarView.WEEK : CalendarView.MONTH);
   }, [dayPickerStore.selectedDate]);
 
-  const calendarViews: Record<CalendarView, ReactNode> = {
-    [CalendarView.WEEK]: (
-      <WeekCalendar events={events} days={selectedDays} fromDay={dayPickerStore.selectedDate?.from} />
-    ),
-    [CalendarView.MONTH]: <MonthCalendar events={events} month={dayPickerStore.month} />,
-    [CalendarView.YEAR]: <YearCalendar className="h-full min-w-fit overflow-x-scroll scrollbar-none grow" />
-  };
+  const calendarViews = useMemo(() => {
+    return {
+      [CalendarView.WEEK]: (
+        <WeekCalendar events={events} days={selectedDays} fromDay={dayPickerStore.selectedDate?.from} />
+      ),
+      [CalendarView.MONTH]: <MonthCalendar events={events} month={dayPickerStore.month} />,
+      [CalendarView.YEAR]: <YearCalendar className="h-full min-w-fit overflow-x-scroll scrollbar-none grow" />
+    };
+  }, [events, selectedDays, dayPickerStore.selectedDate, dayPickerStore.month]);
 
   return (
     <ContentLayout>
