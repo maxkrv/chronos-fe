@@ -3,7 +3,7 @@ import { Dispatch, FC, SetStateAction } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/components/ui/dialog';
 
 import { AddEventFormProps } from '../../calendar.interface';
-import { AddEventForm } from '../form/add-event-form';
+import { EventForm } from '../form/event-form';
 
 interface AddEventModalProps extends AddEventFormProps {
   open: boolean;
@@ -18,7 +18,7 @@ export const AddEventModal: FC<AddEventModalProps> = ({ open, onClose, ...props 
           <DialogTitle>Create new event</DialogTitle>
         </DialogHeader>
 
-        <AddEventForm {...props} />
+        <EventForm {...props} />
       </DialogContent>
     </Dialog>
   );

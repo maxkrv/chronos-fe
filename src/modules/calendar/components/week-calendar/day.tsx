@@ -47,7 +47,7 @@ export const Day: FC<DayProps> = ({ events, day }) => {
         ))}
       </div>
 
-      <AddEventModal open={open} onClose={() => setOpen(false)} endDate={endAt} startDate={startAt} />
+      <AddEventModal open={open} onClose={() => setOpen(false)} endDate={endAt} startDate={startAt} action="add" />
     </>
   );
 };

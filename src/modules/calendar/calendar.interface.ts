@@ -57,4 +57,6 @@ export interface AddEventFormProps {
   startDate?: Date;
   endDate?: Date;
   calendarId?: number;
+  action: 'add' | 'edit';
+  event?: ICalendarEvent;
 }

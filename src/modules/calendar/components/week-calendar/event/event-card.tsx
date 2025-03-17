@@ -110,7 +110,7 @@ export const EventCard: FC<EventCardProps> = ({ eventHeight, indentTop, event, a
   }, [saveState]);
 
   return (
-    <HoverCard>
+    <HoverCard openDelay={0}>
       <HoverCardTrigger asChild>
         <div
           className="absolute p-0.75 w-full h-full overflow-hidden grow-0 shrink-0 select-none "

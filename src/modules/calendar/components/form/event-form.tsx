@@ -36,7 +36,7 @@ const MOCK_CALENDARS = [
   }
 ];
 
-export const AddEventForm: FC<AddEventFormProps> = ({ startDate, endDate }) => {
+export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event }) => {
   const {
     register,
     handleSubmit,
@@ -48,11 +48,17 @@ export const AddEventForm: FC<AddEventFormProps> = ({ startDate, endDate }) => {
     mode: 'all',
     resolver: zodResolver(AddEventSchema),
     defaultValues: {
-      category: EventCategory.TASK,
-      startAt: startDate,
-      endAt: endDate,
-      repeatType: RepeatType.NONE,
-      calendarId: 1 // replace with actual calendarId
+      category: event?.category || EventCategory.TASK,
+      startAt: event?.startAt || startDate,
+      endAt: event?.endAt || endDate,
+      repeatType: event?.repeat?.frequency || RepeatType.NONE,
+      calendarId: event?.calendarId || 1, // replace with actual calendarId,
+      color: event?.color,
+      link: event?.link,
+      attendees: event?.attendees.map((attendee) => attendee.email),
+      description: event?.description,
+      repeatAfter: event?.repeat?.interval,
+      title: event?.name
     }
   });
 

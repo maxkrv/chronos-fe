@@ -57,7 +57,7 @@ export const EventReminder: FC<EventReminderProps> = ({ event, indentTop, onUpda
   }, [saveState]);
 
   return (
-    <HoverCard>
+    <HoverCard openDelay={0}>
       <HoverCardTrigger asChild>
         <div
           className="absolute p-0.75 w-full max-h-10 h-full shrink-0 transform -translate-y-2/5 cursor-move"
