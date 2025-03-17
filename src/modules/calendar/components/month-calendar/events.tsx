@@ -4,11 +4,11 @@ import { LuAlarmClock } from 'react-icons/lu';
 import { SiGooglemeet } from 'react-icons/si';
 
 import { cn } from '../../../../shared/lib/utils';
-import { ICalendarEvent } from '../../calendar.interface';
+import { EventCategory, ICalendarEvent } from '../../calendar.interface';
 
 interface MonthCalendarDayEventsProps {
   events: ICalendarEvent[];
-  type?: 'TASK' | 'REMINDER' | 'ARRANGEMENT';
+  type?: EventCategory;
   icon: ElementType;
   className?: string;
 }
@@ -56,13 +56,18 @@ const MonthCalendarDayEvents: FC<MonthCalendarDayEventsProps> = ({ events, type,
   );
 };
 export const MonthCalendarDayReminders: FC<MonthCalendarDayEventsGroupProps> = ({ events }) => (
-  <MonthCalendarDayEvents events={events} type="REMINDER" icon={LuAlarmClock} className="text-pink" />
+  <MonthCalendarDayEvents events={events} type={EventCategory.REMINDER} icon={LuAlarmClock} className="text-pink" />
 );
 
 export const MonthCalendarDayMeetings: FC<MonthCalendarDayEventsGroupProps> = ({ events }) => (
-  <MonthCalendarDayEvents events={events} type="ARRANGEMENT" icon={SiGooglemeet} className="text-yellow" />
+  <MonthCalendarDayEvents
+    events={events}
+    type={EventCategory.ARRANGEMENT}
+    icon={SiGooglemeet}
+    className="text-yellow"
+  />
 );
 
 export const MonthCalendarDayTasks: FC<MonthCalendarDayEventsGroupProps> = ({ events }) => (
-  <MonthCalendarDayEvents events={events} type="TASK" icon={FaTasks} className="text-green" />
+  <MonthCalendarDayEvents events={events} type={EventCategory.TASK} icon={FaTasks} className="text-green" />
 );

@@ -38,7 +38,7 @@ export const CalendarEvent: FC<CalendarEventProps> = ({ event, day, attendees, o
   const now = dayjs(day);
   const startIsToday = dayjs(event.startAt).isSame(now, 'day');
   const endIsToday = dayjs(event.endAt).isSame(now, 'day');
-  const reminderTime = getReminderOccurrenceToday(event.startAt, event.repeatAfter, now.toDate());
+  const reminderTime = getReminderOccurrenceToday(event.startAt, event.repeat?.repeatTime, now.toDate());
   const isReminderNotToday = event.category === 'REMINDER' && !reminderTime;
 
   if (!event || !(startIsToday || endIsToday) || isReminderNotToday) return null;

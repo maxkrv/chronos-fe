@@ -1,16 +1,16 @@
 import { FC } from 'react';
 
+import { User } from '@/modules/user/user.interface';
+
 import { cn } from '../lib/utils';
-import { useUserStore } from '../store/user.store';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
 interface UserAvatarProps {
+  user: User | null;
   className?: string;
 }
 
-export const UserAvatar: FC<UserAvatarProps> = ({ className }) => {
-  const { user } = useUserStore();
-
+export const UserAvatar: FC<UserAvatarProps> = ({ className, user }) => {
   return (
     <Avatar className={cn('bg-muted', className)}>
       <AvatarImage src={user?.avatarUrl || ''} />

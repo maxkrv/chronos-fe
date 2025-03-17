@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { User } from '../user/user.interface';
+
 export enum EventCategory {
   TASK = 'TASK',
   ARRANGEMENT = 'ARRANGEMENT',
@@ -8,28 +10,33 @@ export enum EventCategory {
 
 export enum RepeatType {
   NONE = 'NONE',
+  HOURLY = 'HOURLY',
   DAILY = 'DAILY',
   WEEKLY = 'WEEKLY',
   MONTHLY = 'MONTHLY',
   YEARLY = 'YEARLY'
 }
 
-export const CalendarEventSchema = z.object({
-  id: z.number(),
-  name: z.string(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-  description: z.string(),
-  color: z.string(),
-  startAt: z.date(),
-  endAt: z.date().optional(),
-  repeatAfter: z.number().optional(),
-  category: z.nativeEnum(EventCategory),
-  calendarId: z.number(),
-  creatorId: z.number()
-});
-
-export type ICalendarEvent = z.infer<typeof CalendarEventSchema>;
+export interface ICalendarEvent {
+  id: number;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+  description: string;
+  color: string;
+  startAt: Date;
+  endAt?: Date;
+  category: EventCategory;
+  calendarId: number;
+  creatorId: number;
+  link?: string;
+  attendees: User[];
+  repeat?: {
+    frequency: RepeatType;
+    interval: number;
+    repeatTime: number;
+  };
+}
 
 export const AddEventSchema = z.object({
   calendarId: z.number(),
