@@ -3,15 +3,14 @@ import { Label } from '@radix-ui/react-label';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { FC } from 'react';
-import { useForm } from 'react-hook-form';
-import { FaArrowRight, FaLink } from 'react-icons/fa6';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { FaArrowRight, FaLink, FaPlus, FaTrash } from 'react-icons/fa6';
 import { TbRepeat } from 'react-icons/tb';
 
 import { ColorSelector } from '@/shared/components/color-selector';
 import { Button } from '@/shared/components/ui/button';
 import { Calendar } from '@/shared/components/ui/calendar';
 import { Input } from '@/shared/components/ui/input';
-import MultipleSelector from '@/shared/components/ui/multi-selector';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/components/ui/popover';
 import { ScrollArea, ScrollBar } from '@/shared/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select';
@@ -36,8 +35,9 @@ const MOCK_CALENDARS = [
   }
 ];
 
-export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event }) => {
+export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, action }) => {
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors },
@@ -60,6 +60,13 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event }) 
       repeatAfter: event?.repeat?.interval,
       title: event?.name
     }
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    name: 'attendees'
   });
 
   const startAt = watch('startAt');
@@ -127,12 +134,15 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event }) 
       </div>
 
       <div className="grid gap-2">
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-2 items-center flex-col md:flex-row">
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant={'outline'}
-                className={cn('flex-1 justify-start text-left font-normal', !startAt && 'text-muted-foreground')}>
+                className={cn(
+                  'flex-1 justify-start text-left font-normal w-full',
+                  !startAt && 'text-muted-foreground'
+                )}>
                 <CalendarIcon className="h-4 w-4 opacity-50" />
                 {startAt ? format(startAt, 'dd/MM/yyyy HH:mm') : <span>Start date</span>}
               </Button>
@@ -183,13 +193,16 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event }) 
 
           {watch('category') !== EventCategory.REMINDER && (
             <>
-              <FaArrowRight />
+              <FaArrowRight className="rotate-90 md:rotate-0" />
 
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
                     variant={'outline'}
-                    className={cn('flex-1 justify-start text-left font-normal', !endAt && 'text-muted-foreground')}>
+                    className={cn(
+                      'flex-1 justify-start text-left font-normal w-full',
+                      !endAt && 'text-muted-foreground'
+                    )}>
                     <CalendarIcon className="h-4 w-4 opacity-50" />
                     {endAt ? format(endAt, 'dd/MM/yyyy HH:mm') : <span>End date</span>}
                   </Button>
@@ -290,17 +303,28 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event }) 
       </div>
 
       <div className="grid gap-2">
-        <MultipleSelector
-          placeholder="Attendees"
-          value={watch('attendees')?.map((a) => ({ value: a, label: a })) || []}
-          onChange={(attendees) =>
-            setValue(
-              'attendees',
-              attendees.map((a) => a.value)
-            )
-          }
-          creatable
-        />
+        <Label>Attendees</Label>
+        <div className="flex flex-col gap-1 w-[calc(100% + 24px)] max-h-[150px] overflow-auto ml-[-24px] pl-[24px] pb-2">
+          {fields.map((_, index) => (
+            <div key={index} className="flex gap-2 w-full">
+              <Input
+                {...register(`attendees.${index}` as const, {
+                  required: true
+                })}
+                wrapperClassName="flex-1"
+                placeholder="Email"
+                errorMessage={errors.attendees?.[index]?.message}
+              />
+
+              <Button variant="outline" type="button" onClick={() => remove(index)}>
+                <FaTrash className="h-3! w-3!" />
+              </Button>
+            </div>
+          ))}
+        </div>
+        <Button className="w-full" variant="outline" type="button" onClick={() => append('')}>
+          <FaPlus /> Add attendee
+        </Button>
 
         {errors.attendees && <p className="text-sm text-red-500">{errors.attendees.message}</p>}
       </div>
@@ -324,7 +348,7 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event }) 
         {errors.color?.message && <p className="text-sm text-red-500">{errors.color.message}</p>}
       </div>
 
-      <Button type="submit">Create</Button>
+      <Button type="submit">{action === 'edit' ? 'Update' : 'Create'}</Button>
     </form>
   );
 };
