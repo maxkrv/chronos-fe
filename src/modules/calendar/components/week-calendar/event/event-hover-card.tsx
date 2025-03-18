@@ -104,7 +104,11 @@ export const EventHoverCard: FC<EventHoverCardProps> = ({ event, setIsEditEventO
         </TabsList>
 
         <TabsContent value="details">
-          <p>{event.description}</p>
+          <ScrollArea className="h-[100px]">
+            <p>{event.description}</p>
+
+            <ScrollBar />
+          </ScrollArea>
         </TabsContent>
         <TabsContent value="participants">
           <ScrollArea className="h-[100px]">

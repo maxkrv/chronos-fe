@@ -16,7 +16,7 @@ export const EditEventModal: FC<EditEventModalProps> = ({ open, onClose, event }
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit {event?.name}</DialogTitle>
+          <DialogTitle>Update {event?.name}</DialogTitle>
         </DialogHeader>
 
         <EventForm event={event} action={'edit'} />

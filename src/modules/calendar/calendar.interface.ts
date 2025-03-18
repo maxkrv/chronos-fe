@@ -49,7 +49,7 @@ export const AddEventSchema = z.object({
   repeatAfter: z.number().max(999).optional().or(z.literal(undefined)),
   repeatType: z.nativeEnum(RepeatType).optional().or(z.literal('NONE')),
   link: z.string().optional().or(z.literal('')),
-  attendees: z.array(z.string().email()).optional()
+  attendees: z.array(z.string().email()).optional().default([])
 });
 export type AddEventDto = z.infer<typeof AddEventSchema>;
 

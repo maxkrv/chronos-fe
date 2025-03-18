@@ -35,7 +35,7 @@ const MOCK_CALENDARS = [
   }
 ];
 
-export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event }) => {
+export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, action }) => {
   const {
     control,
     register,
@@ -134,12 +134,15 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event }) 
       </div>
 
       <div className="grid gap-2">
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-2 items-center flex-col md:flex-row">
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant={'outline'}
-                className={cn('flex-1 justify-start text-left font-normal', !startAt && 'text-muted-foreground')}>
+                className={cn(
+                  'flex-1 justify-start text-left font-normal w-full',
+                  !startAt && 'text-muted-foreground'
+                )}>
                 <CalendarIcon className="h-4 w-4 opacity-50" />
                 {startAt ? format(startAt, 'dd/MM/yyyy HH:mm') : <span>Start date</span>}
               </Button>
@@ -190,13 +193,16 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event }) 
 
           {watch('category') !== EventCategory.REMINDER && (
             <>
-              <FaArrowRight />
+              <FaArrowRight className="rotate-90 md:rotate-0" />
 
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
                     variant={'outline'}
-                    className={cn('flex-1 justify-start text-left font-normal', !endAt && 'text-muted-foreground')}>
+                    className={cn(
+                      'flex-1 justify-start text-left font-normal w-full',
+                      !endAt && 'text-muted-foreground'
+                    )}>
                     <CalendarIcon className="h-4 w-4 opacity-50" />
                     {endAt ? format(endAt, 'dd/MM/yyyy HH:mm') : <span>End date</span>}
                   </Button>
@@ -296,9 +302,9 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event }) 
         />
       </div>
 
-      <div className="grid">
+      <div className="grid gap-2">
         <Label>Attendees</Label>
-        <div className="flex flex-col gap-1 w-[calc(100% + 24px)] max-h-[150px] overflow-auto ml-[-24px] pl-[24px] py-2">
+        <div className="flex flex-col gap-1 w-[calc(100% + 24px)] max-h-[150px] overflow-auto ml-[-24px] pl-[24px] pb-2">
           {fields.map((_, index) => (
             <div key={index} className="flex gap-2 w-full">
               <Input
@@ -342,7 +348,7 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event }) 
         {errors.color?.message && <p className="text-sm text-red-500">{errors.color.message}</p>}
       </div>
 
-      <Button type="submit">Create</Button>
+      <Button type="submit">{action === 'edit' ? 'Update' : 'Create'}</Button>
     </form>
   );
 };
