@@ -42,7 +42,7 @@ export const ProfilePage = () => {
         <div className="w-full p-4 flex flex-col gap-6">
           <div className="flex gap-5 items-center">
             <div className="relative">
-              <UserAvatar className="h-25 w-25" />
+              <UserAvatar user={user} className="h-25 w-25" />
               <ChangeAvatar className="absolute bottom-0 right-0" />
             </div>
 

@@ -2,23 +2,24 @@ import { Dispatch, FC, SetStateAction } from 'react';
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/components/ui/dialog';
 
-import { AddEventFormProps } from '../../calendar.interface';
+import { ICalendarEvent } from '../../calendar.interface';
 import { EventForm } from '../form/event-form';
 
-interface AddEventModalProps extends AddEventFormProps {
+interface EditEventModalProps {
   open: boolean;
   onClose: Dispatch<SetStateAction<boolean>>;
+  event: ICalendarEvent | undefined;
 }
 
-export const AddEventModal: FC<AddEventModalProps> = ({ open, onClose, ...props }) => {
+export const EditEventModal: FC<EditEventModalProps> = ({ open, onClose, event }) => {
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create new event</DialogTitle>
+          <DialogTitle>Update {event?.name}</DialogTitle>
         </DialogHeader>
 
-        <EventForm {...props} />
+        <EventForm event={event} action={'edit'} />
       </DialogContent>
     </Dialog>
   );

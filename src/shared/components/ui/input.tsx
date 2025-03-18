@@ -6,12 +6,13 @@ export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   errorMessage?: string;
   icon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
+  wrapperClassName?: string;
 };
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, errorMessage, iconPosition, icon, ...props }, ref) => {
+  ({ className, type, errorMessage, iconPosition, icon, wrapperClassName, ...props }, ref) => {
     return (
-      <div>
+      <div className={wrapperClassName}>
         <div className="relative">
           <input
             type={type}

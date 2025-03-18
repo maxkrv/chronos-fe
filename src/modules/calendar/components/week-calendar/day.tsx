@@ -3,6 +3,7 @@ import { FC, useState } from 'react';
 import { users } from '../../../../__mock__/users';
 import { ICalendarEvent } from '../../calendar.interface';
 import { AddEventModal } from '../modal/add-event-modal';
+import { EditEventModal } from '../modal/edit-event-modal';
 import { CalendarEvent } from './event';
 import { CALENDAR_DAY_HEIGHT, Hour } from './hour';
 
@@ -12,9 +13,11 @@ interface DayProps {
 }
 export const Day: FC<DayProps> = ({ events, day }) => {
   const [e, setEvents] = useState(events);
-  const [open, setOpen] = useState(false);
+  const [isAddEventOpen, setIsAddEventOpen] = useState(false);
   const [startAt, setStartAt] = useState<Date | undefined>(undefined);
   const [endAt, setEndAt] = useState<Date | undefined>(undefined);
+  const [isEditEventOpen, setIsEditEventOpen] = useState(false);
+  const [event, setEvent] = useState<ICalendarEvent | undefined>(undefined);
 
   function onUpdate(event: ICalendarEvent) {
     setEvents((prev) => prev.map((e) => (e.id === event.id ? event : e)));
@@ -31,7 +34,7 @@ export const Day: FC<DayProps> = ({ events, day }) => {
 
     setStartAt(startAt);
     setEndAt(endAt);
-    setOpen(true);
+    setIsAddEventOpen(true);
   };
 
   return (
@@ -43,11 +46,29 @@ export const Day: FC<DayProps> = ({ events, day }) => {
           <Hour hour={i} key={i} setDate={setDate} />
         ))}
         {e.map((event, i) => (
-          <CalendarEvent key={i} event={event} day={day} attendees={users} onUpdate={onUpdate} />
+          <CalendarEvent
+            key={i}
+            event={event}
+            day={day}
+            attendees={users}
+            onUpdate={onUpdate}
+            setIsEditEventOpen={(event) => {
+              console.log('🚀 ~ event:', event);
+              setEvent(event);
+              setIsEditEventOpen(true);
+            }}
+          />
         ))}
       </div>
 
-      <AddEventModal open={open} onClose={() => setOpen(false)} endDate={endAt} startDate={startAt} />
+      <AddEventModal
+        open={isAddEventOpen}
+        onClose={() => setIsAddEventOpen(false)}
+        endDate={endAt}
+        startDate={startAt}
+        action="add"
+      />
+      <EditEventModal open={isEditEventOpen} onClose={() => setIsEditEventOpen(false)} event={event}></EditEventModal>
     </>
   );
 };
