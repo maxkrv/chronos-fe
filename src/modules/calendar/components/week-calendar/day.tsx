@@ -53,7 +53,6 @@ export const Day: FC<DayProps> = ({ events, day }) => {
             attendees={users}
             onUpdate={onUpdate}
             setIsEditEventOpen={(event) => {
-              console.log('🚀 ~ event:', event);
               setEvent(event);
               setIsEditEventOpen(true);
             }}

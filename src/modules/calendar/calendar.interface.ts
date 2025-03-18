@@ -17,6 +17,12 @@ export enum RepeatType {
   YEARLY = 'YEARLY'
 }
 
+export enum CalendarVisibility {
+  PUBLIC = 'PUBLIC',
+  PRIVATE = 'PRIVATE',
+  SHARED = 'SHARED'
+}
+
 export interface ICalendarEvent {
   id: number;
   name: string;
@@ -59,4 +65,23 @@ export interface AddEventFormProps {
   calendarId?: number;
   action: 'add' | 'edit';
   event?: ICalendarEvent;
+}
+
+export const AddCalendarSchema = z.object({
+  name: z.string().trim().min(1, { message: 'Name is required' }).max(50, { message: 'Name is too long' }),
+  description: z.string().optional(),
+  visibility: z.nativeEnum(CalendarVisibility)
+});
+export type AddCalendarDto = z.infer<typeof AddCalendarSchema>;
+
+export type EditCalendarDto = AddCalendarDto & { id: number };
+
+export interface ICalendar {
+  id: number;
+  name: string;
+  description: string;
+  visibility: CalendarVisibility;
+  createdAt: Date;
+  updatedAt: Date;
+  isMain: boolean;
 }

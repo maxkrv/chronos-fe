@@ -2,10 +2,12 @@ import { useLocation } from 'react-router-dom';
 
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 
+const ignoreRoutes = ['/login', '/sign-up', '/activate', '/reset-password', '/auth', '/forgot-password'];
+
 export const NotActivatedAccount = () => {
   const { pathname } = useLocation();
 
-  if (pathname.includes('activate')) {
+  if (ignoreRoutes.some((route) => pathname.startsWith(route)) || pathname === '/') {
     return null;
   }
 
