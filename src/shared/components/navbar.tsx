@@ -1,9 +1,14 @@
 import { FaRegCalendarAlt } from 'react-icons/fa';
+import { MdSpaceDashboard } from 'react-icons/md';
 import { Link, useLocation } from 'react-router-dom';
 
 import { Button } from './ui/button';
 
 const ITEMS = [
+  {
+    icon: <MdSpaceDashboard />,
+    path: '/dashboard'
+  },
   {
     icon: <FaRegCalendarAlt />,
     path: '/calendar'

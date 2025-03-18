@@ -33,9 +33,9 @@ export type ICalendarEvent = z.infer<typeof CalendarEventSchema>;
 
 export const AddEventSchema = z.object({
   calendarId: z.number(),
-  title: z.string().trim().min(1, { message: 'Title is required' }),
-  description: z.string().trim().min(1, { message: 'Description is required' }),
-  color: z.string().trim().min(1, { message: 'Color is required' }),
+  title: z.string().trim().default('[No title]'),
+  description: z.string().trim().optional(),
+  color: z.string().trim().min(1, { message: 'Color is required' }).default('#16c47f'),
   startAt: z.date(),
   endAt: z.date().optional().or(z.literal('')),
   category: z.nativeEnum(EventCategory),

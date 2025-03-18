@@ -36,7 +36,7 @@ export const ProfilePage = () => {
     <ContentLayout>
       <div className="w-full">
         <AppHeader>
-          <h1 className="text-foreground text-base font-medium">Chronos | Profile</h1>
+          <h1 className="text-foreground text-2xl font-medium">Chronos | Profile</h1>
         </AppHeader>
 
         <div className="w-full p-4 flex flex-col gap-6">

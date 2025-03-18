@@ -7,6 +7,7 @@ import { LoginPage } from './modules/auth/pages/login-page';
 import { ResetPasswordPage } from './modules/auth/pages/reset-password-page';
 import { SignUpPage } from './modules/auth/pages/sign-up-page';
 import { CalendarPage } from './modules/calendar/pages/calendar-page';
+import { DashboardPage } from './modules/dashboard/pages/dashboard-page';
 import { HomePage } from './modules/home/pages/home-page';
 import { ProfilePage } from './modules/user/pages/profile-page';
 import { AuthGuard } from './shared/guard/auth-guard';
@@ -41,6 +42,14 @@ const router = createBrowserRouter([
         element: (
           <AuthGuard>
             <ActivateAccountPage />
+          </AuthGuard>
+        )
+      },
+      {
+        path: '/dashboard',
+        element: (
+          <AuthGuard>
+            <DashboardPage />
           </AuthGuard>
         )
       },
