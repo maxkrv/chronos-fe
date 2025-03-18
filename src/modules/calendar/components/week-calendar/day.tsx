@@ -17,7 +17,6 @@ export const Day: FC<DayProps> = ({ events, day }) => {
   const [startAt, setStartAt] = useState<Date | undefined>(undefined);
   const [endAt, setEndAt] = useState<Date | undefined>(undefined);
   const [isEditEventOpen, setIsEditEventOpen] = useState(false);
-  console.log('🚀 ~ isEditEventOpen:', isEditEventOpen);
   const [event, setEvent] = useState<ICalendarEvent | undefined>(undefined);
 
   function onUpdate(event: ICalendarEvent) {
