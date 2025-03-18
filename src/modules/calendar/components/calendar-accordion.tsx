@@ -1,5 +1,5 @@
 import { Check, ChevronRight } from 'lucide-react';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { IoIosSettings } from 'react-icons/io';
 
 import { Button } from '@/shared/components/ui/button';
@@ -18,6 +18,14 @@ interface CalendarAccordionProps {
 }
 
 export const CalendarAccordion: FC<CalendarAccordionProps> = ({ name, items, isLoading }) => {
+  const [open, setOpen] = useState(false);
+  const [calendar, setCalendar] = useState<ICalendar | null>(null);
+
+  const onClose = () => {
+    setOpen(false);
+    setCalendar(null);
+  };
+
   return (
     <>
       <Collapsible defaultOpen={true} className="group/collapsible px-2">
@@ -46,17 +54,17 @@ export const CalendarAccordion: FC<CalendarAccordionProps> = ({ name, items, isL
                         <span>{item.name}</span>
                       </SidebarMenuButton>
 
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button variant="ghost" className="hover:bg-accent-foreground hover:text-background w-9">
-                            <IoIosSettings />
-                          </Button>
-                        </DialogTrigger>
-
-                        <DialogContent>
-                          <CalendarForm action="edit" calendar={item} />
-                        </DialogContent>
-                      </Dialog>
+                      {!item.isMain && (
+                        <Button
+                          onClick={() => {
+                            setOpen(true);
+                            setCalendar(item);
+                          }}
+                          variant="ghost"
+                          className="hover:bg-accent-foreground hover:text-background w-9">
+                          <IoIosSettings />
+                        </Button>
+                      )}
                     </SidebarMenuItem>
                   ))}
                 {isLoading &&
@@ -72,6 +80,14 @@ export const CalendarAccordion: FC<CalendarAccordionProps> = ({ name, items, isL
           </SidebarMenu>
         </CollapsibleContent>
       </Collapsible>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild></DialogTrigger>
+
+        <DialogContent>
+          <CalendarForm action="edit" calendar={calendar || undefined} onSubmit={onClose} />
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

@@ -83,4 +83,5 @@ export interface ICalendar {
   visibility: CalendarVisibility;
   createdAt: Date;
   updatedAt: Date;
+  isMain: boolean;
 }
