@@ -8,7 +8,6 @@ import { ResetPasswordPage } from './modules/auth/pages/reset-password-page';
 import { SignUpPage } from './modules/auth/pages/sign-up-page';
 import { CalendarPage } from './modules/calendar/pages/calendar-page';
 import { HomePage } from './modules/home/pages/home-page';
-import { ProfilePage } from './modules/user/pages/profile-page';
 import { AuthGuard } from './shared/guard/auth-guard';
 
 const router = createBrowserRouter([
@@ -49,14 +48,6 @@ const router = createBrowserRouter([
         element: (
           <AuthGuard>
             <CalendarPage />
-          </AuthGuard>
-        )
-      },
-      {
-        path: '/profile',
-        element: (
-          <AuthGuard>
-            <ProfilePage />
           </AuthGuard>
         )
       }

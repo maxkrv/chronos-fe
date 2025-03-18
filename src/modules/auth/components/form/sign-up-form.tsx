@@ -78,15 +78,6 @@ export const SignUpForm = () => {
           <PasswordInput id="password" {...register('password')} errorMessage={errors.password?.message} />
         </div>
 
-        <div className="grid gap-2">
-          <Label htmlFor="repeatPassword">Repeat password</Label>
-
-          <PasswordInput
-            id="repeatPassword"
-            {...register('repeatPassword')}
-            errorMessage={errors.repeatPassword?.message}
-          />
-        </div>
         <Button type="submit" className="w-full" isLoading={isPending} disabled={!isValid || isPending}>
           Sign up
         </Button>

@@ -55,7 +55,7 @@ export const EditProfileForm: FC<EditProfileFormProps> = ({ className }) => {
           <Input defaultValue={user?.email} id="email" disabled />
         </div>
 
-        <Button type="submit" className="w-min" isLoading={isPending} disabled={!isValid || isPending}>
+        <Button type="submit" isLoading={isPending} disabled={!isValid || isPending}>
           Save
         </Button>
       </div>

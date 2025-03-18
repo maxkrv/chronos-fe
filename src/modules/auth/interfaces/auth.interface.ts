@@ -14,18 +14,13 @@ export const LoginSchema = z.object({
 });
 export type LoginDto = z.infer<typeof LoginSchema>;
 
-export const RegisterSchema = z
-  .object({
-    name: z.string().trim().min(1, { message: 'Name is required' }),
-    surname: z.string().trim().min(1, { message: 'Username is required' }),
-    email: z.string().email().trim().min(1, { message: 'Email is required' }),
-    password: passwordValidation,
-    repeatPassword: z.string().trim().min(1, { message: 'Confirm password is required' })
-  })
-  .refine((data) => data.password === data.repeatPassword, {
-    message: 'Passwords do not match',
-    path: ['repeatPassword']
-  });
+export const RegisterSchema = z.object({
+  name: z.string().trim().min(1, { message: 'Name is required' }),
+  surname: z.string().trim().min(1, { message: 'Username is required' }),
+  email: z.string().email().trim().min(1, { message: 'Email is required' }),
+  password: passwordValidation
+});
+
 export type RegisterDto = z.infer<typeof RegisterSchema>;
 
 export interface ResetPasswordDto {
