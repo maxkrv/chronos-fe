@@ -32,9 +32,10 @@ interface CalendarEventProps {
   day: Date;
   attendees?: User[];
   onUpdate: (event: ICalendarEvent) => void;
+  setIsEditEventOpen: (event: ICalendarEvent) => void;
 }
 
-export const CalendarEvent: FC<CalendarEventProps> = ({ event, day, attendees, onUpdate }) => {
+export const CalendarEvent: FC<CalendarEventProps> = ({ event, day, attendees, onUpdate, setIsEditEventOpen }) => {
   const now = dayjs(day);
   const startIsToday = dayjs(event.startAt).isSame(now, 'day');
   const endIsToday = dayjs(event.endAt).isSame(now, 'day');
@@ -51,7 +52,7 @@ export const CalendarEvent: FC<CalendarEventProps> = ({ event, day, attendees, o
   );
 
   return event.category === 'REMINDER' ? (
-    <EventReminder event={event} indentTop={indentTop} onUpdate={onUpdate} />
+    <EventReminder event={event} indentTop={indentTop} onUpdate={onUpdate} setIsEditEventOpen={setIsEditEventOpen} />
   ) : (
     <EventCard
       event={event}
@@ -60,6 +61,7 @@ export const CalendarEvent: FC<CalendarEventProps> = ({ event, day, attendees, o
       indentTop={indentTop}
       attendees={attendees}
       onUpdate={onUpdate}
+      setIsEditEventOpen={setIsEditEventOpen}
     />
   );
 };

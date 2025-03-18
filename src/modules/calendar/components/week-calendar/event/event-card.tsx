@@ -28,7 +28,14 @@ interface EventCardProps extends React.ComponentProps<typeof CalendarEvent> {
 }
 const PIXELS_PER_5_MIN = CALENDAR_MINUTE_HEIGHT * 5;
 
-export const EventCard: FC<EventCardProps> = ({ eventHeight, indentTop, event, attendees, onUpdate }) => {
+export const EventCard: FC<EventCardProps> = ({
+  eventHeight,
+  indentTop,
+  event,
+  attendees,
+  onUpdate,
+  setIsEditEventOpen
+}) => {
   const [height, setHeight] = useState(eventHeight);
   const [startOffset, setStartOffset] = useState(indentTop);
   const initialRef = useRef({ startY: 0, originalHeight: eventHeight, originalOffset: indentTop });
@@ -143,7 +150,7 @@ export const EventCard: FC<EventCardProps> = ({ eventHeight, indentTop, event, a
       </HoverCardTrigger>
 
       <HoverCardContent side="right" className="w-96">
-        <EventHoverCard event={event} />
+        <EventHoverCard setIsEditEventOpen={setIsEditEventOpen} event={event} />
       </HoverCardContent>
     </HoverCard>
   );

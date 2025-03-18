@@ -13,9 +13,10 @@ interface EventReminderProps {
   event: ICalendarEvent;
   indentTop: number;
   onUpdate: (event: ICalendarEvent) => void;
+  setIsEditEventOpen: (event: ICalendarEvent) => void;
 }
 
-export const EventReminder: FC<EventReminderProps> = ({ event, indentTop, onUpdate }) => {
+export const EventReminder: FC<EventReminderProps> = ({ event, indentTop, onUpdate, setIsEditEventOpen }) => {
   const REMINDER_HEIGHT = 40;
   const [saveState, triggerSave] = useToggle();
   const [startOffset, setStartOffset] = useState(indentTop);
@@ -76,7 +77,7 @@ export const EventReminder: FC<EventReminderProps> = ({ event, indentTop, onUpda
       </HoverCardTrigger>
 
       <HoverCardContent side="right" className="w-96">
-        <EventHoverCard event={event} />
+        <EventHoverCard event={event} setIsEditEventOpen={setIsEditEventOpen} />
       </HoverCardContent>
     </HoverCard>
   );

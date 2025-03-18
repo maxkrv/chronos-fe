@@ -3,15 +3,14 @@ import { Label } from '@radix-ui/react-label';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { FC } from 'react';
-import { useForm } from 'react-hook-form';
-import { FaArrowRight, FaLink } from 'react-icons/fa6';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { FaArrowRight, FaLink, FaPlus, FaTrash } from 'react-icons/fa6';
 import { TbRepeat } from 'react-icons/tb';
 
 import { ColorSelector } from '@/shared/components/color-selector';
 import { Button } from '@/shared/components/ui/button';
 import { Calendar } from '@/shared/components/ui/calendar';
 import { Input } from '@/shared/components/ui/input';
-import MultipleSelector from '@/shared/components/ui/multi-selector';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/components/ui/popover';
 import { ScrollArea, ScrollBar } from '@/shared/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select';
@@ -38,6 +37,7 @@ const MOCK_CALENDARS = [
 
 export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event }) => {
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors },
@@ -60,6 +60,13 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event }) 
       repeatAfter: event?.repeat?.interval,
       title: event?.name
     }
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    name: 'attendees'
   });
 
   const startAt = watch('startAt');
@@ -289,18 +296,29 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event }) 
         />
       </div>
 
-      <div className="grid gap-2">
-        <MultipleSelector
-          placeholder="Attendees"
-          value={watch('attendees')?.map((a) => ({ value: a, label: a })) || []}
-          onChange={(attendees) =>
-            setValue(
-              'attendees',
-              attendees.map((a) => a.value)
-            )
-          }
-          creatable
-        />
+      <div className="grid">
+        <Label>Attendees</Label>
+        <div className="flex flex-col gap-1 w-[calc(100% + 24px)] max-h-[150px] overflow-auto ml-[-24px] pl-[24px] py-2">
+          {fields.map((_, index) => (
+            <div key={index} className="flex gap-2 w-full">
+              <Input
+                {...register(`attendees.${index}` as const, {
+                  required: true
+                })}
+                wrapperClassName="flex-1"
+                placeholder="Email"
+                errorMessage={errors.attendees?.[index]?.message}
+              />
+
+              <Button variant="outline" type="button" onClick={() => remove(index)}>
+                <FaTrash className="h-3! w-3!" />
+              </Button>
+            </div>
+          ))}
+        </div>
+        <Button className="w-full" variant="outline" type="button" onClick={() => append('')}>
+          <FaPlus /> Add attendee
+        </Button>
 
         {errors.attendees && <p className="text-sm text-red-500">{errors.attendees.message}</p>}
       </div>
