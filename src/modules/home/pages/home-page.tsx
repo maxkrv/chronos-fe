@@ -7,7 +7,6 @@ import { useAuth } from '@/shared/store/auth.store';
 import { useUserStore } from '@/shared/store/user.store';
 
 import { AuthService } from '../../auth/services/auth.service';
-import { YearCalendar } from '../../calendar/components/year-calendar';
 
 export const HomePage = () => {
   const navigate = useNavigate();
@@ -28,12 +27,9 @@ export const HomePage = () => {
     deleteTokens();
   };
 
-  return (
-    <div>
-      {isLoggedIn() && <Button onClick={handleLogout}>logout</Button>}
-      <YearCalendar year={new Date()} />
-      {/* <MonthCalendar month={new Date()} events={events} /> */}
-      {/* <WeekCalendar events={events} /> */}
-    </div>
-  );
+  if (isLoggedIn()) {
+    navigate('/calendar');
+  }
+
+  return <div>{isLoggedIn() && <Button onClick={handleLogout}>logout</Button>}</div>;
 };

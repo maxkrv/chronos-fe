@@ -38,7 +38,7 @@ export const CalendarSidebar = () => {
     <>
       <Sidebar collapsible="icon" className="hidden flex-1 md:flex bg-background max-h-dvh sticky top-0">
         <SidebarHeader className="h-14 sticky top-0 flex shrink-0 justify-center gap-2 border-b bg-background px-4">
-          <h1 className="text-foreground text-base font-medium">Chronos</h1>
+          <h1 className="text-foreground text-2xl font-medium truncate">Chronos | Calendar</h1>
         </SidebarHeader>
         <SidebarContent>
           <SidebarGroup className="px-0">
@@ -56,7 +56,6 @@ export const CalendarSidebar = () => {
               <div className="p-4">
                 <Input icon={<IoMdSearch size={20} />} iconPosition="left" placeholder="Search" />
               </div>
-
               <div className="px-4 mb-4">
                 <Button className="w-full" onClick={() => setOpen(true)}>
                   <FaPlus /> Add calendar
