@@ -1,4 +1,4 @@
-import { ArrowRight } from 'lucide-react';
+import { FaArrowRight } from 'react-icons/fa6';
 
 import { Button } from '@/shared/components/ui/button';
 
@@ -40,7 +40,7 @@ export const CTASection = () => {
               </Button>
               <Button size="lg" className="gap-1 transition-all duration-300 hover:scale-105 hover:shadow-lg group">
                 Register
-                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                <FaArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Button>
             </div>
           </ScrollReveal>

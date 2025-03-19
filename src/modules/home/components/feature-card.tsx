@@ -1,8 +1,7 @@
-import type { LucideIcon } from 'lucide-react';
 import type React from 'react';
 
 interface FeatureCardProps {
-  icon: LucideIcon | React.FC<React.SVGProps<SVGSVGElement>>;
+  icon: React.FC<React.SVGProps<SVGSVGElement>>;
   title: string;
   description: string;
 }

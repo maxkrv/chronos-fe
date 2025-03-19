@@ -1,4 +1,4 @@
-import { CheckCircle } from 'lucide-react';
+import { FaRegCircleCheck } from 'react-icons/fa6';
 
 import { ScrollReveal } from './scroll-reveal';
 
@@ -21,11 +21,9 @@ export const AboutSection = () => {
         <div className="mx-auto grid max-w-5xl items-center justify-center gap-6 py-12 lg:grid-cols-2 lg:gap-12">
           <ScrollReveal direction="left">
             <img
-              src="/placeholder.svg?height=550&width=550"
-              width={550}
-              height={550}
+              src="/cross-platform.png"
               alt="Calendar App Mobile View"
-              className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full shadow-lg hover:shadow-xl transition-all duration-500 hover:scale-[1.02]"
+              className="mx-auto overflow-hidden rounded-xl object-cover sm:w-full shadow-lg hover:shadow-xl transition-all duration-500 hover:scale-[1.02]"
             />
           </ScrollReveal>
 
@@ -48,7 +46,7 @@ export const AboutSection = () => {
                 {benefits.map((benefit, index) => (
                   <ScrollReveal key={index} delay={300 + index * 150} direction="right">
                     <li className="flex items-center gap-2 transition-all duration-300 hover:translate-x-1">
-                      <CheckCircle className="h-5 w-5 text-primary animate-pulse-slow" />
+                      <FaRegCircleCheck className="h-5 w-5 text-primary animate-pulse-slow" />
                       <span>{benefit}</span>
                     </li>
                   </ScrollReveal>

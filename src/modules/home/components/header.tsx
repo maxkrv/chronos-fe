@@ -34,7 +34,6 @@ const NavItem = [
 
 export const Header = () => {
   const [activeSection, setActiveSection] = useState<LandingSection>(LandingSection.HERO);
-  const [scrolled, setScrolled] = useState(false);
   const nav = useNavigate();
   const isUserLoggedIn = isLoggedIn();
   const { deleteTokens, tokens } = useAuth();
@@ -55,9 +54,6 @@ export const Header = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Set scrolled state for header background effect
-      setScrolled(window.scrollY > 10);
-
       // Track active section
       const sections = document.querySelectorAll('section');
       const scrollPosition = window.scrollY + window.innerHeight / 2;
@@ -88,12 +84,7 @@ export const Header = () => {
   };
 
   return (
-    <header
-      className={`sticky top-0 z-50 max-h-16 w-full border-b backdrop-blur transition-all duration-300 ${
-        scrolled
-          ? 'bg-background/95 supports-[backdrop-filter]:bg-background/60 shadow-md'
-          : 'bg-transparent border-transparent'
-      } px-4`}>
+    <header className={`sticky top-0 z-50 max-h-16 w-full border-b backdrop-blur transition-all duration-300 px-4`}>
       <div className="@container flex h-16 items-center justify-between gap-4">
         <a
           href="#"
@@ -131,7 +122,7 @@ export const Header = () => {
             size="lg"
             className="gap-1 rounded-full transition-all duration-300 hover:shadow-lg hover:bg-primary/90 hover:scale-105"
             onClick={() => (isUserLoggedIn ? nav('/dashboard') : nav('/sign-up'))}>
-            {isUserLoggedIn ? 'Get started' : 'Sign Up for Free'}
+            {isUserLoggedIn ? 'Go to app' : 'Sign Up for Free'}
           </Button>
         </nav>
       </div>

@@ -1,8 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Toaster } from 'sonner';
 
+import { config } from './config/config';
 import { UserService } from './modules/user/user.service';
 import { BoxBordersSwitch } from './shared/components/dev/box-borders-switch';
 import { TailwindIndicator } from './shared/components/dev/tailwindIndicator';
@@ -15,7 +17,7 @@ import { useUserStore } from './shared/store/user.store';
 export const App = () => {
   const { user, setUser } = useUserStore();
   const { isLoggedIn } = useAuth();
-
+  const isDevelopment = config;
   const { data, isSuccess, isLoading } = useQuery({
     queryKey: [USER_ME],
     queryFn: UserService.me,
@@ -34,8 +36,13 @@ export const App = () => {
       {isLoading ? <LoadingOverlay /> : <Outlet />}
       <Toaster expand />
 
-      <TailwindIndicator />
-      <BoxBordersSwitch />
+      {isDevelopment && (
+        <>
+          <BoxBordersSwitch />
+          <TailwindIndicator />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </>
+      )}
     </>
   );
 };
