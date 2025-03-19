@@ -39,6 +39,15 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  --color-green: #16c47f;
+  --color-yellow: #ffaf61;
+  --color-pink: #ff70ab;
+  --color-orange: #ffa38f;
+  --color-blue: #4793af;
+  --color-purple: #4635b1;
+  --color-red: #f93827;
+  --color-gray: #9bb0c1;
 }
 
 .dark {
@@ -77,6 +86,7 @@
 }
 
 @theme inline {
+  --default-font-family: 'Signika Negative', 'Roboto', sans-serif, system-ui;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -116,14 +126,14 @@
   --text-2xs: 0.625rem;
   --text-3xs: 0.5rem;
 
-  --color-green: #16c47f;
-  --color-yellow: #ffaf61;
-  --color-pink: #ff70ab;
-  --color-orange: #ffa38f;
-  --color-blue: #4793af;
-  --color-purple: #4635b1;
-  --color-red: #f93827;
-  --color-gray: #9bb0c1;
+  --color-green: var(--color-green);
+  --color-yellow: var(--color-yellow);
+  --color-pink: var(--color-pink);
+  --color-orange: var(--color-orange);
+  --color-blue: var(--color-blue);
+  --color-purple: var(--color-purple);
+  --color-red: var(--color-red);
+  --color-gray: var(--color-gray);
 
   --color-mix-primary-10: color-mix(in srgb, currentColor 10%, var(--color-background));
   --color-mix-primary-20: color-mix(in srgb, currentColor 20%, var(--color-background));
