@@ -1,5 +1,6 @@
 'use client';
 
+import { FC } from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 
 import {
@@ -10,33 +11,35 @@ import {
   ChartTooltip,
   ChartTooltipContent
 } from '@/shared/components/ui/chart';
-const chartData = [
-  { month: 'January', desktop: 186, mobile: 80 },
-  { month: 'February', desktop: 305, mobile: 200 },
-  { month: 'March', desktop: 237, mobile: 120 },
-  { month: 'April', desktop: 73, mobile: 190 },
-  { month: 'May', desktop: 209, mobile: 130 },
-  { month: 'June', desktop: 214, mobile: 140 }
-];
 
 const chartConfig = {
-  desktop: {
-    label: 'Desktop',
-    color: 'var(--chart-1)'
+  events: {
+    label: 'Events'
   },
-  mobile: {
-    label: 'Mobile',
-    color: 'var(--chart-2)'
+  tasks: {
+    label: 'Tasks',
+    color: 'var(--color-green)'
+  },
+  reminders: {
+    label: 'Reminders',
+    color: 'var(--color-pink)'
+  },
+  arrangements: {
+    label: 'Arrangements',
+    color: 'var(--color-yellow)'
   }
 } satisfies ChartConfig;
 
-export function EventsCountBar() {
+interface EventsCountBarProps {
+  data: { day: string; tasks: number; reminders: number; arrangements: number }[];
+}
+export const EventsCountBar: FC<EventsCountBarProps> = ({ data }) => {
   return (
     <ChartContainer config={chartConfig} className="h-full max-h-full max-w-full w-full aspect-[]">
-      <BarChart accessibilityLayer data={chartData}>
+      <BarChart accessibilityLayer data={data}>
         <CartesianGrid vertical={false} />
         <XAxis
-          dataKey="month"
+          dataKey="day"
           tickLine={false}
           tickMargin={10}
           axisLine={false}
@@ -44,9 +47,10 @@ export function EventsCountBar() {
         />
         <ChartTooltip content={<ChartTooltipContent hideLabel />} />
         <ChartLegend content={<ChartLegendContent />} />
-        <Bar dataKey="desktop" stackId="a" fill="var(--color-desktop)" radius={[0, 0, 4, 4]} />
-        <Bar dataKey="mobile" stackId="a" fill="var(--color-mobile)" radius={[4, 4, 0, 0]} />
+        <Bar dataKey="tasks" stackId="a" fill={chartConfig.tasks.color} radius={[0, 0, 4, 4]} />
+        <Bar dataKey="reminders" stackId="a" fill={chartConfig.reminders.color} radius={[4, 4, 0, 0]} />
+        <Bar dataKey="arrangements" stackId="a" fill={chartConfig.arrangements.color} radius={[4, 4, 0, 0]} />
       </BarChart>
     </ChartContainer>
   );
-}
+};

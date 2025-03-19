@@ -6,6 +6,9 @@ import {
   SidebarHeader
 } from '@/shared/components/ui/sidebar';
 
+import { events } from '../../../__mock__/events';
+import { UpcomingEvents } from './upcoming-events';
+
 export const DashboardSidebar = () => {
   return (
     <Sidebar collapsible="icon" className="hidden flex-1 md:flex bg-background max-h-dvh sticky top-0">
@@ -14,7 +17,10 @@ export const DashboardSidebar = () => {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup className="px-0">
-          <SidebarGroupContent></SidebarGroupContent>
+          <SidebarGroupContent className="h-full gap-4 flex flex-col min-w-70">
+            <h2 className="text-lg font-semibold px-4 py-2 text-center truncate">Upcoming Events Today</h2>
+            <UpcomingEvents events={events} />
+          </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
