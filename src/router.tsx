@@ -10,6 +10,7 @@ import { CalendarPage } from './modules/calendar/pages/calendar-page';
 import { DashboardPage } from './modules/dashboard/pages/dashboard-page';
 import { HomePage } from './modules/home/pages/home-page';
 import { AuthGuard } from './shared/guard/auth-guard';
+import NotFoundPage from './shared/pages/not-found-page';
 
 const router = createBrowserRouter([
   {
@@ -59,6 +60,10 @@ const router = createBrowserRouter([
             <CalendarPage />
           </AuthGuard>
         )
+      },
+      {
+        path: '*',
+        element: <NotFoundPage />
       }
     ]
   }
