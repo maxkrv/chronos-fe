@@ -147,6 +147,18 @@
 }
 
 @layer base {
+  ::-webkit-scrollbar {
+    @apply w-3 h-3;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent touch-none select-none transition-colors;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full border-3 border-transparent border-solid bg-clip-padding bg-neutral-200 dark:bg-neutral-600;
+  }
+
   * {
     @apply border-border outline-ring/50;
   }
