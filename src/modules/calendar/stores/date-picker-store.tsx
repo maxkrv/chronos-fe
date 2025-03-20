@@ -30,7 +30,9 @@ const useDatePickerStore = create(
     (set, get) => ({
       view: get()?.selectedDate ? CalendarView.WEEK : CalendarView.MONTH,
       setView: (view) => set({ view, selectedDate: view === CalendarView.WEEK ? get().selectedDate : undefined }),
-      selectedDate: { from: dayjs().subtract(1, 'day').toDate(), to: dayjs().add(1, 'day').toDate() },
+      selectedDate: isMobile()
+        ? { from: new Date() }
+        : { from: dayjs().subtract(1, 'day').toDate(), to: dayjs().add(1, 'day').toDate() },
       setSelectedDate: (date) => {
         if (!date) {
           set({ selectedDate: undefined });

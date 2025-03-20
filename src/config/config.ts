@@ -1,7 +1,6 @@
 export const config = {
-  environment: import.meta.env.NODE_ENV,
-  isProduction: import.meta.env.NODE_ENV === 'production',
-  isDevelopment: import.meta.env.NODE_ENV === 'development',
-  isTest: import.meta.env.NODE_ENV === 'test',
+  environment: import.meta.env.MODE,
+  isProduction: import.meta.env.PROD,
+  isDevelopment: import.meta.env.DEV,
   apiUrl: import.meta.env.VITE_API_URL
 };
