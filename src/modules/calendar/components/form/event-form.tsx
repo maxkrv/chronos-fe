@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Label } from '@radix-ui/react-label';
+import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { FC } from 'react';
@@ -15,25 +16,12 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/shared/components/ui/
 import { ScrollArea, ScrollBar } from '@/shared/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select';
 import { Textarea } from '@/shared/components/ui/textarea';
+import { MY_CALENDARS } from '@/shared/constants/query-keys';
 import { cn, preventDecimals } from '@/shared/lib/utils';
 
 import { AddEventDto, AddEventFormProps, AddEventSchema, EventCategory, RepeatType } from '../../calendar.interface';
 import { DEFAULT_COLORS } from '../../constants/calendar.const';
-
-const MOCK_CALENDARS = [
-  {
-    id: 1,
-    name: 'General'
-  },
-  {
-    id: 2,
-    name: 'Personal'
-  },
-  {
-    id: 3,
-    name: 'Family'
-  }
-];
+import { CalendarService } from '../../services/calendar.service';
 
 export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, action }) => {
   const {
@@ -52,7 +40,7 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
       startAt: event?.startAt || startDate,
       endAt: event?.endAt || endDate,
       repeatType: event?.repeat?.frequency || RepeatType.NONE,
-      calendarId: event?.calendarId || 1, // replace with actual calendarId,
+      calendarId: event?.calendarId,
       color: event?.color,
       link: event?.link,
       attendees: event?.attendees.map((attendee) => attendee.email),
@@ -60,6 +48,11 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
       repeatAfter: event?.repeat?.interval,
       title: event?.name
     }
+  });
+
+  const { data: myCalendars } = useQuery({
+    queryKey: [MY_CALENDARS],
+    queryFn: CalendarService.my
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -123,7 +116,7 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {MOCK_CALENDARS.map((calendar) => (
+              {myCalendars?.map((calendar) => (
                 <SelectItem key={calendar.id} value={String(calendar.id)}>
                   {calendar.name}
                 </SelectItem>

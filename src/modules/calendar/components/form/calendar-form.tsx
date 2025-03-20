@@ -72,9 +72,6 @@ export const CalendarForm: FC<CalendarFormProps> = ({ action, calendar, onSubmit
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-bold">{action === 'add' ? 'Create Calendar' : 'Update Calendar'}</h1>
-      </div>
       <div className="grid gap-6">
         <div className="grid gap-2">
           <Label htmlFor="name">Name</Label>

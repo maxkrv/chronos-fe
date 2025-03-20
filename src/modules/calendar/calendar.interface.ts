@@ -23,6 +23,8 @@ export enum CalendarVisibility {
   SHARED = 'SHARED'
 }
 
+export type InvitationStatus = 'PENDING' | 'ACCEPTED' | 'DECLINED';
+
 export interface ICalendarEvent {
   id: number;
   name: string;
@@ -76,6 +78,12 @@ export type AddCalendarDto = z.infer<typeof AddCalendarSchema>;
 
 export type EditCalendarDto = AddCalendarDto & { id: number };
 
+export const InvitationSchema = z.object({
+  calendarId: z.number(),
+  email: z.string().email().trim().min(1, { message: 'Email is required' })
+});
+export type InvitationDto = z.infer<typeof InvitationSchema>;
+
 export interface ICalendar {
   id: number;
   name: string;
@@ -84,4 +92,15 @@ export interface ICalendar {
   createdAt: Date;
   updatedAt: Date;
   isMain: boolean;
+  attendees: User[];
+}
+
+export interface ICalendarInvitation {
+  id: number;
+  calendarId: number;
+  userId: number;
+  status: InvitationStatus;
+  createdAt: string;
+  updatedAt: string;
+  user: User;
 }

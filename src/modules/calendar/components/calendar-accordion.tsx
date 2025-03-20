@@ -4,12 +4,11 @@ import { IoIosSettings } from 'react-icons/io';
 
 import { Button } from '@/shared/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/components/ui/collapsible';
-import { Dialog, DialogContent, DialogTrigger } from '@/shared/components/ui/dialog';
 import { ScrollArea, ScrollBar } from '@/shared/components/ui/scroll-area';
 import { SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/shared/components/ui/sidebar';
 
 import { ICalendar } from '../calendar.interface';
-import { CalendarForm } from './form/calendar-form';
+import { EditCalendarModal } from './modal/edit-calendar-modal';
 
 interface CalendarAccordionProps {
   name: string;
@@ -81,13 +80,7 @@ export const CalendarAccordion: FC<CalendarAccordionProps> = ({ name, items, isL
         </CollapsibleContent>
       </Collapsible>
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild></DialogTrigger>
-
-        <DialogContent>
-          <CalendarForm action="edit" calendar={calendar || undefined} onSubmit={onClose} />
-        </DialogContent>
-      </Dialog>
+      <EditCalendarModal calendar={calendar} open={open} setOpen={setOpen} onClose={onClose} />
     </>
   );
 };

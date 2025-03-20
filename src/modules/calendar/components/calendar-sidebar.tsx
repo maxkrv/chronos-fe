@@ -5,7 +5,7 @@ import { IoMdSearch } from 'react-icons/io';
 
 import { Button } from '@/shared/components/ui/button';
 import { Calendar } from '@/shared/components/ui/calendar';
-import { Dialog, DialogContent } from '@/shared/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/shared/components/ui/dialog';
 import { Input } from '@/shared/components/ui/input';
 import {
   Sidebar,
@@ -75,6 +75,8 @@ export const CalendarSidebar = () => {
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
+          <DialogTitle>Add calendar</DialogTitle>
+
           <CalendarForm action="add" onSubmit={() => setOpen(false)} />
         </DialogContent>
       </Dialog>
