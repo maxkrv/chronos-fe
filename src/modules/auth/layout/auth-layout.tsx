@@ -6,7 +6,7 @@ import { Logo } from '@/assets/logos/logo';
 
 const TimeAnimation: FC = () => {
   return (
-    <div className="flex flex-col items-center justify-center gap-6">
+    <div className="flex flex-col items-center justify-center gap-6 absolute">
       <div className="relative flex h-64 w-64 items-center justify-center">
         {/* Outer rotating circle */}
         <div className="absolute h-66 w-66 animate-[spin_20s_linear_infinite] rounded-full border-4 border-dashed border-primary/30" />
@@ -53,6 +53,11 @@ export const AuthLayout: FC<PropsWithChildren> = ({ children }) => {
       </div>
       <div className="relative hidden bg-muted lg:flex lg:items-center lg:justify-center">
         {/* <Logo /> */}
+        <img
+          src="/components.png"
+          alt="Calendar App Dashboard"
+          className="absolute inset-0 w-full h-full object-cover object-center z-0 animate-pulse-slow blur-xs"
+        />
         <TimeAnimation />
       </div>
     </div>
