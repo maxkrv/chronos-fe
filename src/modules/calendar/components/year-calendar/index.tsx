@@ -15,7 +15,6 @@ export const YearCalendar: FC<YearCalendarProps> = ({ year = new Date(), classNa
   const start = dayjs(year)
     .startOf('year')
     .startOf('month')
-    .startOf('week')
     .startOf('day')
     .startOf('hour')
     .startOf('minute')

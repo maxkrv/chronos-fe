@@ -29,7 +29,9 @@ const useDatePickerStore = create(
   persist<IDatePickerStore>(
     (set, get) => ({
       view: get()?.selectedDate ? CalendarView.WEEK : CalendarView.MONTH,
-      setView: (view) => set({ view, selectedDate: view === CalendarView.WEEK ? get().selectedDate : undefined }),
+      setView: (view) => {
+        set({ view, selectedDate: view === CalendarView.WEEK ? get().selectedDate : undefined });
+      },
       selectedDate: isMobile()
         ? { from: new Date() }
         : { from: dayjs().subtract(1, 'day').toDate(), to: dayjs().add(1, 'day').toDate() },
@@ -58,9 +60,13 @@ const useDatePickerStore = create(
         set({ selectedDate: finalRange });
       },
       month: new Date(),
-      setMonth: (month) => set({ month }),
+      setMonth: (month) => {
+        set({ month });
+      },
       year: new Date(),
-      setYear: (year) => set({ year })
+      setYear: (year) => {
+        set({ year });
+      }
     }),
     createSearchParamsStorage(STORAGE_KEY)
   )
@@ -68,7 +74,6 @@ const useDatePickerStore = create(
 
 export const useDatePicker = () => {
   const store = useDatePickerStore();
-
   const selectedDays = useMemo(() => {
     const { from, to } = store.selectedDate || {};
     return from && to ? dayjs(to).diff(from, 'days') + 1 : 1;
@@ -78,10 +83,12 @@ export const useDatePicker = () => {
     if (selectedDays > 1) {
       store.setView(CalendarView.WEEK);
     }
-  }, [selectedDays]);
+  }, [selectedDays, store.selectedDate]);
 
   useEffect(() => {
-    store.setView(store.selectedDate ? CalendarView.WEEK : CalendarView.MONTH);
+    store.setView(
+      store.selectedDate ? CalendarView.WEEK : store.view === CalendarView.YEAR ? CalendarView.YEAR : CalendarView.MONTH
+    );
   }, [store.selectedDate]);
 
   return { store, selectedDays };
