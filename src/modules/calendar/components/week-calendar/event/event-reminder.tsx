@@ -54,7 +54,7 @@ export const EventReminder: FC<EventReminderProps> = ({ event, indentTop, onUpda
       .startOf('day')
       .add(((startOffset + REMINDER_HEIGHT) / CALENDAR_DAY_HEIGHT) * MINUTES_IN_DAY, 'minute')
       .toDate();
-    onUpdate({ ...event, startAt: newStart, endAt: newEnd });
+    onUpdate({ ...event, startAt: newStart, endAt: event.category !== 'REMINDER' ? newEnd : undefined });
   }, [saveState]);
 
   return (
