@@ -14,10 +14,11 @@ import { USER_ME } from './shared/constants/query-keys';
 import { useAuth } from './shared/store/auth.store';
 import { useUserStore } from './shared/store/user.store';
 
+const { isDevelopment } = config;
+
 export const App = () => {
   const { user, setUser } = useUserStore();
   const { isLoggedIn } = useAuth();
-  const isDevelopment = config;
   const { data, isSuccess, isLoading } = useQuery({
     queryKey: [USER_ME],
     queryFn: UserService.me,
