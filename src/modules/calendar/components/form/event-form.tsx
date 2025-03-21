@@ -1,11 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Label } from '@radix-ui/react-label';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
+import dayjs from 'dayjs';
 import { CalendarIcon } from 'lucide-react';
 import { FC } from 'react';
-import { useFieldArray, useForm } from 'react-hook-form';
-import { FaArrowRight, FaLink, FaPlus, FaTrash } from 'react-icons/fa6';
+import { useForm } from 'react-hook-form';
+import { FaArrowRight, FaLink } from 'react-icons/fa6';
 import { TbRepeat } from 'react-icons/tb';
 
 import { ColorSelector } from '@/shared/components/color-selector';
@@ -16,16 +17,31 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/shared/components/ui/
 import { ScrollArea, ScrollBar } from '@/shared/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select';
 import { Textarea } from '@/shared/components/ui/textarea';
-import { MY_CALENDARS } from '@/shared/constants/query-keys';
+import { EVENTS } from '@/shared/constants/query-keys';
 import { cn, preventDecimals } from '@/shared/lib/utils';
 
 import { AddEventDto, AddEventFormProps, AddEventSchema, EventCategory, RepeatType } from '../../calendar.interface';
 import { DEFAULT_COLORS } from '../../constants/calendar.const';
-import { CalendarService } from '../../services/calendar.service';
+import { useCalendarData } from '../../hooks/use-calendar';
+import { EventService } from '../../services/event.service';
 
-export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, action }) => {
+const formatToDate = (date: Date | string | undefined | null) => {
+  if (!date) {
+    return undefined;
+  }
+
+  if (typeof date === 'string') {
+    return new Date(date);
+  }
+
+  return date;
+};
+
+export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, action, onSubmit: onSubmitCb }) => {
+  const queryClient = useQueryClient();
+  const { data: myCalendars } = useCalendarData();
+
   const {
-    control,
     register,
     handleSubmit,
     formState: { errors },
@@ -36,30 +52,38 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
     mode: 'all',
     resolver: zodResolver(AddEventSchema),
     defaultValues: {
+      name: event?.name || '[No title]',
       category: event?.category || EventCategory.TASK,
-      startAt: event?.startAt || startDate,
-      endAt: event?.endAt || endDate,
-      repeatType: event?.repeat?.frequency || RepeatType.NONE,
-      calendarId: event?.calendarId,
-      color: event?.color,
+      startAt: formatToDate(event?.startAt || startDate),
+      endAt: formatToDate(event?.endAt || endDate),
+      calendarId: event?.calendarId || myCalendars?.find((c) => c.isMain)?.id,
+      color: event?.color || '#16c47f',
       link: event?.link,
-      attendees: event?.attendees.map((attendee) => attendee.email),
       description: event?.description,
-      repeatAfter: event?.repeat?.interval,
-      title: event?.name
+      frequency: event?.repeat?.frequency || RepeatType.NONE,
+      interval: event?.repeat?.interval
     }
   });
 
-  const { data: myCalendars } = useQuery({
-    queryKey: [MY_CALENDARS],
-    queryFn: CalendarService.my
-  });
+  const { mutate: createMutate, isPending: isCreatePending } = useMutation({
+    mutationFn: EventService.create,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [EVENTS]
+      });
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    name: 'attendees'
+      onSubmitCb?.();
+    }
+  });
+  const { mutate: updateMutate, isPending: isUpdatePending } = useMutation({
+    mutationFn: EventService.update,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [EVENTS]
+      });
+
+      onSubmitCb?.();
+    }
   });
 
   const startAt = watch('startAt');
@@ -76,17 +100,38 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
       newDate.setMinutes(parseInt(value, 10));
     }
 
-    setValue(filed, newDate);
+    setValue(filed, formatToDate(newDate));
   };
 
   const onSubmit = (data: AddEventDto) => {
-    console.log(data);
+    const dto = structuredClone(data);
+
+    if (dto.frequency === RepeatType.NONE) {
+      delete dto.frequency;
+    }
+
+    if (dto.category === EventCategory.REMINDER || dto.category === EventCategory.OCCURANCE) {
+      delete dto.endAt;
+    }
+
+    if (action === 'add') {
+      createMutate(dto);
+    } else {
+      if (!event) return;
+
+      updateMutate({
+        id: event.id,
+        ...dto
+      });
+    }
   };
+
+  const isLoading = isCreatePending || isUpdatePending;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
       <div className="grid gap-2">
-        <Input {...register('title')} id="title" placeholder="New event title" errorMessage={errors.title?.message} />
+        <Input {...register('name')} id="title" placeholder="New event title" errorMessage={errors.name?.message} />
       </div>
 
       <div className="flex gap-2">
@@ -131,6 +176,7 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
           <Popover>
             <PopoverTrigger asChild>
               <Button
+                type="button"
                 variant={'outline'}
                 className={cn(
                   'flex-1 justify-start text-left font-normal w-full',
@@ -145,7 +191,9 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
                 <Calendar
                   mode="single"
                   selected={startAt}
-                  onSelect={(value) => setValue('startAt', value as Date)}
+                  onSelect={(value) => {
+                    setValue('startAt', formatToDate(value) as Date);
+                  }}
                   initialFocus
                 />
                 <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x">
@@ -153,9 +201,10 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
                     <div className="flex sm:flex-col p-2">
                       {Array.from({ length: 24 }, (_, i) => i).map((hour) => (
                         <Button
+                          type="button"
                           key={hour}
                           size="icon"
-                          variant={startAt && startAt.getHours() === hour ? 'default' : 'ghost'}
+                          variant={startAt && dayjs(startAt).hour() === hour ? 'default' : 'ghost'}
                           className="sm:w-full shrink-0 aspect-square"
                           onClick={() => handleTimeChange('hour', hour.toString(), 'startAt')}>
                           {hour}
@@ -168,9 +217,10 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
                     <div className="flex sm:flex-col p-2">
                       {Array.from({ length: 61 }, (_, i) => i).map((minute) => (
                         <Button
+                          type="button"
                           key={minute}
                           size="icon"
-                          variant={startAt && startAt.getMinutes() === minute ? 'default' : 'ghost'}
+                          variant={startAt && dayjs(startAt).minute() === minute ? 'default' : 'ghost'}
                           className="sm:w-full shrink-0 aspect-square"
                           onClick={() => handleTimeChange('minute', minute.toString(), 'startAt')}>
                           {minute.toString().padStart(2, '0')}
@@ -184,68 +234,70 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
             </PopoverContent>
           </Popover>
 
-          {watch('category') !== EventCategory.REMINDER ||
-            (watch('category') !== EventCategory.OCCURANCE && (
-              <>
-                <FaArrowRight className="rotate-90 md:rotate-0" />
+          {watch('category') !== EventCategory.REMINDER && watch('category') !== EventCategory.OCCURANCE && (
+            <>
+              <FaArrowRight className="rotate-90 md:rotate-0" />
 
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={'outline'}
-                      className={cn(
-                        'flex-1 justify-start text-left font-normal w-full',
-                        !endAt && 'text-muted-foreground'
-                      )}>
-                      <CalendarIcon className="h-4 w-4 opacity-50" />
-                      {endAt ? format(endAt, 'dd/MM/yyyy HH:mm') : <span>End date</span>}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <div className="sm:flex">
-                      <Calendar
-                        mode="single"
-                        selected={endDate}
-                        onSelect={(value) => setValue('endAt', value)}
-                        initialFocus
-                      />
-                      <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x">
-                        <ScrollArea className="w-64 sm:w-auto">
-                          <div className="flex sm:flex-col p-2">
-                            {Array.from({ length: 24 }, (_, i) => i).map((hour) => (
-                              <Button
-                                key={hour}
-                                size="icon"
-                                variant={startAt && startAt.getHours() === hour ? 'default' : 'ghost'}
-                                className="sm:w-full shrink-0 aspect-square"
-                                onClick={() => handleTimeChange('hour', hour.toString(), 'startAt')}>
-                                {hour}
-                              </Button>
-                            ))}
-                          </div>
-                          <ScrollBar orientation="horizontal" className="sm:hidden" />
-                        </ScrollArea>
-                        <ScrollArea className="w-64 sm:w-auto">
-                          <div className="flex sm:flex-col p-2">
-                            {Array.from({ length: 61 }, (_, i) => i).map((minute) => (
-                              <Button
-                                key={minute}
-                                size="icon"
-                                variant={startAt && startAt.getMinutes() === minute ? 'default' : 'ghost'}
-                                className="sm:w-full shrink-0 aspect-square"
-                                onClick={() => handleTimeChange('minute', minute.toString(), 'startAt')}>
-                                {minute.toString().padStart(2, '0')}
-                              </Button>
-                            ))}
-                          </div>
-                          <ScrollBar orientation="horizontal" className="sm:hidden" />
-                        </ScrollArea>
-                      </div>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    type="button"
+                    variant={'outline'}
+                    className={cn(
+                      'flex-1 justify-start text-left font-normal w-full',
+                      !endAt && 'text-muted-foreground'
+                    )}>
+                    <CalendarIcon className="h-4 w-4 opacity-50" />
+                    {endAt ? format(endAt, 'dd/MM/yyyy HH:mm') : <span>End date</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <div className="sm:flex">
+                    <Calendar
+                      mode="single"
+                      selected={endDate}
+                      onSelect={(value) => setValue('endAt', formatToDate(value) as Date)}
+                      initialFocus
+                    />
+                    <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x">
+                      <ScrollArea className="w-64 sm:w-auto">
+                        <div className="flex sm:flex-col p-2">
+                          {Array.from({ length: 24 }, (_, i) => i).map((hour) => (
+                            <Button
+                              key={hour}
+                              size="icon"
+                              variant={endAt && dayjs(endAt).hour() === hour ? 'default' : 'ghost'}
+                              className="sm:w-full shrink-0 aspect-square"
+                              onClick={() => handleTimeChange('hour', hour.toString(), 'endAt')}
+                              type="button">
+                              {hour}
+                            </Button>
+                          ))}
+                        </div>
+                        <ScrollBar orientation="horizontal" className="sm:hidden" />
+                      </ScrollArea>
+                      <ScrollArea className="w-64 sm:w-auto">
+                        <div className="flex sm:flex-col p-2">
+                          {Array.from({ length: 61 }, (_, i) => i).map((minute) => (
+                            <Button
+                              key={minute}
+                              size="icon"
+                              variant={endAt && dayjs(endAt).minute() === minute ? 'default' : 'ghost'}
+                              className="sm:w-full shrink-0 aspect-square"
+                              onClick={() => handleTimeChange('minute', minute.toString(), 'endAt')}
+                              type="button">
+                              {minute.toString().padStart(2, '0')}
+                            </Button>
+                          ))}
+                        </div>
+                        <ScrollBar orientation="horizontal" className="sm:hidden" />
+                      </ScrollArea>
                     </div>
-                  </PopoverContent>
-                </Popover>
-              </>
-            ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </>
+          )}
         </div>
 
         {errors.startAt && <p className="text-red-500">{errors.startAt.message}</p>}
@@ -255,7 +307,7 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
       <div className="grid gap-2">
         <div className="flex items-center gap-2">
           <Input
-            {...register('repeatAfter', {
+            {...register('interval', {
               setValueAs: (v) => (v === '' ? undefined : parseInt(v, 10))
             })}
             type="number"
@@ -269,8 +321,8 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
           />
 
           <Select
-            onValueChange={(value) => setValue('repeatType', value as RepeatType)}
-            value={watch('repeatType')}
+            onValueChange={(value) => setValue('frequency', value as RepeatType)}
+            value={watch('frequency')}
             defaultValue={'NONE'}>
             <SelectTrigger>
               <SelectValue placeholder="Repeat type" />
@@ -297,33 +349,6 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
       </div>
 
       <div className="grid gap-2">
-        <Label>Attendees</Label>
-        <div className="flex flex-col gap-1 w-[calc(100% + 24px)] max-h-[150px] overflow-auto ml-[-24px] pl-[24px] pb-2">
-          {fields.map((_, index) => (
-            <div key={index} className="flex gap-2 w-full">
-              <Input
-                {...register(`attendees.${index}` as const, {
-                  required: true
-                })}
-                wrapperClassName="flex-1"
-                placeholder="Email"
-                errorMessage={errors.attendees?.[index]?.message}
-              />
-
-              <Button variant="outline" type="button" onClick={() => remove(index)}>
-                <FaTrash className="h-3! w-3!" />
-              </Button>
-            </div>
-          ))}
-        </div>
-        <Button className="w-full" variant="outline" type="button" onClick={() => append('')}>
-          <FaPlus /> Add attendee
-        </Button>
-
-        {errors.attendees && <p className="text-sm text-red-500">{errors.attendees.message}</p>}
-      </div>
-
-      <div className="grid gap-2">
         <Textarea
           {...register('description')}
           placeholder="Description"
@@ -342,7 +367,9 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
         {errors.color?.message && <p className="text-sm text-red-500">{errors.color.message}</p>}
       </div>
 
-      <Button type="submit">{action === 'edit' ? 'Update' : 'Create'}</Button>
+      <Button type="submit" isLoading={isLoading} disabled={isCreatePending}>
+        {action === 'edit' ? 'Update' : 'Create'}
+      </Button>
     </form>
   );
 };

@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
 import { FC, useEffect, useRef, useState } from 'react';
-import { useToggle } from 'usehooks-ts';
 
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/shared/components/ui/hover-card';
 
@@ -8,6 +7,8 @@ import { ICalendarEvent } from '../../../calendar.interface';
 import { CALENDAR_DAY_HEIGHT } from '../hour';
 import { MINUTES_IN_DAY } from '../now';
 import { EventHoverCard } from './event-hover-card';
+
+const REMINDER_HEIGHT = 40;
 
 interface EventReminderProps {
   event: ICalendarEvent;
@@ -17,10 +18,25 @@ interface EventReminderProps {
 }
 
 export const EventReminder: FC<EventReminderProps> = ({ event, indentTop, onUpdate, setIsEditEventOpen }) => {
-  const REMINDER_HEIGHT = 40;
-  const [saveState, triggerSave] = useToggle();
   const [startOffset, setStartOffset] = useState(indentTop);
   const initialRef = useRef({ startY: 0, originalOffset: indentTop });
+  const offsetRef = useRef(startOffset);
+
+  useEffect(() => {
+    offsetRef.current = startOffset;
+  }, [startOffset]);
+
+  const updateEventTime = () => {
+    const newStart = dayjs(event.startAt)
+      .startOf('day')
+      .add((offsetRef.current / CALENDAR_DAY_HEIGHT) * MINUTES_IN_DAY, 'minute')
+      .toDate();
+    const newEnd = dayjs(event.endAt)
+      .startOf('day')
+      .add(((offsetRef.current + REMINDER_HEIGHT) / CALENDAR_DAY_HEIGHT) * MINUTES_IN_DAY, 'minute')
+      .toDate();
+    onUpdate({ ...event, startAt: newStart, endAt: event.category !== 'REMINDER' ? newEnd : undefined });
+  };
 
   const handleDragStart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -30,32 +46,22 @@ export const EventReminder: FC<EventReminderProps> = ({ event, indentTop, onUpda
 
     const handleMouseMove = (moveEvent: MouseEvent) => {
       const delta = moveEvent.clientY - initialRef.current.startY;
-
-      setStartOffset(
-        Math.max(Math.min(initialRef.current.originalOffset + delta, CALENDAR_DAY_HEIGHT - REMINDER_HEIGHT), 0)
+      const newOffset = Math.max(
+        Math.min(initialRef.current.originalOffset + delta, CALENDAR_DAY_HEIGHT - REMINDER_HEIGHT),
+        0
       );
+      setStartOffset(newOffset);
+      offsetRef.current = newOffset;
     };
 
     const handleMouseUp = () => {
       controller.abort();
-      triggerSave();
+      updateEventTime();
     };
 
     window.addEventListener('mousemove', handleMouseMove, { signal });
     window.addEventListener('mouseup', handleMouseUp, { signal });
   };
-
-  useEffect(() => {
-    const newStart = dayjs(event.startAt)
-      .startOf('day')
-      .add((startOffset / CALENDAR_DAY_HEIGHT) * MINUTES_IN_DAY, 'minute')
-      .toDate();
-    const newEnd = dayjs(event.endAt)
-      .startOf('day')
-      .add(((startOffset + REMINDER_HEIGHT) / CALENDAR_DAY_HEIGHT) * MINUTES_IN_DAY, 'minute')
-      .toDate();
-    onUpdate({ ...event, startAt: newStart, endAt: event.category !== 'REMINDER' ? newEnd : undefined });
-  }, [saveState]);
 
   return (
     <HoverCard openDelay={0}>

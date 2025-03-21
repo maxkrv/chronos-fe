@@ -8,6 +8,7 @@ import { WeekCalendarHeader } from './header';
 import { CALENDAR_HOUR_HEIGHT } from './hour';
 import { NowMarker } from './now';
 import { SideTime } from './side-time';
+
 interface WeekCalendarProps {
   events?: ICalendarEvent[];
   fromDay?: Date;

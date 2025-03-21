@@ -1,11 +1,12 @@
 import { FC, useEffect, useRef, useState } from 'react';
 
+import { ICalendarEvent } from '@/modules/calendar/calendar.interface';
+
 import { Avatar, AvatarFallback, AvatarImage } from '../../../../../shared/components/ui/avatar';
 import { cn } from '../../../../../shared/lib/utils';
-import { User } from '../../../../user/user.interface';
 
 interface AttendeeAvatarsProps extends React.HTMLAttributes<HTMLDivElement> {
-  attendees?: User[];
+  attendees?: ICalendarEvent['users'];
 }
 
 export const AttendeeAvatars: FC<AttendeeAvatarsProps> = ({ attendees, className, ...props }) => {
@@ -37,10 +38,10 @@ export const AttendeeAvatars: FC<AttendeeAvatarsProps> = ({ attendees, className
     <div ref={avatarContainerRef} {...props} className={cn('flex flex-row', className)}>
       {attendees?.slice(0, visibleAvatars).map((attendee) => (
         <Avatar key={attendee.id} className="size-6 -ml-2 first:ml-0 border-current border-2">
-          <AvatarImage src={attendee?.avatarUrl || ''} alt="shadcn" />
+          <AvatarImage src={attendee?.user.avatarUrl || ''} alt="shadcn" />
           <AvatarFallback className="uppercase">
-            {attendee?.name?.charAt(0)}
-            {attendee?.surname?.charAt(0)}
+            {attendee?.user.name?.charAt(0)}
+            {attendee?.user.surname?.charAt(0)}
           </AvatarFallback>
         </Avatar>
       ))}

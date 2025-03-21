@@ -1,7 +1,8 @@
-import { FC, useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { FC, useEffect, useState } from 'react';
 
-import { users } from '../../../../__mock__/users';
 import { ICalendarEvent } from '../../calendar.interface';
+import { EventService } from '../../services/event.service';
 import { AddEventModal } from '../modal/add-event-modal';
 import { EditEventModal } from '../modal/edit-event-modal';
 import { CalendarEvent } from './event';
@@ -19,8 +20,13 @@ export const Day: FC<DayProps> = ({ events, day }) => {
   const [isEditEventOpen, setIsEditEventOpen] = useState(false);
   const [event, setEvent] = useState<ICalendarEvent | undefined>(undefined);
 
+  const { mutate } = useMutation({
+    mutationFn: EventService.update
+  });
+
   function onUpdate(event: ICalendarEvent) {
     setEvents((prev) => prev.map((e) => (e.id === event.id ? event : e)));
+    mutate(event);
   }
 
   const setDate = (timeStart: number, timeEnd: number) => {
@@ -37,6 +43,10 @@ export const Day: FC<DayProps> = ({ events, day }) => {
     setIsAddEventOpen(true);
   };
 
+  useEffect(() => {
+    setEvents(events);
+  }, [events]);
+
   return (
     <>
       <div
@@ -50,7 +60,6 @@ export const Day: FC<DayProps> = ({ events, day }) => {
             key={i}
             event={event}
             day={day}
-            attendees={users}
             onUpdate={onUpdate}
             setIsEditEventOpen={(event) => {
               setEvent(event);
@@ -66,8 +75,9 @@ export const Day: FC<DayProps> = ({ events, day }) => {
         endDate={endAt}
         startDate={startAt}
         action="add"
+        onSubmit={() => setIsAddEventOpen(false)}
       />
-      <EditEventModal open={isEditEventOpen} onClose={() => setIsEditEventOpen(false)} event={event}></EditEventModal>
+      <EditEventModal open={isEditEventOpen} onClose={() => setIsEditEventOpen(false)} event={event} />
     </>
   );
 };

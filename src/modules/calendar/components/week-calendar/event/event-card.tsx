@@ -1,5 +1,4 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import { useToggle } from 'usehooks-ts';
 
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/shared/components/ui/hover-card.tsx';
 
@@ -10,6 +9,8 @@ import { MINUTES_IN_DAY } from '../now';
 import { EventContent } from './event-content';
 import { EventHoverCard } from './event-hover-card.tsx';
 import { CalendarEvent } from './index.tsx';
+
+const PIXELS_PER_5_MIN = CALENDAR_MINUTE_HEIGHT * 5;
 
 interface ResizeHandleProps {
   onMouseDown: (e: React.MouseEvent) => void;
@@ -26,95 +27,73 @@ interface EventCardProps extends React.ComponentProps<typeof CalendarEvent> {
   eventHeight: number;
   indentTop: number;
 }
-const PIXELS_PER_5_MIN = CALENDAR_MINUTE_HEIGHT * 5;
 
-export const EventCard: FC<EventCardProps> = ({
-  eventHeight,
-  indentTop,
-  event,
-  attendees,
-  onUpdate,
-  setIsEditEventOpen
-}) => {
+export const EventCard: FC<EventCardProps> = ({ eventHeight, indentTop, event, onUpdate, setIsEditEventOpen }) => {
+  const [isHovered, setIsHovered] = useState(false);
   const [height, setHeight] = useState(eventHeight);
   const [startOffset, setStartOffset] = useState(indentTop);
   const initialRef = useRef({ startY: 0, originalHeight: eventHeight, originalOffset: indentTop });
-  const [saveState, triggerSave] = useToggle();
-  const [isHovered, setIsHovered] = useState(false);
-
-  const handleResizeStart = (e: React.MouseEvent, direction: 'top' | 'bottom') => {
-    e.preventDefault();
-    initialRef.current = { startY: e.clientY, originalHeight: height, originalOffset: startOffset };
-    const controller = new AbortController();
-    const signal = controller.signal;
-
-    const handleMouseMove = (moveEvent: MouseEvent) => {
-      const delta = Math.floor((moveEvent.clientY - initialRef.current.startY) / PIXELS_PER_5_MIN) * PIXELS_PER_5_MIN;
-
-      if (direction === 'top') {
-        setHeight(
-          Math.max(
-            Math.min(initialRef.current.originalHeight - delta, CALENDAR_DAY_HEIGHT - startOffset),
-            CALENDAR_HOUR_HEIGHT / 2
-          )
-        );
-        setStartOffset(Math.max(Math.min(initialRef.current.originalOffset + delta, CALENDAR_DAY_HEIGHT - height), 0));
-      } else {
-        setHeight(
-          Math.max(
-            Math.min(initialRef.current.originalHeight + delta, CALENDAR_DAY_HEIGHT - startOffset),
-            CALENDAR_HOUR_HEIGHT / 2
-          )
-        );
-        if (delta < 0 && height <= CALENDAR_HOUR_HEIGHT / 2) {
-          setStartOffset(
-            Math.max(Math.min(initialRef.current.originalOffset + delta, CALENDAR_DAY_HEIGHT - height), 0)
-          );
-        }
-      }
-    };
-
-    const handleMouseUp = () => {
-      controller.abort();
-      triggerSave();
-    };
-
-    window.addEventListener('mousemove', handleMouseMove, { signal });
-    window.addEventListener('mouseup', handleMouseUp, { signal });
-  };
-
-  const handleDragStart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    initialRef.current = { startY: e.clientY, originalHeight: height, originalOffset: startOffset };
-    const controller = new AbortController();
-    const signal = controller.signal;
-
-    const handleMouseMove = (moveEvent: MouseEvent) => {
-      const delta = Math.floor((moveEvent.clientY - initialRef.current.startY) / PIXELS_PER_5_MIN) * PIXELS_PER_5_MIN;
-
-      setStartOffset(Math.max(Math.min(initialRef.current.originalOffset + delta, CALENDAR_DAY_HEIGHT - height), 0));
-    };
-
-    const handleMouseUp = () => {
-      controller.abort();
-      triggerSave();
-    };
-
-    window.addEventListener('mousemove', handleMouseMove, { signal });
-    window.addEventListener('mouseup', handleMouseUp, { signal });
-  };
+  const eventStateRef = useRef({ height, startOffset });
 
   useEffect(() => {
+    eventStateRef.current = { height, startOffset };
+  }, [height, startOffset]);
+
+  const updateEventTime = () => {
+    const { height: latestHeight, startOffset: latestOffset } = eventStateRef.current;
     const newStart = dayjs(event.startAt)
       .startOf('day')
-      .add((startOffset / CALENDAR_DAY_HEIGHT) * MINUTES_IN_DAY, 'minute')
+      .add((latestOffset / CALENDAR_DAY_HEIGHT) * MINUTES_IN_DAY, 'minute')
       .toDate();
     const newEnd = dayjs(event.endAt)
       .startOf('day')
-      .add(((startOffset + height) / CALENDAR_DAY_HEIGHT) * MINUTES_IN_DAY, 'minute')
+      .add(((latestOffset + latestHeight) / CALENDAR_DAY_HEIGHT) * MINUTES_IN_DAY, 'minute')
       .toDate();
     onUpdate({ ...event, startAt: newStart, endAt: newEnd });
-  }, [saveState]);
+  };
+
+  const handleResizeOrDrag = (e: React.MouseEvent, direction?: 'top' | 'bottom') => {
+    e.preventDefault();
+    initialRef.current = { startY: e.clientY, originalHeight: height, originalOffset: startOffset };
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      const delta = Math.floor((moveEvent.clientY - initialRef.current.startY) / PIXELS_PER_5_MIN) * PIXELS_PER_5_MIN;
+      let newHeight = height;
+      let newOffset = startOffset;
+
+      if (direction === 'top') {
+        newHeight = Math.max(
+          Math.min(initialRef.current.originalHeight - delta, CALENDAR_DAY_HEIGHT - startOffset),
+          CALENDAR_HOUR_HEIGHT / 2
+        );
+        newOffset = Math.max(Math.min(initialRef.current.originalOffset + delta, CALENDAR_DAY_HEIGHT - newHeight), 0);
+      } else if (direction === 'bottom') {
+        newHeight = Math.max(
+          Math.min(initialRef.current.originalHeight + delta, CALENDAR_DAY_HEIGHT - startOffset),
+          CALENDAR_HOUR_HEIGHT / 2
+        );
+        if (delta < 0 && newHeight <= CALENDAR_HOUR_HEIGHT / 2) {
+          newOffset = Math.max(Math.min(initialRef.current.originalOffset + delta, CALENDAR_DAY_HEIGHT - newHeight), 0);
+        }
+      } else {
+        newOffset = Math.max(Math.min(initialRef.current.originalOffset + delta, CALENDAR_DAY_HEIGHT - height), 0);
+      }
+
+      setHeight(newHeight);
+      setStartOffset(newOffset);
+      eventStateRef.current = { height: newHeight, startOffset: newOffset };
+    };
+
+    const handleMouseUp = () => {
+      controller.abort();
+      updateEventTime();
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { signal });
+    window.addEventListener('mouseup', handleMouseUp, { signal });
+  };
 
   return (
     <HoverCard openDelay={0}>
@@ -138,12 +117,12 @@ export const EventCard: FC<EventCardProps> = ({
             <div className="min-w-1 max-w-1 bg-current rounded-md" />
             <ResizeHandle
               className="absolute top-0 left-0 right-0 group-hover:flex hidden"
-              onMouseDown={(e) => handleResizeStart(e, 'top')}
+              onMouseDown={(e) => handleResizeOrDrag(e, 'top')}
             />
-            <EventContent event={event} attendees={attendees} height={height} onMouseDown={handleDragStart} />
+            <EventContent event={event} height={height} onMouseDown={handleResizeOrDrag} />
             <ResizeHandle
               className="absolute bottom-0 left-0 right-0 group-hover:flex hidden"
-              onMouseDown={(e) => handleResizeStart(e, 'bottom')}
+              onMouseDown={(e) => handleResizeOrDrag(e, 'bottom')}
             />
           </div>
         </div>
