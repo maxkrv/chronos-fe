@@ -184,67 +184,68 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
             </PopoverContent>
           </Popover>
 
-          {watch('category') !== EventCategory.REMINDER && (
-            <>
-              <FaArrowRight className="rotate-90 md:rotate-0" />
+          {watch('category') !== EventCategory.REMINDER ||
+            (watch('category') !== EventCategory.OCCURANCE && (
+              <>
+                <FaArrowRight className="rotate-90 md:rotate-0" />
 
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant={'outline'}
-                    className={cn(
-                      'flex-1 justify-start text-left font-normal w-full',
-                      !endAt && 'text-muted-foreground'
-                    )}>
-                    <CalendarIcon className="h-4 w-4 opacity-50" />
-                    {endAt ? format(endAt, 'dd/MM/yyyy HH:mm') : <span>End date</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <div className="sm:flex">
-                    <Calendar
-                      mode="single"
-                      selected={endDate}
-                      onSelect={(value) => setValue('endAt', value)}
-                      initialFocus
-                    />
-                    <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x">
-                      <ScrollArea className="w-64 sm:w-auto">
-                        <div className="flex sm:flex-col p-2">
-                          {Array.from({ length: 24 }, (_, i) => i).map((hour) => (
-                            <Button
-                              key={hour}
-                              size="icon"
-                              variant={startAt && startAt.getHours() === hour ? 'default' : 'ghost'}
-                              className="sm:w-full shrink-0 aspect-square"
-                              onClick={() => handleTimeChange('hour', hour.toString(), 'startAt')}>
-                              {hour}
-                            </Button>
-                          ))}
-                        </div>
-                        <ScrollBar orientation="horizontal" className="sm:hidden" />
-                      </ScrollArea>
-                      <ScrollArea className="w-64 sm:w-auto">
-                        <div className="flex sm:flex-col p-2">
-                          {Array.from({ length: 61 }, (_, i) => i).map((minute) => (
-                            <Button
-                              key={minute}
-                              size="icon"
-                              variant={startAt && startAt.getMinutes() === minute ? 'default' : 'ghost'}
-                              className="sm:w-full shrink-0 aspect-square"
-                              onClick={() => handleTimeChange('minute', minute.toString(), 'startAt')}>
-                              {minute.toString().padStart(2, '0')}
-                            </Button>
-                          ))}
-                        </div>
-                        <ScrollBar orientation="horizontal" className="sm:hidden" />
-                      </ScrollArea>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={'outline'}
+                      className={cn(
+                        'flex-1 justify-start text-left font-normal w-full',
+                        !endAt && 'text-muted-foreground'
+                      )}>
+                      <CalendarIcon className="h-4 w-4 opacity-50" />
+                      {endAt ? format(endAt, 'dd/MM/yyyy HH:mm') : <span>End date</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <div className="sm:flex">
+                      <Calendar
+                        mode="single"
+                        selected={endDate}
+                        onSelect={(value) => setValue('endAt', value)}
+                        initialFocus
+                      />
+                      <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x">
+                        <ScrollArea className="w-64 sm:w-auto">
+                          <div className="flex sm:flex-col p-2">
+                            {Array.from({ length: 24 }, (_, i) => i).map((hour) => (
+                              <Button
+                                key={hour}
+                                size="icon"
+                                variant={startAt && startAt.getHours() === hour ? 'default' : 'ghost'}
+                                className="sm:w-full shrink-0 aspect-square"
+                                onClick={() => handleTimeChange('hour', hour.toString(), 'startAt')}>
+                                {hour}
+                              </Button>
+                            ))}
+                          </div>
+                          <ScrollBar orientation="horizontal" className="sm:hidden" />
+                        </ScrollArea>
+                        <ScrollArea className="w-64 sm:w-auto">
+                          <div className="flex sm:flex-col p-2">
+                            {Array.from({ length: 61 }, (_, i) => i).map((minute) => (
+                              <Button
+                                key={minute}
+                                size="icon"
+                                variant={startAt && startAt.getMinutes() === minute ? 'default' : 'ghost'}
+                                className="sm:w-full shrink-0 aspect-square"
+                                onClick={() => handleTimeChange('minute', minute.toString(), 'startAt')}>
+                                {minute.toString().padStart(2, '0')}
+                              </Button>
+                            ))}
+                          </div>
+                          <ScrollBar orientation="horizontal" className="sm:hidden" />
+                        </ScrollArea>
+                      </div>
                     </div>
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </>
-          )}
+                  </PopoverContent>
+                </Popover>
+              </>
+            ))}
         </div>
 
         {errors.startAt && <p className="text-red-500">{errors.startAt.message}</p>}

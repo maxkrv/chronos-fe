@@ -5,7 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import { cn } from '../../../../shared/lib/utils';
 import { ICalendarEvent } from '../../calendar.interface';
 import { useDatePicker } from '../../stores/date-picker-store';
-import { MonthCalendarDayMeetings, MonthCalendarDayReminders, MonthCalendarDayTasks } from './events';
+import {
+  MonthCalendarDayMeetings,
+  MonthCalendarDayOccurances,
+  MonthCalendarDayReminders,
+  MonthCalendarDayTasks
+} from './events';
 
 interface MonthCalendarDayProps {
   day: Date;
@@ -29,10 +34,11 @@ export const MonthCalendarDay: FC<MonthCalendarDayProps> = ({ day, events, isAct
           'bg-[repeating-linear-gradient(135deg,var(--color-accent),var(--color-accent)_10px,var(--color-white)_10px,var(--color-white)_20px)] text-muted-foreground',
         dayjs(day).isToday() && 'text-primary-foreground bg-primary hover:bg-neutral-500'
       )}>
-      <div className={cn('flex flex-col items-center gap-1  min-h-17', hideEvents && 'hidden')}>
+      <div className={cn('flex flex-col items-center gap-1  min-h-22', hideEvents && 'hidden')}>
         <MonthCalendarDayTasks events={events} />
         <MonthCalendarDayMeetings events={events} />
         <MonthCalendarDayReminders events={events} />
+        <MonthCalendarDayOccurances events={events} />
       </div>
       <p
         className={cn(

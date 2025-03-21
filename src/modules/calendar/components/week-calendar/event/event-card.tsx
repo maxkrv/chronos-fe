@@ -149,7 +149,7 @@ export const EventCard: FC<EventCardProps> = ({
         </div>
       </HoverCardTrigger>
 
-      <HoverCardContent side="right" className="w-96">
+      <HoverCardContent className="w-96">
         <EventHoverCard setIsEditEventOpen={setIsEditEventOpen} event={event} />
       </HoverCardContent>
     </HoverCard>

@@ -68,7 +68,7 @@ export const events: ICalendarEvent[] = [
       interval: 12,
       repeatTime: 12 * 60 * 60 * 1000
     },
-    category: EventCategory.REMINDER,
+    category: EventCategory.OCCURANCE,
     calendarId: 1,
     creatorId: 103,
     attendees: users
@@ -111,7 +111,7 @@ export const events: ICalendarEvent[] = [
     name: 'Client Meeting',
     createdAt: new Date('2025-02-27T09:00:00Z'),
     updatedAt: new Date('2025-02-27T10:00:00Z'),
-    description: 'Discussion about the new contract.',
+    description: undefined,
     color: '#007FFF',
     startAt: new Date('2025-02-27T14:00:00Z'),
     endAt: new Date('2025-02-27T15:30:00Z'),
@@ -176,8 +176,7 @@ export const events: ICalendarEvent[] = [
     description: 'Lunch with colleagues.',
     color: '#33A1C9',
     startAt: new Date('2025-03-01T12:30:00Z'),
-    endAt: new Date('2025-03-01T14:00:00Z'),
-    category: EventCategory.ARRANGEMENT,
+    category: EventCategory.OCCURANCE,
     calendarId: 2,
     creatorId: 108,
     attendees: users
