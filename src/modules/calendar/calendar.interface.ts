@@ -5,7 +5,8 @@ import { User } from '../user/user.interface';
 export enum EventCategory {
   TASK = 'TASK',
   ARRANGEMENT = 'ARRANGEMENT',
-  REMINDER = 'REMINDER'
+  REMINDER = 'REMINDER',
+  OCCURANCE = 'OCCURANCE'
 }
 
 export enum RepeatType {
@@ -30,7 +31,7 @@ export interface ICalendarEvent {
   name: string;
   createdAt: Date;
   updatedAt: Date;
-  description: string;
+  description?: string;
   color: string;
   startAt: Date;
   endAt?: Date;

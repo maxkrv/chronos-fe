@@ -1,6 +1,7 @@
 import { ElementType, FC } from 'react';
 import { FaTasks } from 'react-icons/fa';
 import { LuAlarmClock } from 'react-icons/lu';
+import { MdEvent } from 'react-icons/md';
 import { SiGooglemeet } from 'react-icons/si';
 
 import { cn } from '../../../../shared/lib/utils';
@@ -70,4 +71,8 @@ export const MonthCalendarDayMeetings: FC<MonthCalendarDayEventsGroupProps> = ({
 
 export const MonthCalendarDayTasks: FC<MonthCalendarDayEventsGroupProps> = ({ events }) => (
   <MonthCalendarDayEvents events={events} type={EventCategory.TASK} icon={FaTasks} className="text-green" />
+);
+
+export const MonthCalendarDayOccurances: FC<MonthCalendarDayEventsGroupProps> = ({ events }) => (
+  <MonthCalendarDayEvents events={events} type={EventCategory.OCCURANCE} icon={MdEvent} className="text-purple" />
 );

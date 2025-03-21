@@ -36,6 +36,9 @@ interface CalendarEventProps {
 }
 
 export const CalendarEvent: FC<CalendarEventProps> = ({ event, day, attendees, onUpdate, setIsEditEventOpen }) => {
+  if (event.category === 'OCCURANCE') {
+    return null;
+  }
   const now = dayjs(day);
   const startIsToday = dayjs(event.startAt).isSame(now, 'day');
   const endIsToday = dayjs(event.endAt).isSame(now, 'day');
