@@ -53,13 +53,13 @@ export const CalendarSidebar = () => {
                   store.setMonth(month), store.setYear(month);
                 }}
               />
-              <div className="p-4">
-                <Input icon={<IoMdSearch size={20} />} iconPosition="left" placeholder="Search" />
-              </div>
-              <div className="px-4 mb-4">
+              <div className="px-4">
                 <Button className="w-full" onClick={() => setOpen(true)}>
                   <FaPlus /> Add calendar
                 </Button>
+              </div>
+              <div className="p-4">
+                <Input icon={<IoMdSearch size={'1.25rem'} />} iconPosition="left" placeholder="Search" />
               </div>
 
               <CalendarAccordion name="My calendars" items={myCalendars || []} isLoading={isMyCalendarsLoading} />
