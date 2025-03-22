@@ -65,6 +65,7 @@ export const CalendarSidebar = () => {
                 name="Other calendars"
                 items={participatingCalendars || []}
                 isLoading={isParticipatingCalendarsLoading}
+                disableEdit
               />
             </SidebarGroupContent>
           </SidebarGroup>

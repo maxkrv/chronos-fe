@@ -1,6 +1,13 @@
 import { apiClient } from '@/shared/api/api';
 
-import { AddCalendarDto, EditCalendarDto, ICalendar, ICalendarInvitation, InvitationDto } from '../calendar.interface';
+import {
+  AddCalendarDto,
+  EditCalendarDto,
+  ICalendar,
+  ICalendarInvitation,
+  IMyCalendarInvitation,
+  InvitationDto
+} from '../calendar.interface';
 
 export class CalendarService {
   static async create(dto: AddCalendarDto) {
@@ -9,6 +16,10 @@ export class CalendarService {
         json: dto
       })
       .json();
+  }
+
+  static getMyInvitations() {
+    return apiClient.get<IMyCalendarInvitation[]>('calendar-invitations/my').json();
   }
 
   static async getInvitations(id: number) {
@@ -21,6 +32,14 @@ export class CalendarService {
         json: dto
       })
       .json();
+  }
+
+  static async acceptInvitation(id: number) {
+    return apiClient.patch(`calendar-invitations/${id}/accept`).json();
+  }
+
+  static async declineInvitation(id: number) {
+    return apiClient.patch(`calendar-invitations/${id}/decline`).json();
   }
 
   static async my() {
