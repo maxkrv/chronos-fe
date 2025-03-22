@@ -21,6 +21,7 @@ import { CalendarService } from '../services/calendar.service';
 import { useDatePicker } from '../stores/date-picker-store';
 import { CalendarAccordion } from './calendar-accordion';
 import { CalendarForm } from './form/calendar-form';
+import { InvitationSidebar } from './invitation-sidebar';
 
 export const CalendarSidebar = () => {
   const { store } = useDatePicker();
@@ -67,6 +68,7 @@ export const CalendarSidebar = () => {
                 isLoading={isParticipatingCalendarsLoading}
                 disableEdit
               />
+              <InvitationSidebar />
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
