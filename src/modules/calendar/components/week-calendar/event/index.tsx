@@ -34,7 +34,7 @@ interface CalendarEventProps {
 }
 
 export const CalendarEvent: FC<CalendarEventProps> = ({ event, day, onUpdate, setIsEditEventOpen }) => {
-  if (event.category === 'OCCURANCE') {
+  if (event.category === 'OCCASION') {
     return null;
   }
 

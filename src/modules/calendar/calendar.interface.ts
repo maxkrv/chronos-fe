@@ -6,7 +6,7 @@ export enum EventCategory {
   TASK = 'TASK',
   ARRANGEMENT = 'ARRANGEMENT',
   REMINDER = 'REMINDER',
-  OCCURANCE = 'OCCURANCE'
+  OCCASION = 'OCCASION'
 }
 
 export enum RepeatType {

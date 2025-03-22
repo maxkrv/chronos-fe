@@ -47,7 +47,7 @@ export const EventHoverCard: FC<EventHoverCardProps> = ({ event, setIsEditEventO
             {event.category === EventCategory.ARRANGEMENT && <SiGooglemeet className="size-6" />}
             {event.category === EventCategory.TASK && <FaTasks className="size-6" />}
             {event.category === EventCategory.REMINDER && <IoTimerOutline className="size-6" />}
-            {event.category === EventCategory.OCCURANCE && <MdEvent className="size-6" />}
+            {event.category === EventCategory.OCCASION && <MdEvent className="size-6" />}
             <p className="line-clamp-1 truncate whitespace-normal">{event.name}</p>
           </div>
 
@@ -77,7 +77,7 @@ export const EventHoverCard: FC<EventHoverCardProps> = ({ event, setIsEditEventO
             </div>
 
             <div className="flex gap-2 items-center">
-              {event.category !== EventCategory.OCCURANCE && format(event.startAt, 'HH:mm')}
+              {event.category !== EventCategory.OCCASION && format(event.startAt, 'HH:mm')}
 
               {event.endAt && (
                 <>

@@ -36,15 +36,12 @@ export const MonthCalendar: FC<MonthCalendarProps> = ({ month = new Date(), even
       <div className="grid grid-cols-7 gap-2  @max-lg:gap-1 border-t-3 pt-2 overflow-x-scroll scrollbar-none justify-center items-center max-h-fit grid-auth-rows-[1fr]">
         {Array.from({ length: days }).map((_, i) => {
           const d = startOfWeek.add(i, 'day').toDate();
+
           return (
             <MonthCalendarDay
               key={i}
               day={d}
-              events={
-                Math.round(Math.random())
-                  ? events.slice(Math.random() * events.length, Math.random() * events.length)
-                  : []
-              }
+              events={events}
               hideEvents={hideEvents}
               isActualMonth={startOfMonth.isSame(d, 'month')}
             />

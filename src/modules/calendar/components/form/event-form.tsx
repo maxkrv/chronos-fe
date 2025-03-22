@@ -110,7 +110,7 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
       delete dto.frequency;
     }
 
-    if (dto.category === EventCategory.REMINDER || dto.category === EventCategory.OCCURANCE) {
+    if (dto.category === EventCategory.REMINDER || dto.category === EventCategory.OCCASION) {
       delete dto.endAt;
     }
 
@@ -234,7 +234,7 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
             </PopoverContent>
           </Popover>
 
-          {watch('category') !== EventCategory.REMINDER && watch('category') !== EventCategory.OCCURANCE && (
+          {watch('category') !== EventCategory.REMINDER && watch('category') !== EventCategory.OCCASION && (
             <>
               <FaArrowRight className="rotate-90 md:rotate-0" />
 

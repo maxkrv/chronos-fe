@@ -73,7 +73,7 @@ export const events: ICalendarEvent[] = [
       interval: 12,
       repeatTime: 12 * 60 * 60 * 1000
     },
-    category: EventCategory.OCCURANCE,
+    category: EventCategory.OCCASION,
     calendarId: 1,
     creatorId: 103,
     users: users
@@ -181,7 +181,7 @@ export const events: ICalendarEvent[] = [
     description: 'Lunch with colleagues.',
     color: '#33A1C9',
     startAt: new Date('2025-03-01T12:30:00Z'),
-    category: EventCategory.OCCURANCE,
+    category: EventCategory.OCCASION,
     calendarId: 2,
     creatorId: 108,
     users: users

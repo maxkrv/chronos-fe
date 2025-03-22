@@ -34,7 +34,7 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({ events = [], fromDay = new
             {Array.from({ length: days }).map((_, i) => (
               <div key={i} className="border grid grow min-w-12 w-full">
                 {events
-                  .filter((e) => e.category === 'OCCURANCE')
+                  .filter((e) => e.category === 'OCCASION')
                   .map((event, i) => (
                     <EventOccurance key={i} event={event} setIsEditEventOpen={() => {}} /> //todo: implement setIsEditEventOpen
                   ))}

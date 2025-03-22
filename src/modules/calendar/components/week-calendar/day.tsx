@@ -43,6 +43,7 @@ export const Day: FC<DayProps> = ({ events, day }) => {
     setIsAddEventOpen(true);
   };
 
+  // refactor to react-query cache update
   useEffect(() => {
     setEvents(events);
   }, [events]);

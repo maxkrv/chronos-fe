@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import dayjs from 'dayjs';
 
 import { Separator } from '@/shared/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/shared/components/ui/sidebar';
@@ -20,9 +21,16 @@ export const CalendarPage = () => {
   const { store, selectedDays } = useDatePicker();
   const { calendarsIds } = useCalendarStore();
 
+  const selectedDate = store.month
+    ? {
+        from: dayjs(store.month).startOf('month').add(1, 'day').toDate(),
+        to: dayjs(store.month).endOf('month').toDate()
+      }
+    : store.selectedDate;
+
   const { data: events = [] } = useQuery({
-    queryKey: [EVENTS, calendarsIds, store.selectedDate],
-    queryFn: () => EventService.findAll(calendarsIds, store.selectedDate!.from!, store.selectedDate!.to!),
+    queryKey: [EVENTS, calendarsIds, selectedDate],
+    queryFn: () => EventService.findAll(calendarsIds, selectedDate!.from!, selectedDate!.to!),
     select: (events) => events.flat()
   });
 
