@@ -113,7 +113,7 @@ export const MonthCalendarDayTasks: FC<MonthCalendarDayEventsGroupProps> = ({ ev
   <MonthCalendarDayEvents events={events} day={day} type={EventCategory.TASK} icon={FaTasks} className="text-green" />
 );
 
-export const MonthCalendarDayOccurances: FC<MonthCalendarDayEventsGroupProps> = ({ events, day }) => (
+export const MonthCalendarDayOccasions: FC<MonthCalendarDayEventsGroupProps> = ({ events, day }) => (
   <MonthCalendarDayEvents
     events={events}
     day={day}

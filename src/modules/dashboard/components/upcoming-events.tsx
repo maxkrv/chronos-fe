@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
-import { FC } from 'react';
+import type { FC } from 'react';
 
 import { cn } from '../../../shared/lib/utils';
-import { ICalendarEvent } from '../../calendar/calendar.interface';
+import type { ICalendarEvent } from '../../calendar/calendar.interface';
 
 interface UpcomingEventsProps {
   events?: ICalendarEvent[];

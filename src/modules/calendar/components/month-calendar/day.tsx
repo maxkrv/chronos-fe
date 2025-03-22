@@ -7,7 +7,7 @@ import { ICalendarEvent } from '../../calendar.interface';
 import { useDatePicker } from '../../stores/date-picker-store';
 import {
   MonthCalendarDayMeetings,
-  MonthCalendarDayOccurances,
+  MonthCalendarDayOccasions,
   MonthCalendarDayReminders,
   MonthCalendarDayTasks
 } from './events';
@@ -39,7 +39,7 @@ export const MonthCalendarDay: FC<MonthCalendarDayProps> = ({ day, events, isAct
         <MonthCalendarDayTasks events={events} day={day} />
         <MonthCalendarDayMeetings events={events} day={day} />
         <MonthCalendarDayReminders events={events} day={day} />
-        <MonthCalendarDayOccurances events={events} day={day} />
+        <MonthCalendarDayOccasions events={events} day={day} />
       </div>
       <p
         className={cn(
