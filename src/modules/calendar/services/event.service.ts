@@ -5,7 +5,8 @@ import {
   EditEventDto,
   EventInvitationDto,
   ICalendarEvent,
-  ICalendarInvitation
+  ICalendarInvitation,
+  IMyEventInvitation
 } from '../calendar.interface';
 
 export class EventService {
@@ -50,6 +51,10 @@ export class EventService {
     return apiClient.delete(`events/${id}`).json();
   }
 
+  static async getMyInvitations() {
+    return apiClient.get<IMyEventInvitation[]>('event-invitations/my').json();
+  }
+
   static async getInvitations(id: number) {
     return apiClient.get<ICalendarInvitation[]>(`event-invitations/events/${id}/invitations`).json();
   }
@@ -60,5 +65,13 @@ export class EventService {
         json: dto
       })
       .json();
+  }
+
+  static async acceptInvitation(id: number) {
+    return apiClient.patch(`event-invitations/${id}/accept`).json();
+  }
+
+  static async declineInvitation(id: number) {
+    return apiClient.patch(`event-invitations/${id}/decline`).json();
   }
 }
