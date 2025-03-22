@@ -11,28 +11,28 @@ import { Input } from '@/shared/components/ui/input';
 import { Label } from '@/shared/components/ui/label';
 import { ScrollArea, ScrollBar } from '@/shared/components/ui/scroll-area';
 import { UserAvatar } from '@/shared/components/user-avatar';
-import { CALENDAR_INVITATIONS } from '@/shared/constants/query-keys';
+import { EVENTS_INVITATIONS } from '@/shared/constants/query-keys';
 import { getBadgeVariant } from '@/shared/lib/utils';
 
-import { InvitationDto, InvitationSchema } from '../../calendar.interface';
-import { CalendarService } from '../../services/calendar.service';
+import { EventInvitationDto, EventInvitationSchema } from '../../calendar.interface';
+import { EventService } from '../../services/event.service';
 
 interface Props {
-  calendarId: number;
+  eventId: number;
 }
 
-export const CalendarAttendeesForm: FC<Props> = ({ calendarId }) => {
+export const EventAttendeesForm: FC<Props> = ({ eventId }) => {
   const queryClient = useQueryClient();
 
   const {
     handleSubmit,
     register: registerInvitation,
     formState: { errors: invitationErrors, isValid: isInvitationValid }
-  } = useForm<InvitationDto>({
+  } = useForm<EventInvitationDto>({
     mode: 'all',
-    resolver: zodResolver(InvitationSchema),
+    resolver: zodResolver(EventInvitationSchema),
     defaultValues: {
-      calendarId
+      eventId
     }
   });
 
@@ -41,20 +41,20 @@ export const CalendarAttendeesForm: FC<Props> = ({ calendarId }) => {
     isFetching,
     isLoading: isInvitationsLoading
   } = useQuery({
-    queryKey: [CALENDAR_INVITATIONS, calendarId],
-    queryFn: () => CalendarService.getInvitations(calendarId)
+    queryKey: [EVENTS_INVITATIONS, eventId],
+    queryFn: () => EventService.getInvitations(eventId)
   });
 
   const { mutate: inviteMutate, isPending: isInvitePending } = useMutation({
-    mutationFn: CalendarService.invite,
+    mutationFn: EventService.invite,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [CALENDAR_INVITATIONS, calendarId]
+        queryKey: [EVENTS_INVITATIONS, eventId]
       });
     }
   });
 
-  const onSubmit = (dto: InvitationDto) => {
+  const onSubmit = (dto: EventInvitationDto) => {
     inviteMutate(dto);
   };
 

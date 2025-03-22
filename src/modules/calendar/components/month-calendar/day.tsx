@@ -18,6 +18,7 @@ interface MonthCalendarDayProps {
   isActualMonth: boolean;
   hideEvents?: boolean;
 }
+
 export const MonthCalendarDay: FC<MonthCalendarDayProps> = ({ day, events, isActualMonth, hideEvents = false }) => {
   const { store } = useDatePicker();
   const nav = useNavigate();
@@ -35,10 +36,10 @@ export const MonthCalendarDay: FC<MonthCalendarDayProps> = ({ day, events, isAct
         dayjs(day).isToday() && 'text-primary-foreground bg-primary hover:bg-neutral-500'
       )}>
       <div className={cn('flex flex-col items-center gap-1  min-h-22', hideEvents && 'hidden')}>
-        <MonthCalendarDayTasks events={events} />
-        <MonthCalendarDayMeetings events={events} />
-        <MonthCalendarDayReminders events={events} />
-        <MonthCalendarDayOccurances events={events} />
+        <MonthCalendarDayTasks events={events} day={day} />
+        <MonthCalendarDayMeetings events={events} day={day} />
+        <MonthCalendarDayReminders events={events} day={day} />
+        <MonthCalendarDayOccurances events={events} day={day} />
       </div>
       <p
         className={cn(

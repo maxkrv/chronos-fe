@@ -6,7 +6,7 @@ export enum EventCategory {
   TASK = 'TASK',
   ARRANGEMENT = 'ARRANGEMENT',
   REMINDER = 'REMINDER',
-  OCCURANCE = 'OCCURANCE'
+  OCCASION = 'OCCASION'
 }
 
 export enum RepeatType {
@@ -39,7 +39,10 @@ export interface ICalendarEvent {
   calendarId: number;
   creatorId: number;
   link?: string;
-  attendees: User[];
+  users: {
+    id: number;
+    user: User;
+  }[];
   repeat?: {
     frequency: RepeatType;
     interval: number;
@@ -49,25 +52,26 @@ export interface ICalendarEvent {
 
 export const AddEventSchema = z.object({
   calendarId: z.number(),
-  title: z.string().trim().default('[No title]'),
+  name: z.string().trim(),
   description: z.string().trim().optional(),
-  color: z.string().trim().min(1, { message: 'Color is required' }).default('#16c47f'),
+  color: z.string().trim().min(1, { message: 'Color is required' }),
   startAt: z.date(),
   endAt: z.date().optional().or(z.literal('')),
   category: z.nativeEnum(EventCategory),
-  repeatAfter: z.number().max(999).optional().or(z.literal(undefined)),
-  repeatType: z.nativeEnum(RepeatType).optional().or(z.literal('NONE')),
-  link: z.string().optional().or(z.literal('')),
-  attendees: z.array(z.string().email()).optional().default([])
+  interval: z.number().max(999).optional().or(z.literal(undefined)),
+  frequency: z.nativeEnum(RepeatType).optional().or(z.literal('NONE')),
+  link: z.string().optional().or(z.literal(''))
 });
 export type AddEventDto = z.infer<typeof AddEventSchema>;
+
+export type EditEventDto = AddEventDto & { id: number };
 
 export interface AddEventFormProps {
   startDate?: Date;
   endDate?: Date;
-  calendarId?: number;
   action: 'add' | 'edit';
   event?: ICalendarEvent;
+  onSubmit?: () => void;
 }
 
 export const AddCalendarSchema = z.object({
@@ -84,6 +88,12 @@ export const InvitationSchema = z.object({
   email: z.string().email().trim().min(1, { message: 'Email is required' })
 });
 export type InvitationDto = z.infer<typeof InvitationSchema>;
+
+export const EventInvitationSchema = z.object({
+  eventId: z.number(),
+  email: z.string().email().trim().min(1, { message: 'Email is required' })
+});
+export type EventInvitationDto = z.infer<typeof EventInvitationSchema>;
 
 export interface ICalendar {
   id: number;

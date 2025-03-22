@@ -1,8 +1,7 @@
 import { FC } from 'react';
 
 import dayjs from '../../../../../shared/lib/dayjs';
-import { User } from '../../../../user/user.interface';
-import { ICalendarEvent } from '../../../calendar.interface';
+import { EventCategory, ICalendarEvent } from '../../../calendar.interface';
 import { CALENDAR_DAY_HEIGHT } from '../hour';
 import { MINUTES_IN_DAY } from '../now';
 import { EventCard } from './event-card';
@@ -30,20 +29,20 @@ const getReminderOccurrenceToday = (startAt: Date, repeatAfter?: number, nowTime
 interface CalendarEventProps {
   event: ICalendarEvent;
   day: Date;
-  attendees?: User[];
   onUpdate: (event: ICalendarEvent) => void;
   setIsEditEventOpen: (event: ICalendarEvent) => void;
 }
 
-export const CalendarEvent: FC<CalendarEventProps> = ({ event, day, attendees, onUpdate, setIsEditEventOpen }) => {
-  if (event.category === 'OCCURANCE') {
+export const CalendarEvent: FC<CalendarEventProps> = ({ event, day, onUpdate, setIsEditEventOpen }) => {
+  if (event.category === 'OCCASION') {
     return null;
   }
+
   const now = dayjs(day);
   const startIsToday = dayjs(event.startAt).isSame(now, 'day');
   const endIsToday = dayjs(event.endAt).isSame(now, 'day');
   const reminderTime = getReminderOccurrenceToday(event.startAt, event.repeat?.repeatTime, now.toDate());
-  const isReminderNotToday = event.category === 'REMINDER' && !reminderTime;
+  const isReminderNotToday = event.category === EventCategory.REMINDER && !reminderTime;
 
   if (!event || !(startIsToday || endIsToday) || isReminderNotToday) return null;
 
@@ -54,7 +53,7 @@ export const CalendarEvent: FC<CalendarEventProps> = ({ event, day, attendees, o
     (dayjs(event.endAt).diff(event.startAt, 'minute') / MINUTES_IN_DAY) * CALENDAR_DAY_HEIGHT
   );
 
-  return event.category === 'REMINDER' ? (
+  return event.category === EventCategory.REMINDER ? (
     <EventReminder event={event} indentTop={indentTop} onUpdate={onUpdate} setIsEditEventOpen={setIsEditEventOpen} />
   ) : (
     <EventCard
@@ -62,7 +61,6 @@ export const CalendarEvent: FC<CalendarEventProps> = ({ event, day, attendees, o
       day={day}
       eventHeight={eventHeight}
       indentTop={indentTop}
-      attendees={attendees}
       onUpdate={onUpdate}
       setIsEditEventOpen={setIsEditEventOpen}
     />

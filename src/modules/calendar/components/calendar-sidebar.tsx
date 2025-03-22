@@ -14,8 +14,9 @@ import {
   SidebarGroupContent,
   SidebarHeader
 } from '@/shared/components/ui/sidebar';
-import { MY_CALENDARS, PARTICIPATING_CALENDARS } from '@/shared/constants/query-keys';
+import { PARTICIPATING_CALENDARS } from '@/shared/constants/query-keys';
 
+import { useCalendarData } from '../hooks/use-calendar';
 import { CalendarService } from '../services/calendar.service';
 import { useDatePicker } from '../stores/date-picker-store';
 import { CalendarAccordion } from './calendar-accordion';
@@ -25,10 +26,7 @@ export const CalendarSidebar = () => {
   const { store } = useDatePicker();
   const [open, setOpen] = useState(false);
 
-  const { data: myCalendars, isLoading: isMyCalendarsLoading } = useQuery({
-    queryKey: [MY_CALENDARS],
-    queryFn: CalendarService.my
-  });
+  const { data: myCalendars, isLoading: isMyCalendarsLoading } = useCalendarData();
   const { data: participatingCalendars, isLoading: isParticipatingCalendarsLoading } = useQuery({
     queryKey: [PARTICIPATING_CALENDARS],
     queryFn: CalendarService.participating

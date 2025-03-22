@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { ElementType, FC } from 'react';
 import { FaTasks } from 'react-icons/fa';
 import { LuAlarmClock } from 'react-icons/lu';
@@ -12,13 +13,45 @@ interface MonthCalendarDayEventsProps {
   type?: EventCategory;
   icon: ElementType;
   className?: string;
+  day: Date;
 }
 
 interface MonthCalendarDayEventsGroupProps {
+  day: Date;
   events: ICalendarEvent[];
 }
-const MonthCalendarDayEvents: FC<MonthCalendarDayEventsProps> = ({ events, type, className, icon: Icon }) => {
-  const e = events.filter((event) => event.category === type);
+
+const getReminderOccurrenceToday = (startAt: Date, repeatAfter?: number, nowTime: Date = new Date()): Date | null => {
+  if (!repeatAfter || repeatAfter <= 0) return null;
+  const now = dayjs(nowTime);
+  const todayStart = now.startOf('day');
+  const todayEnd = now.endOf('day');
+  const start = dayjs(startAt); // Start of the day
+
+  if (start.isBetween(todayStart, todayEnd, null, '[)')) return start.toDate();
+
+  const diff = now.diff(start, 'millisecond');
+  const lastOccurrence = start.add(Math.floor(diff / repeatAfter) * repeatAfter, 'millisecond');
+  const nextOccurrence = start.add(Math.ceil(diff / repeatAfter) * repeatAfter, 'millisecond');
+
+  if (lastOccurrence.isBetween(todayStart, todayEnd, null, '[)')) return lastOccurrence.toDate();
+  if (nextOccurrence.isBetween(todayStart, todayEnd, null, '[)')) return nextOccurrence.toDate();
+
+  return null;
+};
+
+const MonthCalendarDayEvents: FC<MonthCalendarDayEventsProps> = ({ events, day, type, className, icon: Icon }) => {
+  const e = events.filter((event) => {
+    const now = dayjs(day);
+    const startIsToday = dayjs(event.startAt).isSame(now, 'day');
+    const endIsToday = dayjs(event.endAt).isSame(now, 'day');
+    const reminderTime = getReminderOccurrenceToday(event.startAt, event.repeat?.repeatTime, now.toDate());
+    const isReminderNotToday = event.category === EventCategory.REMINDER && !reminderTime;
+
+    if (!event || !(startIsToday || endIsToday) || isReminderNotToday) return false;
+
+    return event.category === type;
+  });
 
   if (e.length == 0) return null;
 
@@ -56,12 +89,19 @@ const MonthCalendarDayEvents: FC<MonthCalendarDayEventsProps> = ({ events, type,
     </div>
   );
 };
-export const MonthCalendarDayReminders: FC<MonthCalendarDayEventsGroupProps> = ({ events }) => (
-  <MonthCalendarDayEvents events={events} type={EventCategory.REMINDER} icon={LuAlarmClock} className="text-pink" />
+export const MonthCalendarDayReminders: FC<MonthCalendarDayEventsGroupProps> = ({ events, day }) => (
+  <MonthCalendarDayEvents
+    events={events}
+    day={day}
+    type={EventCategory.REMINDER}
+    icon={LuAlarmClock}
+    className="text-pink"
+  />
 );
 
-export const MonthCalendarDayMeetings: FC<MonthCalendarDayEventsGroupProps> = ({ events }) => (
+export const MonthCalendarDayMeetings: FC<MonthCalendarDayEventsGroupProps> = ({ events, day }) => (
   <MonthCalendarDayEvents
+    day={day}
     events={events}
     type={EventCategory.ARRANGEMENT}
     icon={SiGooglemeet}
@@ -69,10 +109,16 @@ export const MonthCalendarDayMeetings: FC<MonthCalendarDayEventsGroupProps> = ({
   />
 );
 
-export const MonthCalendarDayTasks: FC<MonthCalendarDayEventsGroupProps> = ({ events }) => (
-  <MonthCalendarDayEvents events={events} type={EventCategory.TASK} icon={FaTasks} className="text-green" />
+export const MonthCalendarDayTasks: FC<MonthCalendarDayEventsGroupProps> = ({ events, day }) => (
+  <MonthCalendarDayEvents events={events} day={day} type={EventCategory.TASK} icon={FaTasks} className="text-green" />
 );
 
-export const MonthCalendarDayOccurances: FC<MonthCalendarDayEventsGroupProps> = ({ events }) => (
-  <MonthCalendarDayEvents events={events} type={EventCategory.OCCURANCE} icon={MdEvent} className="text-purple" />
+export const MonthCalendarDayOccurances: FC<MonthCalendarDayEventsGroupProps> = ({ events, day }) => (
+  <MonthCalendarDayEvents
+    events={events}
+    day={day}
+    type={EventCategory.OCCASION}
+    icon={MdEvent}
+    className="text-purple"
+  />
 );

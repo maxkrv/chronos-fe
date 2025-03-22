@@ -1,5 +1,10 @@
 import { EventCategory, ICalendarEvent, RepeatType } from './../modules/calendar/calendar.interface';
-import { users } from './users';
+import { users as usersBase } from './users';
+
+const users = usersBase.map((user, i) => ({
+  id: i + 1,
+  user
+}));
 
 export const events: ICalendarEvent[] = [
   {
@@ -14,7 +19,7 @@ export const events: ICalendarEvent[] = [
     category: EventCategory.ARRANGEMENT,
     calendarId: 1,
     creatorId: 101,
-    attendees: users
+    users: users
   },
   {
     id: 2,
@@ -33,7 +38,7 @@ export const events: ICalendarEvent[] = [
     category: EventCategory.TASK,
     calendarId: 1,
     creatorId: 101,
-    attendees: users
+    users: users
   },
   {
     id: 3,
@@ -52,7 +57,7 @@ export const events: ICalendarEvent[] = [
     category: EventCategory.ARRANGEMENT,
     calendarId: 2,
     creatorId: 102,
-    attendees: users
+    users: users
   },
   {
     id: 4,
@@ -68,10 +73,10 @@ export const events: ICalendarEvent[] = [
       interval: 12,
       repeatTime: 12 * 60 * 60 * 1000
     },
-    category: EventCategory.OCCURANCE,
+    category: EventCategory.OCCASION,
     calendarId: 1,
     creatorId: 103,
-    attendees: users
+    users: users
   },
   {
     id: 5,
@@ -85,7 +90,7 @@ export const events: ICalendarEvent[] = [
     category: EventCategory.TASK,
     calendarId: 2,
     creatorId: 102,
-    attendees: users
+    users: users
   },
   {
     id: 6,
@@ -104,7 +109,7 @@ export const events: ICalendarEvent[] = [
     category: EventCategory.REMINDER,
     calendarId: 3,
     creatorId: 104,
-    attendees: users
+    users: users
   },
   {
     id: 7,
@@ -118,7 +123,7 @@ export const events: ICalendarEvent[] = [
     category: EventCategory.ARRANGEMENT,
     calendarId: 1,
     creatorId: 105,
-    attendees: users
+    users: users
   },
   {
     id: 8,
@@ -132,7 +137,7 @@ export const events: ICalendarEvent[] = [
     category: EventCategory.TASK,
     calendarId: 1,
     creatorId: 101,
-    attendees: users
+    users: users
   },
   {
     id: 9,
@@ -146,7 +151,7 @@ export const events: ICalendarEvent[] = [
     category: EventCategory.ARRANGEMENT,
     calendarId: 2,
     creatorId: 106,
-    attendees: users
+    users: users
   },
   {
     id: 10,
@@ -160,7 +165,7 @@ export const events: ICalendarEvent[] = [
     category: EventCategory.ARRANGEMENT,
     calendarId: 1,
     creatorId: 107,
-    attendees: users,
+    users: users,
     link: 'https://google.com',
     repeat: {
       frequency: RepeatType.HOURLY,
@@ -176,9 +181,9 @@ export const events: ICalendarEvent[] = [
     description: 'Lunch with colleagues.',
     color: '#33A1C9',
     startAt: new Date('2025-03-01T12:30:00Z'),
-    category: EventCategory.OCCURANCE,
+    category: EventCategory.OCCASION,
     calendarId: 2,
     creatorId: 108,
-    attendees: users
+    users: users
   }
 ];
