@@ -52,6 +52,8 @@ export const InvitationList: FC<Props> = ({ invitations, isLoading, isFetching, 
         Array.from({ length: 3 }).map((_, i) => (
           <SidebarMenuItem key={i} className="flex items-center justify-between rounded-md bg-accent h-6" />
         ))}
+
+      {!isLoading && invitations?.length === 0 && <div className="text-center">No invitations</div>}
     </div>
   );
 };
