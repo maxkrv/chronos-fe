@@ -15,9 +15,10 @@ interface CalendarAccordionProps {
   name: string;
   items: ICalendar[];
   isLoading?: boolean;
+  disableEdit?: boolean;
 }
 
-export const CalendarAccordion: FC<CalendarAccordionProps> = ({ name, items, isLoading }) => {
+export const CalendarAccordion: FC<CalendarAccordionProps> = ({ name, items, isLoading, disableEdit }) => {
   const [open, setOpen] = useState(false);
   const [calendar, setCalendar] = useState<ICalendar | null>(null);
 
@@ -69,7 +70,7 @@ export const CalendarAccordion: FC<CalendarAccordionProps> = ({ name, items, isL
                       </Label>
                     </SidebarMenuButton>
 
-                    {!item.isMain && (
+                    {!item.isMain && !disableEdit && (
                       <Button
                         onClick={() => {
                           setOpen(true);

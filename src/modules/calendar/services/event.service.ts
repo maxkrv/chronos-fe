@@ -5,7 +5,8 @@ import {
   EditEventDto,
   EventInvitationDto,
   ICalendarEvent,
-  ICalendarInvitation
+  ICalendarInvitation,
+  IMyEventInvitation
 } from '../calendar.interface';
 
 export class EventService {
@@ -48,7 +49,6 @@ export class EventService {
       calendarId.map((id) => {
         const searchParams = new URLSearchParams();
         searchParams.set('calendarId', id.toString());
-
         fromDate && searchParams.set('fromDate', typeof fromDate === 'string' ? fromDate : fromDate.toISOString());
         toDate && searchParams.set('toDate', typeof toDate === 'string' ? toDate : toDate.toISOString());
 
@@ -60,6 +60,7 @@ export class EventService {
       })
     );
   }
+
   static async update(dto: EditEventDto) {
     return apiClient
       .patch<ICalendarEvent>(`events/${dto.id}`, {
@@ -72,6 +73,10 @@ export class EventService {
     return apiClient.delete(`events/${id}`).json();
   }
 
+  static async getMyInvitations() {
+    return apiClient.get<IMyEventInvitation[]>('event-invitations/my').json();
+  }
+
   static async getInvitations(id: number) {
     return apiClient.get<ICalendarInvitation[]>(`event-invitations/events/${id}/invitations`).json();
   }
@@ -82,5 +87,13 @@ export class EventService {
         json: dto
       })
       .json();
+  }
+  
+  static async acceptInvitation(id: number) {
+    return apiClient.patch(`event-invitations/${id}/accept`).json();
+  }
+
+  static async declineInvitation(id: number) {
+    return apiClient.patch(`event-invitations/${id}/decline`).json();
   }
 }

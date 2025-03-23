@@ -115,3 +115,11 @@ export interface ICalendarInvitation {
   updatedAt: string;
   user: User;
 }
+
+export interface IMyCalendarInvitation extends ICalendarInvitation {
+  calendar: ICalendar;
+}
+
+export interface IMyEventInvitation extends ICalendarInvitation {
+  event: ICalendarEvent;
+}
