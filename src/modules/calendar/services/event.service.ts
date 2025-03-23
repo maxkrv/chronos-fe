@@ -20,15 +20,37 @@ export class EventService {
 
   static async findAll(
     calendarId: number[],
-    fromDate: Date | string,
-    toDate: Date | string
+    fromDate?: Date | string,
+    toDate?: Date | string
+  ): Promise<ICalendarEvent[][]> {
+    function fetchEvents(id: number | undefined | null) {
+      const searchParams = new URLSearchParams();
+      id && searchParams.set('calendarId', id.toString());
+      fromDate && searchParams.set('fromDate', typeof fromDate === 'string' ? fromDate : fromDate.toISOString());
+      toDate && searchParams.set('toDate', typeof toDate === 'string' ? toDate : toDate.toISOString());
+
+      return apiClient
+        .get<ICalendarEvent[]>('events', {
+          searchParams
+        })
+        .json();
+    }
+
+    if (!calendarId.length) return [await fetchEvents(null)];
+    return await Promise.all(calendarId.map((id) => fetchEvents(id)));
+  }
+
+  static async find(
+    calendarId: number[],
+    fromDate?: Date | string,
+    toDate?: Date | string
   ): Promise<ICalendarEvent[][]> {
     return await Promise.all(
       calendarId.map((id) => {
         const searchParams = new URLSearchParams();
         searchParams.set('calendarId', id.toString());
-        searchParams.set('fromDate', typeof fromDate === 'string' ? fromDate : fromDate.toISOString());
-        searchParams.set('toDate', typeof toDate === 'string' ? toDate : toDate.toISOString());
+        fromDate && searchParams.set('fromDate', typeof fromDate === 'string' ? fromDate : fromDate.toISOString());
+        toDate && searchParams.set('toDate', typeof toDate === 'string' ? toDate : toDate.toISOString());
 
         return apiClient
           .get<ICalendarEvent[]>('events', {
@@ -66,7 +88,7 @@ export class EventService {
       })
       .json();
   }
-
+  
   static async acceptInvitation(id: number) {
     return apiClient.patch(`event-invitations/${id}/accept`).json();
   }

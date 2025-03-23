@@ -12,7 +12,7 @@ interface EventReminderProps {
   setIsEditEventOpen: (event: ICalendarEvent) => void;
 }
 
-export const EventOccurance: FC<EventReminderProps> = ({ event, setIsEditEventOpen }) => {
+export const EventOccasion: FC<EventReminderProps> = ({ event, setIsEditEventOpen }) => {
   return (
     <HoverCard openDelay={0}>
       <HoverCardTrigger asChild>

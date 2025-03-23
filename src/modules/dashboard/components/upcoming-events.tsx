@@ -1,25 +1,39 @@
+import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
-import { FC } from 'react';
+import { type FC, useMemo } from 'react';
 
+import { Loading } from '../../../shared/components/ui/loading';
+import { EVENTS } from '../../../shared/constants/query-keys';
 import { cn } from '../../../shared/lib/utils';
-import { ICalendarEvent } from '../../calendar/calendar.interface';
+import { EventService } from '../../calendar/services/event.service';
 
-interface UpcomingEventsProps {
-  events?: ICalendarEvent[];
-}
+export const UpcomingEvents: FC = () => {
+  const nextDayDate = useMemo(
+    () => ({
+      from: dayjs().toDate(),
+      to: dayjs().add(24, 'hour').toDate()
+    }),
+    []
+  );
+  const { data: nextDayData = [], isLoading } = useQuery({
+    queryKey: [EVENTS, nextDayDate],
+    queryFn: () => EventService.findAll([], nextDayDate.from, nextDayDate.to),
+    select: (events) => events.flat()
+  });
 
-export const UpcomingEvents: FC<UpcomingEventsProps> = ({ events }) => {
+  if (isLoading) return <Loading />;
+
   return (
     <div className="flex h-full pl-4">
       <div className="h-[calc(100%-7rem)] border-3 rounded-full border-red" />
       <div className="relative -left-3.75 flex flex-col w-full gap-3">
-        {events?.map((event, index) => (
+        {nextDayData?.map((event, index) => (
           <div key={index} className="flex justify-between h-28 max-h-28 w-full shrink-0 gap-3">
             <div
               className={cn(
                 'size-6 border-4 border-background rounded-full aspect-square bg-current',
                 index === 0 && 'outline-current outline-3',
-                index === events.length - 1 && 'border-current bg-background'
+                index === nextDayData.length - 1 && 'border-current bg-background'
               )}
               style={{ color: event.color || 'var(--color-primary)' }}
             />

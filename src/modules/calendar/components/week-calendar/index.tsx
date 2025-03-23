@@ -3,7 +3,7 @@ import { FC, useEffect, useRef } from 'react';
 import dayjs from '../../../../shared/lib/dayjs';
 import { ICalendarEvent } from '../../calendar.interface';
 import { Day } from './day';
-import { EventOccurance } from './event/event-occurance';
+import { EventOccasion } from './event/event-occasion';
 import { WeekCalendarHeader } from './header';
 import { CALENDAR_HOUR_HEIGHT } from './hour';
 import { NowMarker } from './now';
@@ -36,7 +36,7 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({ events = [], fromDay = new
                 {events
                   .filter((e) => e.category === 'OCCASION')
                   .map((event, i) => (
-                    <EventOccurance key={i} event={event} setIsEditEventOpen={() => {}} /> //todo: implement setIsEditEventOpen
+                    <EventOccasion key={i} event={event} setIsEditEventOpen={() => {}} /> //todo: implement setIsEditEventOpen
                   ))}
               </div>
             ))}
