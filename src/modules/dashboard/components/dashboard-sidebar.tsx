@@ -8,7 +8,6 @@ import {
   SidebarHeader
 } from '@/shared/components/ui/sidebar';
 
-import { events } from '../../../__mock__/events';
 import { useDatePicker } from '../../calendar/stores/date-picker-store';
 import { UpcomingEvents } from './upcoming-events';
 
@@ -30,7 +29,7 @@ export const DashboardSidebar = () => {
                 store.setSelectedDate({ from: new Date() });
                 nav('/calendar');
               }}>
-              <UpcomingEvents events={events} />
+              <UpcomingEvents />
             </button>
           </SidebarGroupContent>
         </SidebarGroup>

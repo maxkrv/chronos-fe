@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
-export const TimeNow = () => {
+export const TimeNow = memo(() => {
   const [time, setTime] = useState(dayjs().format('HH:mm'));
   const [date, setDate] = useState(dayjs().format('ddd, MMM D'));
 
@@ -21,4 +21,6 @@ export const TimeNow = () => {
       <p className="text-muted-foreground text-sm mt-1">{date}</p>
     </div>
   );
-};
+});
+
+TimeNow.displayName = 'TimeNow';

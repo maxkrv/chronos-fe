@@ -30,7 +30,7 @@ export const CalendarPage = () => {
 
   const { data: events = [] } = useQuery({
     queryKey: [EVENTS, calendarsIds, selectedDate],
-    queryFn: () => EventService.findAll(calendarsIds, selectedDate!.from!, selectedDate!.to!),
+    queryFn: () => (selectedDate ? EventService.findAll(calendarsIds, selectedDate.from, selectedDate.to) : []),
     select: (events) => events.flat()
   });
 

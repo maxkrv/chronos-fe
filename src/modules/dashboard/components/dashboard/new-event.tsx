@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { CgEventbrite } from 'react-icons/cg';
 
 import { Button } from '../../../../shared/components/ui/button';
 import { AddEventModal } from '../../../calendar/components/modal/add-event-modal';
 
-export const NewEvent = () => {
+export const NewEvent = memo(() => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -22,4 +22,6 @@ export const NewEvent = () => {
       <AddEventModal action="add" open={isOpen} onClose={() => setIsOpen(false)} startDate={new Date()} />
     </>
   );
-};
+});
+
+NewEvent.displayName = 'NewEvent';

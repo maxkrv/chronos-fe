@@ -1,10 +1,10 @@
 import { MoonIcon, SunIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import { Button } from '../../../../shared/components/ui/button';
 import { useTheme } from '../../../../shared/store/theme.store';
 
-export const ThemeToggle = () => {
+export const ThemeToggle = memo(() => {
   const { theme, inverse } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -33,4 +33,6 @@ export const ThemeToggle = () => {
       </Button>
     </div>
   );
-};
+});
+
+ThemeToggle.displayName = 'ThemeToggle';
