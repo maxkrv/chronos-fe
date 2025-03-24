@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { FaPlus } from 'react-icons/fa6';
 import { IoMdSearch } from 'react-icons/io';
@@ -15,10 +14,8 @@ import {
   SidebarGroupContent,
   SidebarHeader
 } from '@/shared/components/ui/sidebar';
-import { PARTICIPATING_CALENDARS } from '@/shared/constants/query-keys';
 
 import { useCalendarData } from '../hooks/use-calendar';
-import { CalendarService } from '../services/calendar.service';
 import { useDatePicker } from '../stores/date-picker-store';
 import { CalendarAccordion } from './calendar-accordion';
 import { CalendarForm } from './form/calendar-form';
@@ -34,12 +31,10 @@ export const CalendarSidebar = () => {
     setSearch(query);
   }, 200);
 
-  const { data: myCalendars, isLoading: isMyCalendarsLoading } = useCalendarData(search);
-  const { data: participatingCalendars, isLoading: isParticipatingCalendarsLoading } = useQuery({
-    queryKey: [PARTICIPATING_CALENDARS, search],
-    queryFn: () => CalendarService.participating(search),
-    placeholderData: (prevData) => prevData || []
-  });
+  const {
+    myCalendars: { isLoading: isMyCalendarsLoading, data: myCalendars },
+    participatingCalendars: { isLoading: isParticipatingCalendarsLoading, data: participatingCalendars }
+  } = useCalendarData(search);
 
   return (
     <>
