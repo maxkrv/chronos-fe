@@ -21,12 +21,18 @@ export const CalendarPage = () => {
   const { store, selectedDays } = useDatePicker();
   const { calendarsIds } = useCalendarStore();
 
-  const selectedDate = store.month
-    ? {
-        from: dayjs(store.month).startOf('month').add(1, 'day').toDate(),
-        to: dayjs(store.month).endOf('month').toDate()
-      }
-    : store.selectedDate;
+  const selectedDate =
+    store.view === CalendarView.MONTH
+      ? {
+          from: dayjs(store.month).startOf('month').add(1, 'day').toDate(),
+          to: dayjs(store.month).endOf('month').toDate()
+        }
+      : store.view === CalendarView.WEEK && !store.selectedDate?.to
+        ? {
+            from: store.selectedDate?.from,
+            to: dayjs(store.selectedDate?.from).add(2, 'day').toDate()
+          }
+        : store.selectedDate;
 
   const { data: events = [] } = useQuery({
     queryKey: [EVENTS, calendarsIds, selectedDate],

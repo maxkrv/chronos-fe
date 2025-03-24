@@ -20,7 +20,7 @@ export const NowMarker = () => {
         top: `${(minutesFromStartOfDay / MINUTES_IN_DAY) * 100}%`,
         zIndex: CALENDAR_DAY_HEIGHT + 1
       }}>
-      <hr className="relative m-auto border border-current text-neutral-800 w-full overflow-visible before:content-[''] before:left-0 before:transform before:-translate-x-1/2 before:-translate-y-1/2 before:absolute before:rounded-full before:border-current before:border-8" />
+      <hr className="relative m-auto border border-current text-primary w-full overflow-visible before:content-[''] before:left-0 before:transform before:-translate-x-1/2 before:-translate-y-1/2 before:absolute before:rounded-full before:border-current before:border-8" />
     </div>
   );
 };

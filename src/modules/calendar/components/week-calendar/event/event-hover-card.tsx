@@ -8,6 +8,7 @@ import { LuCalendarClock } from 'react-icons/lu';
 import { MdEvent } from 'react-icons/md';
 import { SiGooglemeet } from 'react-icons/si';
 import { TbRepeat } from 'react-icons/tb';
+import { toast } from 'sonner';
 
 import { EventCategory, ICalendarEvent } from '@/modules/calendar/calendar.interface';
 import { EventService } from '@/modules/calendar/services/event.service';
@@ -31,6 +32,8 @@ export const EventHoverCard: FC<EventHoverCardProps> = ({ event, setIsEditEventO
   const { mutate, isPending } = useMutation({
     mutationFn: EventService.delete,
     onSuccess: () => {
+      toast.success('Event deleted');
+      setIsOpen(false);
       queryClient.invalidateQueries({
         queryKey: [EVENTS]
       });
@@ -125,7 +128,7 @@ export const EventHoverCard: FC<EventHoverCardProps> = ({ event, setIsEditEventO
               {event.description ? (
                 event.description
               ) : (
-                <p className="h-full w-full text-center border text-muted-foreground">
+                <p className="h-full w-full text-center text-muted-foreground">
                   No description provided for this event.
                 </p>
               )}
@@ -142,9 +145,7 @@ export const EventHoverCard: FC<EventHoverCardProps> = ({ event, setIsEditEventO
                 </div>
               ))}
               {event.users.length === 0 && (
-                <div className="h-full w-full text-center border text-muted-foreground">
-                  No participants for this event.
-                </div>
+                <div className="h-full w-full text-center  text-muted-foreground">No participants for this event.</div>
               )}
             </div>
           </TabsContent>

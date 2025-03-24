@@ -57,7 +57,7 @@ const useDatePickerStore = create(
                 .toDate();
           finalRange = { from: newFrom, to: newTo };
         }
-        set({ selectedDate: finalRange });
+        set({ selectedDate: finalRange, view: CalendarView.WEEK, month: from, year: from });
       },
       month: new Date(),
       setMonth: (month) => {

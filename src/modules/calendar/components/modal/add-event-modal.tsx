@@ -13,7 +13,7 @@ interface AddEventModalProps extends AddEventFormProps {
 export const AddEventModal: FC<AddEventModalProps> = ({ open, onClose, ...props }) => {
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="max-w-md w-full">
         <DialogHeader>
           <DialogTitle>Create new event</DialogTitle>
         </DialogHeader>
