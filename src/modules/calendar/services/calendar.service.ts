@@ -42,12 +42,14 @@ export class CalendarService {
     return apiClient.patch(`calendar-invitations/${id}/decline`).json();
   }
 
-  static async my() {
-    return apiClient.get<ICalendar[]>('calendars/my').json();
+  static async my(search?: string) {
+    return apiClient.get<ICalendar[]>('calendars/my', search ? { searchParams: { search } } : undefined).json();
   }
 
-  static async participating() {
-    return apiClient.get<ICalendar[]>('calendars/participating').json();
+  static async participating(search?: string) {
+    return apiClient
+      .get<ICalendar[]>('calendars/participating', search ? { searchParams: { search } } : undefined)
+      .json();
   }
 
   static async update(dto: EditCalendarDto) {

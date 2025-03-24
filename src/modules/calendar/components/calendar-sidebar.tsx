@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { FaPlus } from 'react-icons/fa6';
 import { IoMdSearch } from 'react-icons/io';
+import { useDebounceCallback } from 'usehooks-ts';
 
 import { Button } from '@/shared/components/ui/button';
 import { Calendar } from '@/shared/components/ui/calendar';
@@ -26,11 +27,18 @@ import { InvitationSidebar } from './invitation-sidebar';
 export const CalendarSidebar = () => {
   const { store } = useDatePicker();
   const [open, setOpen] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  const [search, setSearch] = useState('');
 
-  const { data: myCalendars, isLoading: isMyCalendarsLoading } = useCalendarData();
+  const debouncedUpdateSearch = useDebounceCallback((query) => {
+    setSearch(query);
+  }, 200);
+
+  const { data: myCalendars, isLoading: isMyCalendarsLoading } = useCalendarData(search);
   const { data: participatingCalendars, isLoading: isParticipatingCalendarsLoading } = useQuery({
-    queryKey: [PARTICIPATING_CALENDARS],
-    queryFn: CalendarService.participating
+    queryKey: [PARTICIPATING_CALENDARS, search],
+    queryFn: () => CalendarService.participating(search),
+    placeholderData: (prevData) => prevData || []
   });
 
   return (
@@ -58,7 +66,16 @@ export const CalendarSidebar = () => {
                 </Button>
               </div>
               <div className="p-4">
-                <Input icon={<IoMdSearch size={'1.25rem'} />} iconPosition="left" placeholder="Search" />
+                <Input
+                  icon={<IoMdSearch size={'1.25rem'} />}
+                  iconPosition="left"
+                  placeholder="Search"
+                  value={inputValue}
+                  onChange={(e) => {
+                    setInputValue(e.target.value);
+                    debouncedUpdateSearch(e.target.value);
+                  }}
+                />
               </div>
 
               <CalendarAccordion name="My calendars" items={myCalendars || []} isLoading={isMyCalendarsLoading} />
