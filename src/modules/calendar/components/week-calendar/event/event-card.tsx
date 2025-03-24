@@ -26,14 +26,24 @@ const ResizeHandle: FC<ResizeHandleProps> = ({ onMouseDown, className }) => (
 interface EventCardProps extends React.ComponentProps<typeof CalendarEvent> {
   eventHeight: number;
   indentTop: number;
+  now?: Date;
 }
 
-export const EventCard: FC<EventCardProps> = ({ eventHeight, indentTop, event, onUpdate, setIsEditEventOpen }) => {
+export const EventCard: FC<EventCardProps> = ({
+  eventHeight,
+  indentTop,
+  event,
+  day,
+  onUpdate,
+  onEdit: setIsEditEventOpen
+}) => {
   const [isHovered, setIsHovered] = useState(false);
   const [height, setHeight] = useState(eventHeight);
   const [startOffset, setStartOffset] = useState(indentTop);
   const initialRef = useRef({ startY: 0, originalHeight: eventHeight, originalOffset: indentTop });
   const eventStateRef = useRef({ height, startOffset });
+  const isResizeable =
+    dayjs(event.startAt).isSame(day, 'day') && (event.endAt ? dayjs(event.endAt).isSame(day, 'day') : true);
 
   useEffect(() => {
     eventStateRef.current = { height, startOffset };
@@ -49,11 +59,14 @@ export const EventCard: FC<EventCardProps> = ({ eventHeight, indentTop, event, o
       .startOf('day')
       .add(((latestOffset + latestHeight) / CALENDAR_DAY_HEIGHT) * MINUTES_IN_DAY, 'minute')
       .toDate();
+
+    if (dayjs(event.startAt).isSame(newStart, 'minute') && dayjs(event.endAt).isSame(newEnd, 'minute')) return;
     onUpdate({ ...event, startAt: newStart, endAt: newEnd });
   };
 
   const handleResizeOrDrag = (e: React.MouseEvent, direction?: 'top' | 'bottom') => {
     e.preventDefault();
+    if (!isResizeable) return;
     initialRef.current = { startY: e.clientY, originalHeight: height, originalOffset: startOffset };
     const controller = new AbortController();
     const signal = controller.signal;
@@ -113,15 +126,25 @@ export const EventCard: FC<EventCardProps> = ({ eventHeight, indentTop, event, o
           onMouseLeave={() => {
             setIsHovered(false);
           }}>
-          <div className="flex flex-row w-full gap-2 px-1 py-2 cursor-pointer rounded-lg overflow-hidden bg-mix-primary-20 border-2 border-transparent hover:border-dashed hover:border-current max-h-full h-full relative group min-h-1.5">
+          <div
+            className={cn(
+              'flex flex-row w-full gap-2 px-1 py-2 cursor-pointer rounded-lg overflow-hidden bg-mix-primary-20 border-2 border-transparent hover:border-current max-h-full h-full relative group min-h-1.5',
+              isResizeable && 'hover:border-dashed'
+            )}>
             <div className="min-w-1 max-w-1 bg-current rounded-md" />
             <ResizeHandle
-              className="absolute top-0 left-0 right-0 group-hover:flex hidden"
+              className={cn(
+                'absolute top-0 left-0 right-0 group-hover:flex hidden',
+                !isResizeable && 'group-hover:hidden'
+              )}
               onMouseDown={(e) => handleResizeOrDrag(e, 'top')}
             />
-            <EventContent event={event} height={height} onMouseDown={handleResizeOrDrag} />
+            <EventContent event={event} height={height} onMouseDown={handleResizeOrDrag} isResizeable={isResizeable} />
             <ResizeHandle
-              className="absolute bottom-0 left-0 right-0 group-hover:flex hidden"
+              className={cn(
+                'absolute bottom-0 left-0 right-0 group-hover:flex hidden',
+                !isResizeable && 'group-hover:hidden'
+              )}
               onMouseDown={(e) => handleResizeOrDrag(e, 'bottom')}
             />
           </div>

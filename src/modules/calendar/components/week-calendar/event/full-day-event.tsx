@@ -1,18 +1,21 @@
 import { FC } from 'react';
+import { FaTasks } from 'react-icons/fa';
+import { IoTimerOutline } from 'react-icons/io5';
 import { MdEvent } from 'react-icons/md';
+import { SiGooglemeet } from 'react-icons/si';
 
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/shared/components/ui/hover-card';
 
-import { ICalendarEvent } from '../../../calendar.interface';
+import { EventCategory, ICalendarEvent } from '../../../calendar.interface';
 import { CALENDAR_HOUR_HEIGHT } from '../hour';
 import { EventHoverCard } from './event-hover-card';
 
 interface EventReminderProps {
   event: ICalendarEvent;
-  setIsEditEventOpen: (event: ICalendarEvent) => void;
+  onEdit: (event: ICalendarEvent) => void;
 }
 
-export const EventOccasion: FC<EventReminderProps> = ({ event, setIsEditEventOpen }) => {
+export const FullDayEvent: FC<EventReminderProps> = ({ event, onEdit }) => {
   return (
     <HoverCard openDelay={0}>
       <HoverCardTrigger asChild>
@@ -26,7 +29,12 @@ export const EventOccasion: FC<EventReminderProps> = ({ event, setIsEditEventOpe
             <div className="min-w-1 max-w-1 bg-current rounded-md" />
             <div className="m-0 p-0 overflow-hidden flex grow">
               <p className="break-words leading-4 grow my-auto w-min min-w-12 line-clamp-2">
-                <MdEvent className="inline-flex gap-2 size-4 mr-2 items-center" />
+                <span className="inline-flex gap-2 size-4 mr-2 items-center">
+                  {event.category === EventCategory.ARRANGEMENT && <SiGooglemeet />}
+                  {event.category === EventCategory.TASK && <FaTasks />}
+                  {event.category === EventCategory.REMINDER && <IoTimerOutline />}
+                  {event.category === EventCategory.OCCASION && <MdEvent />}
+                </span>
                 {event.name}
               </p>
             </div>
@@ -35,7 +43,7 @@ export const EventOccasion: FC<EventReminderProps> = ({ event, setIsEditEventOpe
       </HoverCardTrigger>
 
       <HoverCardContent className="w-96">
-        <EventHoverCard event={event} setIsEditEventOpen={setIsEditEventOpen} />
+        <EventHoverCard event={event} setIsEditEventOpen={onEdit} />
       </HoverCardContent>
     </HoverCard>
   );

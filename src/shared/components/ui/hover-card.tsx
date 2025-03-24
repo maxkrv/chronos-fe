@@ -35,12 +35,12 @@ function HoverCardContent({
         side={side}
         avoidCollisions={avoidCollisions}
         className={cn(
-          'bg-transparent text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-[9999] w-64 rounded-2xl border p-4 shadow-md outline-hidden backdrop-blur-md',
+          'bg-transparent text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-[9999] w-64 rounded-2xl border-2 p-4 shadow-md outline-hidden backdrop-blur-md',
           // Add faster animation duration
           'data-[state=open]:duration-100 data-[state=closed]:duration-100',
           className
         )}>
-        <HoverCardPrimitive.Arrow className="h-2 w-4 fill-neutral-500"></HoverCardPrimitive.Arrow>
+        <HoverCardPrimitive.Arrow className="h-2 w-4 fill-border"></HoverCardPrimitive.Arrow>
         {props.children}
       </HoverCardPrimitive.Content>
     </HoverCardPrimitive.Portal>

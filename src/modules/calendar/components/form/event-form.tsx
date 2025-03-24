@@ -8,6 +8,7 @@ import { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaArrowRight, FaLink } from 'react-icons/fa6';
 import { TbRepeat } from 'react-icons/tb';
+import { toast } from 'sonner';
 
 import { ColorSelector } from '@/shared/components/color-selector';
 import { Button } from '@/shared/components/ui/button';
@@ -24,6 +25,26 @@ import { AddEventDto, AddEventFormProps, AddEventSchema, EventCategory, RepeatTy
 import { DEFAULT_COLORS } from '../../constants/calendar.const';
 import { useCalendarData } from '../../hooks/use-calendar';
 import { EventService } from '../../services/event.service';
+
+enum CategoryColor {
+  REMINDER = '#ff70ab',
+  OCCASION = '#4635b1',
+  TASK = '#16c47f',
+  ARRANGEMENT = '#ffaf61'
+}
+
+const getDefaultCategoryColor = (category: EventCategory) => {
+  switch (category) {
+    case EventCategory.REMINDER:
+      return CategoryColor.REMINDER;
+    case EventCategory.OCCASION:
+      return CategoryColor.OCCASION;
+    case EventCategory.TASK:
+      return CategoryColor.TASK;
+    case EventCategory.ARRANGEMENT:
+      return CategoryColor.ARRANGEMENT;
+  }
+};
 
 const formatToDate = (date: Date | string | undefined | null) => {
   if (!date) {
@@ -57,7 +78,7 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
       startAt: formatToDate(event?.startAt || startDate),
       endAt: formatToDate(event?.endAt || endDate),
       calendarId: event?.calendarId || myCalendars?.find((c) => c.isMain)?.id,
-      color: event?.color || '#16c47f',
+      color: event?.color || getDefaultCategoryColor(event?.category || EventCategory.TASK),
       link: event?.link,
       description: event?.description,
       frequency: event?.repeat?.frequency || RepeatType.NONE,
@@ -68,6 +89,7 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
   const { mutate: createMutate, isPending: isCreatePending } = useMutation({
     mutationFn: EventService.create,
     onSuccess: () => {
+      toast.success('Event created');
       queryClient.invalidateQueries({
         queryKey: [EVENTS]
       });
@@ -78,6 +100,7 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
   const { mutate: updateMutate, isPending: isUpdatePending } = useMutation({
     mutationFn: EventService.update,
     onSuccess: () => {
+      toast.success('Event updated');
       queryClient.invalidateQueries({
         queryKey: [EVENTS]
       });
@@ -129,7 +152,7 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
   const isLoading = isCreatePending || isUpdatePending;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 h-full grow max-h-full">
       <div className="grid gap-2">
         <Input {...register('name')} id="title" placeholder="New event title" errorMessage={errors.name?.message} />
       </div>
@@ -139,7 +162,14 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
           <Label>Category</Label>
 
           <Select
-            onValueChange={(value) => setValue('category', value as EventCategory)}
+            onValueChange={(value: EventCategory) => {
+              setValue('category', value);
+              setValue('color', getDefaultCategoryColor(value));
+              if (value === EventCategory.OCCASION) {
+                setValue('endAt', undefined);
+                setValue('frequency', RepeatType.NONE);
+              }
+            }}
             defaultValue={watch('category')}>
             <SelectTrigger className="w-full">
               <SelectValue />
@@ -183,10 +213,14 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
                   !startAt && 'text-muted-foreground'
                 )}>
                 <CalendarIcon className="h-4 w-4 opacity-50" />
-                {startAt ? format(startAt, 'dd/MM/yyyy HH:mm') : <span>Start date</span>}
+                {startAt ? (
+                  format(startAt, watch('category') === EventCategory.OCCASION ? 'dd/MM/yyyy' : 'dd/MM/yyyy HH:mm')
+                ) : (
+                  <span>Start date</span>
+                )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
+            <PopoverContent className="w-auto p-0 z-10000">
               <div className="sm:flex">
                 <Calendar
                   mode="single"
@@ -196,7 +230,11 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
                   }}
                   initialFocus
                 />
-                <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x">
+                <div
+                  className={cn(
+                    'flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x',
+                    watch('category') === EventCategory.OCCASION && 'hidden'
+                  )}>
                   <ScrollArea className="w-64 sm:w-auto">
                     <div className="flex sm:flex-col p-2">
                       {Array.from({ length: 24 }, (_, i) => i).map((hour) => (
@@ -251,7 +289,7 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
                     {endAt ? format(endAt, 'dd/MM/yyyy HH:mm') : <span>End date</span>}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
+                <PopoverContent className="w-auto p-0 z-10000">
                   <div className="sm:flex">
                     <Calendar
                       mode="single"
@@ -321,10 +359,10 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
           />
 
           <Select
-            onValueChange={(value) => setValue('frequency', value as RepeatType)}
+            onValueChange={(value: RepeatType) => setValue('frequency', value)}
             value={watch('frequency')}
             defaultValue={'NONE'}>
-            <SelectTrigger>
+            <SelectTrigger className="grow">
               <SelectValue placeholder="Repeat type" />
             </SelectTrigger>
             <SelectContent>
@@ -367,7 +405,7 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
         {errors.color?.message && <p className="text-sm text-red-500">{errors.color.message}</p>}
       </div>
 
-      <Button type="submit" isLoading={isLoading} disabled={isCreatePending}>
+      <Button type="submit" isLoading={isLoading} disabled={isCreatePending} className="mt-auto">
         {action === 'edit' ? 'Update' : 'Create'}
       </Button>
     </form>

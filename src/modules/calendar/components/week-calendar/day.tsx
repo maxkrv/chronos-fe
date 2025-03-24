@@ -1,52 +1,44 @@
-import { useMutation } from '@tanstack/react-query';
-import { FC, useEffect, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import dayjs from 'dayjs';
+import { FC } from 'react';
+import { DateRange } from 'react-day-picker';
+import { toast } from 'sonner';
 
+import { EVENTS } from '../../../../shared/constants/query-keys';
 import { ICalendarEvent } from '../../calendar.interface';
 import { EventService } from '../../services/event.service';
-import { AddEventModal } from '../modal/add-event-modal';
-import { EditEventModal } from '../modal/edit-event-modal';
-import { CalendarEvent } from './event';
+import { CalendarEvent, getTodayEvent } from './event';
 import { CALENDAR_DAY_HEIGHT, Hour } from './hour';
 
 interface DayProps {
   events: ICalendarEvent[];
   day: Date;
+  onEdit: (event: ICalendarEvent) => void;
+  onAdd: (event: DateRange) => void;
 }
-export const Day: FC<DayProps> = ({ events, day }) => {
-  const [e, setEvents] = useState(events);
-  const [isAddEventOpen, setIsAddEventOpen] = useState(false);
-  const [startAt, setStartAt] = useState<Date | undefined>(undefined);
-  const [endAt, setEndAt] = useState<Date | undefined>(undefined);
-  const [isEditEventOpen, setIsEditEventOpen] = useState(false);
-  const [event, setEvent] = useState<ICalendarEvent | undefined>(undefined);
+export const Day: FC<DayProps> = ({ events, day, onEdit, onAdd }) => {
+  const queryClient = useQueryClient();
 
   const { mutate } = useMutation({
-    mutationFn: EventService.update
+    mutationFn: EventService.update,
+    onSuccess: () => {
+      toast.success('Event updated');
+      queryClient.refetchQueries({
+        queryKey: [EVENTS]
+      });
+    }
   });
 
   function onUpdate(event: ICalendarEvent) {
-    setEvents((prev) => prev.map((e) => (e.id === event.id ? event : e)));
     mutate(event);
   }
 
   const setDate = (timeStart: number, timeEnd: number) => {
-    const startAt = new Date(day);
-    startAt.setHours(timeStart);
-    startAt.setMinutes(0);
+    const from = dayjs(day).hour(timeStart).minute(0).second(0).millisecond(0).toDate();
+    const to = dayjs(day).hour(timeEnd).minute(0).second(0).millisecond(0).toDate();
 
-    const endAt = new Date(day);
-    endAt.setHours(timeEnd);
-    endAt.setMinutes(0);
-
-    setStartAt(startAt);
-    setEndAt(endAt);
-    setIsAddEventOpen(true);
+    onAdd({ from, to });
   };
-
-  // refactor to react-query cache update
-  useEffect(() => {
-    setEvents(events);
-  }, [events]);
 
   return (
     <>
@@ -54,31 +46,22 @@ export const Day: FC<DayProps> = ({ events, day }) => {
         className="w-full flex flex-col relative overflow-hidden min-w-24"
         style={{ maxHeight: CALENDAR_DAY_HEIGHT }}>
         {Array.from({ length: 24 }).map((_, i) => (
-          <Hour hour={i} key={i} setDate={setDate} />
+          <Hour hour={i} key={i} setDate={setDate} isActive={dayjs(day).startOf('day').add(i, 'hour').isAfter()} />
         ))}
-        {e.map((event, i) => (
-          <CalendarEvent
-            key={i}
-            event={event}
-            day={day}
-            onUpdate={onUpdate}
-            setIsEditEventOpen={(event) => {
-              setEvent(event);
-              setIsEditEventOpen(true);
-            }}
-          />
-        ))}
+        {events
+          .filter((e) => getTodayEvent(e, day))
+          .map((event) => (
+            <CalendarEvent
+              key={event.id}
+              event={event}
+              day={day}
+              onUpdate={onUpdate}
+              onEdit={(event) => {
+                onEdit(event);
+              }}
+            />
+          ))}
       </div>
-
-      <AddEventModal
-        open={isAddEventOpen}
-        onClose={() => setIsAddEventOpen(false)}
-        endDate={endAt}
-        startDate={startAt}
-        action="add"
-        onSubmit={() => setIsAddEventOpen(false)}
-      />
-      <EditEventModal open={isEditEventOpen} onClose={() => setIsEditEventOpen(false)} event={event} />
     </>
   );
 };

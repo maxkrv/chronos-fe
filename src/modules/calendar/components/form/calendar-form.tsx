@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 import { Button } from '@/shared/components/ui/button';
 import { Input } from '@/shared/components/ui/input';
@@ -42,6 +43,7 @@ export const CalendarForm: FC<CalendarFormProps> = ({ action, calendar, onSubmit
     mutationFn: CalendarService.create,
     onSuccess: () => {
       onSubmitCb?.();
+      toast.success('Calendar added');
       queryClient.invalidateQueries({
         queryKey: [MY_CALENDARS]
       });
@@ -51,6 +53,7 @@ export const CalendarForm: FC<CalendarFormProps> = ({ action, calendar, onSubmit
   const { mutate: updateMutate, isPending: isUpdatePending } = useMutation({
     mutationFn: CalendarService.update,
     onSuccess: () => {
+      toast.success('Calendar updated');
       onSubmitCb?.();
       queryClient.invalidateQueries({
         queryKey: [MY_CALENDARS]

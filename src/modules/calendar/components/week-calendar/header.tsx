@@ -24,7 +24,7 @@ export const WeekCalendarHeader: FC<WeekCalendarHeaderProps> = ({ fromDay, days 
           const day = dayjs(fromDay).add(i, 'day');
           return (
             <div
-              key={i}
+              key={day.toString()}
               className={cn(
                 'flex flex-row items-end justify-center font-semibold gap-2 text-accent-foreground bg-accent grow text-center py-4 rounded-[1.25rem] w-24 min-w-24',
                 dayjs(day).isToday() && 'bg-primary text-primary-foreground'

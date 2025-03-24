@@ -13,14 +13,17 @@ const getFormattedHour = (date: Date | Dayjs | string) => dayjs(date).format('HH
 interface EventContentProps extends React.HTMLAttributes<HTMLDivElement> {
   event: ICalendarEvent;
   height: number;
+  isResizeable?: boolean;
 }
 
-export const EventContent: FC<EventContentProps> = ({ event, height, className, ...props }) => (
-  <div {...props} className={cn('flex flex-col w-full gap-1 min-h-1.5 cursor-move', className)}>
+export const EventContent: FC<EventContentProps> = ({ event, height, className, isResizeable = true, ...props }) => (
+  <div
+    {...props}
+    className={cn('flex flex-col w-full gap-1 min-h-1.5 cursor-pointer', isResizeable && 'cursor-move', className)}>
     <div className="m-0 p-0 overflow-hidden grow flex">
       <p
         className={cn(
-          'overflow-hidden leading-4 grow truncate',
+          'overflow-hidden leading-4 grow truncate line-clamp-1',
           height > CALENDAR_HOUR_HEIGHT &&
             'text-clip  [mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_70%,rgba(0,0,0,0))] ',
           height < CALENDAR_HOUR_HEIGHT * 0.75 && 'my-auto'

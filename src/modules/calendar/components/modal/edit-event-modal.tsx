@@ -16,7 +16,7 @@ interface EditEventModalProps {
 export const EditEventModal: FC<EditEventModalProps> = ({ open, onClose, event }) => {
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px] h-[572px] flex flex-col">
+      <DialogContent className="sm:max-w-[30rem] min-h-[36rem] flex flex-col">
         <DialogHeader>
           <DialogTitle>Update {event?.name}</DialogTitle>
         </DialogHeader>

@@ -88,7 +88,7 @@ export class EventService {
       })
       .json();
   }
-  
+
   static async acceptInvitation(id: number) {
     return apiClient.patch(`event-invitations/${id}/accept`).json();
   }

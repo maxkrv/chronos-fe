@@ -11,7 +11,6 @@ export enum EventCategory {
 
 export enum RepeatType {
   NONE = 'NONE',
-  HOURLY = 'HOURLY',
   DAILY = 'DAILY',
   WEEKLY = 'WEEKLY',
   MONTHLY = 'MONTHLY',
