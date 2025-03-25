@@ -10,6 +10,7 @@ import { useUserStore } from '@/shared/store/user.store';
 import { ChangeAvatar } from '../components/change-avatar';
 import { ChangePasswordModal } from '../components/change-password-modal';
 import { EditProfileForm } from '../components/form/edit-profile-form';
+import { LoadHolidays } from '../components/load-holidays';
 
 export const ProfileView = () => {
   const navigate = useNavigate();
@@ -38,10 +39,12 @@ export const ProfileView = () => {
           <ChangeAvatar className="absolute bottom-0 right-0" />
         </div>
 
-        <div className="flex flex-col capitalize">
-          <span>{user?.name}</span>
-
-          <span>{user?.surname}</span>
+        <div className="flex flex-col">
+          <div className="flex flex-wrap gap-2">
+            <span className="capitalize truncate">{user?.name}</span>
+            <span className="capitalize truncate">{user?.surname}</span>
+          </div>
+          <span className="text-muted-foreground truncate">{user?.email}</span>
         </div>
       </div>
 
@@ -50,9 +53,12 @@ export const ProfileView = () => {
         <EditProfileForm />
       </div>
 
-      <div>
-        <h2 className="text-xl font-bold mb-3">Password</h2>
-        <ChangePasswordModal email={user?.email || ''} />
+      <div className="space-y-4 w-full">
+        <h2 className="text-xl font-bold mb-3">Other</h2>
+        <div className="grid">
+          <ChangePasswordModal email={user?.email || ''} />
+        </div>
+        <LoadHolidays />
       </div>
 
       <Button variant="outline" className="mt-auto" onClick={handleLogout}>

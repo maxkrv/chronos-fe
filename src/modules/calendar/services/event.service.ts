@@ -30,12 +30,15 @@ export class EventService {
       fromDate && searchParams.set('fromDate', typeof fromDate === 'string' ? fromDate : fromDate.toISOString());
       toDate && searchParams.set('toDate', typeof toDate === 'string' ? toDate : toDate.toISOString());
       searchQuery && searchParams.set('search', searchQuery);
-
-      return apiClient
-        .get<ICalendarEvent[]>('events', {
-          searchParams
-        })
-        .json();
+      try {
+        return apiClient
+          .get<ICalendarEvent[]>('events', {
+            searchParams
+          })
+          .json();
+      } catch (error) {
+        return [];
+      }
     }
 
     if (!calendarId.length) return [await fetchEvents(null)];

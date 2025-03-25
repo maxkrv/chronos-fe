@@ -84,7 +84,7 @@ export const Header = () => {
   };
 
   return (
-    <header className={`sticky top-0 z-50 max-h-16 w-full border-b backdrop-blur transition-all duration-300 px-4`}>
+    <header className={`sticky top-0 z-9999 max-h-16 w-full border-b backdrop-blur transition-all duration-300 px-4`}>
       <div className="@container flex h-16 items-center justify-between gap-4">
         <a
           href="#"

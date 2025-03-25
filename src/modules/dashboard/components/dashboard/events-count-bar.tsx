@@ -108,26 +108,28 @@ const formatEventsByWeek = (events: ICalendarEvent[]): EventsCountBarLine[] => {
 
 export const EventsCountBar: FC = memo(() => {
   const [activeTab, setActiveTab] = useState('weekly');
-  const last7DaysDate = useMemo(
-    () => ({
-      from: dayjs().subtract(8, 'day').toDate(),
-      to: dayjs().subtract(1, 'day').toDate()
-    }),
-    []
-  );
+  const last7DaysDate = useMemo(() => {
+    const from = dayjs().subtract(8, 'day').hour(0).minute(0).second(0).millisecond(0);
+    return {
+      from: from.toDate(),
+      to: from.add(7, 'day').toDate()
+    };
+  }, []);
+
   const { data: weeklyData = [] } = useQuery({
     queryKey: [EVENTS, last7DaysDate],
     queryFn: () => EventService.findAll([], last7DaysDate.from, last7DaysDate.to),
     select: (events) => formatEventsByDay(events.flat())
   });
 
-  const last4WeeksDate = useMemo(
-    () => ({
-      from: dayjs().subtract(4, 'week').toDate(),
-      to: dayjs().subtract(1, 'day').toDate()
-    }),
-    []
-  );
+  const last4WeeksDate = useMemo(() => {
+    const from = dayjs().subtract(4, 'week').hour(0).minute(0).second(0).millisecond(0);
+    return {
+      from: from.toDate(),
+      to: from.add(4, 'week').subtract(1, 'day').toDate()
+    };
+  }, []);
+
   const { data: monthlyData = [] } = useQuery({
     queryKey: [EVENTS, last4WeeksDate],
     queryFn: () => EventService.findAll([], last4WeeksDate.from, last4WeeksDate.to),

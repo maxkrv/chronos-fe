@@ -1,8 +1,3 @@
-'use client';
-
-import { useEffect } from 'react';
-import { toast } from 'sonner';
-
 import { Separator } from '@/shared/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/shared/components/ui/sidebar';
 import { AppHeader } from '@/shared/layouts/app-header';
@@ -13,14 +8,6 @@ import { DashboardHeader } from '../components/dashboard-header';
 import { DashboardSidebar } from '../components/dashboard-sidebar';
 
 export const DashboardPage = () => {
-  useEffect(() => {
-    // Show welcome toast when dashboard loads
-    toast.success('Welcome to your dashboard!', {
-      description: 'Your interactive dashboard is ready',
-      duration: 5000
-    });
-  }, []);
-
   return (
     <ContentLayout>
       <SidebarProvider>

@@ -36,6 +36,10 @@ export class CalendarService {
       .json();
   }
 
+  static async loadHolidays(countryCode: string, year: number = new Date().getFullYear()) {
+    return apiClient.post(`calendars/holidays/${countryCode}`, { searchParams: { year } }).json();
+  }
+
   static async acceptInvitation(id: number) {
     return apiClient.patch(`calendar-invitations/${id}/accept`).json();
   }
