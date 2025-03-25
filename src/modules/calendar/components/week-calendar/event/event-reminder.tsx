@@ -19,12 +19,17 @@ interface EventReminderProps {
 
 export const EventReminder: FC<EventReminderProps> = ({ event, indentTop, onUpdate, setIsEditEventOpen }) => {
   const [startOffset, setStartOffset] = useState(indentTop);
+  const [isHovered, setIsHovered] = useState(false);
   const initialRef = useRef({ startY: 0, originalOffset: indentTop });
   const offsetRef = useRef(startOffset);
 
   useEffect(() => {
     offsetRef.current = startOffset;
   }, [startOffset]);
+
+  useEffect(() => {
+    setStartOffset(indentTop);
+  }, [indentTop]);
 
   const updateEventTime = () => {
     const newStart = dayjs(event.startAt)
@@ -72,9 +77,11 @@ export const EventReminder: FC<EventReminderProps> = ({ event, indentTop, onUpda
             top: startOffset,
             color: event.color,
             minHeight: REMINDER_HEIGHT,
-            zIndex: CALENDAR_DAY_HEIGHT - REMINDER_HEIGHT
+            zIndex: isHovered ? CALENDAR_DAY_HEIGHT : CALENDAR_DAY_HEIGHT - REMINDER_HEIGHT
           }}
-          onMouseDown={handleDragStart}>
+          onMouseDown={handleDragStart}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}>
           <div className="flex flex-row w-full gap-2 p-1 rounded-lg overflow-hidden border-2 border-transparent hover:border-dashed hover:border-current max-h-full items-center hover:bg-mix-primary-20">
             <div className="min-w-2.5 max-w-2.5 min-h-2.5 max-h-2.5 bg-current rounded-md" />
             <p className="m-0 p-0 truncate leading-4">{event.name}</p>

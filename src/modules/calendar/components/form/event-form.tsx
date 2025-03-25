@@ -81,8 +81,8 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
       color: event?.color || getDefaultCategoryColor(event?.category || EventCategory.TASK),
       link: event?.link,
       description: event?.description,
-      frequency: event?.repeat?.frequency || RepeatType.NONE,
-      interval: event?.repeat?.interval
+      frequency: event?.eventRepeat?.frequency || RepeatType.NONE,
+      interval: event?.eventRepeat?.interval
     }
   });
 
@@ -136,7 +136,6 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
     if (dto.category === EventCategory.REMINDER || dto.category === EventCategory.OCCASION) {
       delete dto.endAt;
     }
-
     if (action === 'add') {
       createMutate(dto);
     } else {

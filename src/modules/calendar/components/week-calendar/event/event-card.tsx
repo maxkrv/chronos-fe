@@ -46,8 +46,20 @@ export const EventCard: FC<EventCardProps> = ({
     dayjs(event.startAt).isSame(day, 'day') && (event.endAt ? dayjs(event.endAt).isSame(day, 'day') : true);
 
   useEffect(() => {
-    eventStateRef.current = { height, startOffset };
-  }, [height, startOffset]);
+    eventStateRef.current.height = height;
+  }, [height]);
+
+  useEffect(() => {
+    eventStateRef.current.startOffset = startOffset;
+  }, [startOffset]);
+
+  useEffect(() => {
+    setHeight(eventHeight);
+  }, [eventHeight]);
+
+  useEffect(() => {
+    setStartOffset(indentTop);
+  }, [indentTop]);
 
   const updateEventTime = () => {
     const { height: latestHeight, startOffset: latestOffset } = eventStateRef.current;
@@ -107,18 +119,20 @@ export const EventCard: FC<EventCardProps> = ({
     window.addEventListener('mousemove', handleMouseMove, { signal });
     window.addEventListener('mouseup', handleMouseUp, { signal });
   };
-
   return (
     <HoverCard openDelay={0}>
       <HoverCardTrigger asChild>
         <div
-          className="absolute p-0.75 w-full h-full overflow-hidden grow-0 shrink-0 select-none "
+          className={cn(
+            'absolute p-0.75 w-full h-full overflow-hidden grow-0 shrink-0 select-none',
+            isHovered && 'z-5000'
+          )}
           style={{
             height,
             top: startOffset,
             color: event.color,
             minHeight: CALENDAR_HOUR_HEIGHT / 2,
-            zIndex: isHovered ? CALENDAR_DAY_HEIGHT : Math.max(CALENDAR_DAY_HEIGHT - height, 0)
+            zIndex: Math.max(CALENDAR_DAY_HEIGHT - eventHeight, 0)
           }}
           onMouseEnter={() => {
             setIsHovered(true);

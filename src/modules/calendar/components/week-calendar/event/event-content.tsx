@@ -23,9 +23,9 @@ export const EventContent: FC<EventContentProps> = ({ event, height, className, 
     <div className="m-0 p-0 overflow-hidden grow flex">
       <p
         className={cn(
-          'overflow-hidden leading-4 grow truncate line-clamp-1',
+          'overflow-hidden leading-4 grow truncate',
           height > CALENDAR_HOUR_HEIGHT &&
-            'text-clip  [mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_70%,rgba(0,0,0,0))] ',
+            'text-clip break-all  [mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_70%,rgba(0,0,0,0))] ',
           height < CALENDAR_HOUR_HEIGHT * 0.75 && 'my-auto'
         )}>
         <span className="inline-flex gap-2 size-4 mr-2 items-center">

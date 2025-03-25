@@ -30,7 +30,7 @@ export const Day: FC<DayProps> = ({ events, day, onEdit, onAdd }) => {
   });
 
   function onUpdate(event: ICalendarEvent) {
-    mutate(event);
+    mutate({ ...event, frequency: event.eventRepeat?.frequency, interval: event.eventRepeat?.interval });
   }
 
   const setDate = (timeStart: number, timeEnd: number) => {
@@ -39,7 +39,6 @@ export const Day: FC<DayProps> = ({ events, day, onEdit, onAdd }) => {
 
     onAdd({ from, to });
   };
-
   return (
     <>
       <div

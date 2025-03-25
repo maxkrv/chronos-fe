@@ -48,7 +48,7 @@ export interface ICalendarEvent {
     id: number;
     user: User;
   }[];
-  repeat?: {
+  eventRepeat?: {
     frequency: RepeatType;
     interval: number;
     repeatTime: number;

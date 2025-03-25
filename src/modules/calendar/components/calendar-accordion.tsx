@@ -60,7 +60,7 @@ export const CalendarAccordion: FC<CalendarAccordionProps> = ({ name, items, isL
                         handleToggle(item);
                       }}>
                       <div
-                        data-active={calendarsIds.includes(item.id)}
+                        data-active={calendarsIds.includes(item.id) || !calendarsIds.length}
                         className="group/calendar-item flex aspect-square size-4 shrink-0 items-center justify-center rounded-sm border border-sidebar-border text-sidebar-primary-foreground data-[active=true]:border-sidebar-primary data-[active=true]:bg-sidebar-primary">
                         <Check className="hidden size-3 group-data-[active=true]/calendar-item:block" />
                       </div>

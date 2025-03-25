@@ -34,7 +34,7 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({ events = [], fromDay = new
   }, []);
 
   const fullDayEvents = events.filter(
-    (e) => e.category === EventCategory.OCCASION || dayjs(e.startAt).isBefore(dayjs(e.endAt).subtract(1, 'day'), 'day')
+    (e) => e.category === EventCategory.OCCASION || dayjs(e.endAt).diff(e.startAt) >= MILISECONDS_IN_DAY
   );
 
   return (
@@ -42,23 +42,33 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({ events = [], fromDay = new
       <WeekCalendarHeader fromDay={fromDay} days={days} />
 
       <div className="border-t-3 overflow-x-scroll scrollbar-none grow h-full grid" ref={containerRef}>
-        <div className="pl-16 w-full my-3">
-          <div className="w-full flex gap-0 border-2">
+        <div className="pl-16 w-full my-3 sticky top-0 z-7000 empty:hidden">
+          <div className="w-full flex gap-0 backdrop-blur-md">
             {Array.from({ length: days }).map((_, i) => (
-              <div key={i} className="border grid grow min-w-12 w-full">
+              <div
+                key={i}
+                className="border grid grow min-w-12 w-full overflow-auto"
+                style={{ maxHeight: CALENDAR_HOUR_HEIGHT + 5 }}>
                 {fullDayEvents
                   .filter((e) => {
                     const today = dayjs(fromDay).add(i, 'day').hour(0).minute(0).second(0).millisecond(0);
                     const dayStart = dayjs(today).hour(0).minute(0).second(0).millisecond(0);
                     const dayEnd = dayjs(today).hour(23).minute(59).second(59).millisecond(999);
                     const te = getTodayEvent(e, today.toDate());
-                    return (
-                      te &&
-                      te.to &&
-                      dayjs(te.to).diff(te.from) >= MILISECONDS_IN_DAY &&
-                      !dayjs(te.to).isBetween(dayStart, dayEnd, null, '(]') &&
-                      !dayjs(te.from).isBetween(dayStart, dayEnd, null, '(]')
-                    );
+                    if (!te) return false;
+
+                    if (e.category === EventCategory.OCCASION) {
+                      return true;
+                    }
+
+                    if (te.to) {
+                      return (
+                        dayjs(te.to).diff(te.from) >= MILISECONDS_IN_DAY &&
+                        !dayjs(te.to).isBetween(dayStart, dayEnd, null, '[)') &&
+                        !dayjs(te.from).isBetween(dayStart, dayEnd, null, '(]')
+                      );
+                    }
+                    return false;
                   })
                   .map((event) => (
                     <FullDayEvent

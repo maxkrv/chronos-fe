@@ -96,13 +96,13 @@ export const EventHoverCard: FC<EventHoverCardProps> = ({ event, setIsEditEventO
             </div>
           </div>
 
-          <div className="flex flex-col ml-auto text-muted-foreground">
+          <div className="flex flex-col ml-auto text-muted-foreground justify-center items-end">
             {difference && <p className="whitespace-nowrap">{difference}</p>}
 
-            {event.repeat && (
-              <p className="flex items-center">
+            {event.eventRepeat && (
+              <p className="flex items-center gap-1">
                 <TbRepeat className="opacity-50" />
-                {event.repeat.interval} {event.repeat.frequency.charAt(0)}
+                {event.eventRepeat.interval} {event.eventRepeat.frequency.charAt(0)}
               </p>
             )}
           </div>

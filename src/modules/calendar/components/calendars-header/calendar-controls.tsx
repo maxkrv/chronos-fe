@@ -1,12 +1,13 @@
 import dayjs from 'dayjs';
 import { useEffect, useRef, useState } from 'react';
 import { IoMdSearch } from 'react-icons/io';
-import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight, MdOutlineSearch } from 'react-icons/md';
+import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight } from 'react-icons/md';
 import { useDebounceCallback } from 'usehooks-ts';
 
 import { Input } from '@/shared/components/ui/input';
 
 import { Button } from '../../../../shared/components/ui/button';
+import { cn } from '../../../../shared/lib/utils';
 import { useDatePicker } from '../../stores/date-picker-store';
 import { useSearchStore } from '../../stores/search.store';
 import { CalendarView } from './calendar-select';
@@ -24,17 +25,21 @@ export const CalendarControls = () => {
     }
   }, [searchActive]);
 
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.onfocus = () => {
+        toggleSearch(true);
+      };
+    }
+  }, []);
+
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLocalSearchQuery(e.target.value);
   };
 
   const closeSearch = () => {
     setLocalSearchQuery('');
-    toggleSearch();
-  };
-
-  const handleBlur = () => {
-    closeSearch();
+    toggleSearch(false);
   };
 
   const debouncedSearch = useDebounceCallback((query: string) => {
@@ -112,29 +117,23 @@ export const CalendarControls = () => {
     }
   };
   return (
-    <div className={`flex gap-2 ${searchActive ? 'flex-grow' : ''}`}>
-      {!searchActive && (
-        <Button variant="outline" size="icon" onClick={toggleSearch}>
-          <MdOutlineSearch className="size-5" />
-        </Button>
-      )}
-
-      <div className={`relative flex-grow`}>
-        <div
-          className={`absolute right-0 transition-all duration-400 ${searchActive ? 'w-full' : 'w-0 overflow-hidden'}`}>
-          {searchActive && (
-            <Input
-              icon={<IoMdSearch size="1.25rem" />}
-              iconPosition="left"
-              placeholder="Search"
-              ref={inputRef}
-              value={searchQuery}
-              onChange={onSearchChange}
-              onBlur={handleBlur}
-              className="w-full"
+    <div className="flex gap-2 flex-grow justify-end">
+      <div className={cn('transition-all duration-400 flex-grow max-sm:hidden', searchActive ? 'w-full' : 'w-min')}>
+        <Input
+          icon={
+            <IoMdSearch
+              size="1.25rem"
+              className="cursor-pointer"
+              onClick={() => (searchActive ? closeSearch() : toggleSearch(true))}
             />
-          )}
-        </div>
+          }
+          iconPosition="left"
+          placeholder="Search"
+          ref={inputRef}
+          value={searchQuery}
+          onChange={onSearchChange}
+          className={cn('w-full min-w-8 ')}
+        />
       </div>
 
       <Button variant="outline" className="max-sm:hidden" onClick={onToday}>

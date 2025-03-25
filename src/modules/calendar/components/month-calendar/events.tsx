@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import { ElementType, FC } from 'react';
 import { FaTasks } from 'react-icons/fa';
 import { LuAlarmClock } from 'react-icons/lu';
@@ -7,6 +6,7 @@ import { SiGooglemeet } from 'react-icons/si';
 
 import { cn } from '../../../../shared/lib/utils';
 import { EventCategory, ICalendarEvent } from '../../calendar.interface';
+import { getTodayEvent } from '../week-calendar/event';
 
 interface MonthCalendarDayEventsProps {
   events: ICalendarEvent[];
@@ -21,36 +21,9 @@ interface MonthCalendarDayEventsGroupProps {
   events: ICalendarEvent[];
 }
 
-const getReminderOccurrenceToday = (startAt: Date, repeatAfter?: number, nowTime: Date = new Date()): Date | null => {
-  if (!repeatAfter || repeatAfter <= 0) return null;
-  const now = dayjs(nowTime);
-  const todayStart = now.startOf('day');
-  const todayEnd = now.endOf('day');
-  const start = dayjs(startAt); // Start of the day
-
-  if (start.isBetween(todayStart, todayEnd, null, '[)')) return start.toDate();
-
-  const diff = now.diff(start, 'millisecond');
-  const lastOccurrence = start.add(Math.floor(diff / repeatAfter) * repeatAfter, 'millisecond');
-  const nextOccurrence = start.add(Math.ceil(diff / repeatAfter) * repeatAfter, 'millisecond');
-
-  if (lastOccurrence.isBetween(todayStart, todayEnd, null, '[)')) return lastOccurrence.toDate();
-  if (nextOccurrence.isBetween(todayStart, todayEnd, null, '[)')) return nextOccurrence.toDate();
-
-  return null;
-};
-
 const MonthCalendarDayEvents: FC<MonthCalendarDayEventsProps> = ({ events, day, type, className, icon: Icon }) => {
   const e = events.filter((event) => {
-    const now = dayjs(day);
-    const startIsToday = dayjs(event.startAt).isSame(now, 'day');
-    const endIsToday = dayjs(event.endAt).isSame(now, 'day');
-    const reminderTime = getReminderOccurrenceToday(event.startAt, event.repeat?.repeatTime, now.toDate());
-    const isReminderNotToday = event.category === EventCategory.REMINDER && !reminderTime;
-
-    if (!event || !(startIsToday || endIsToday) || isReminderNotToday) return false;
-
-    return event.category === type;
+    return getTodayEvent(event, day) && event.category === type;
   });
 
   if (e.length == 0) return null;
