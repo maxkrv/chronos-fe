@@ -23,7 +23,7 @@ export const Hour: FC<HourProps> = ({ setDate, hour, isActive = false }) => {
   };
 
   return (
-    <button
+    <div
       className={cn(
         'relative border border-neutral-200 flex flex-col group',
         isActive && 'hover:bg-red-400/30 hover:cursor-pointer hover:border-dashed hover:border-red-600 hover:rounded-lg'
@@ -43,6 +43,6 @@ export const Hour: FC<HourProps> = ({ setDate, hour, isActive = false }) => {
         )}>
         <FaPlus className="size-1/2" />
       </div>
-    </button>
+    </div>
   );
 };

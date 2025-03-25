@@ -23,6 +23,12 @@ export enum CalendarVisibility {
   SHARED = 'SHARED'
 }
 
+export enum CalendarRoleSelect {
+  OWNER = 'OWNER',
+  ADMIN = 'ADMIN',
+  MEMBER = 'MEMBER'
+}
+
 export type InvitationStatus = 'PENDING' | 'ACCEPTED' | 'DECLINED';
 
 export interface ICalendarEvent {
@@ -103,6 +109,8 @@ export interface ICalendar {
   updatedAt: Date;
   isMain: boolean;
   attendees: User[];
+  ownerId: number;
+  users?: [{ role: CalendarRoleSelect }];
 }
 
 export interface ICalendarInvitation {
@@ -121,4 +129,12 @@ export interface IMyCalendarInvitation extends ICalendarInvitation {
 
 export interface IMyEventInvitation extends ICalendarInvitation {
   event: ICalendarEvent;
+}
+
+export interface CalendarParticipant {
+  id: number;
+  userId: number;
+  calendarId: number;
+  role: CalendarRoleSelect;
+  user: User;
 }

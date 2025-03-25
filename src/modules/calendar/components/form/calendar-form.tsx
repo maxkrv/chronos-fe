@@ -18,9 +18,10 @@ interface CalendarFormProps {
   onSubmit?: () => void;
   action: 'add' | 'edit';
   calendar?: ICalendar;
+  isReadOnly?: boolean;
 }
 
-export const CalendarForm: FC<CalendarFormProps> = ({ action, calendar, onSubmit: onSubmitCb }) => {
+export const CalendarForm: FC<CalendarFormProps> = ({ action, calendar, onSubmit: onSubmitCb, isReadOnly }) => {
   const queryClient = useQueryClient();
 
   const {
@@ -78,7 +79,13 @@ export const CalendarForm: FC<CalendarFormProps> = ({ action, calendar, onSubmit
       <div className="grid gap-6">
         <div className="grid gap-2">
           <Label htmlFor="name">Name</Label>
-          <Input {...register('name')} id="name" placeholder="Super Calendar" errorMessage={errors.name?.message} />
+          <Input
+            {...register('name')}
+            id="name"
+            placeholder="Super Calendar"
+            errorMessage={errors.name?.message}
+            readOnly={isReadOnly}
+          />
         </div>
 
         <div className="grid gap-2">
@@ -86,7 +93,8 @@ export const CalendarForm: FC<CalendarFormProps> = ({ action, calendar, onSubmit
 
           <Select
             onValueChange={(value) => setValue('visibility', value as CalendarVisibility)}
-            defaultValue={watch('visibility')}>
+            defaultValue={watch('visibility')}
+            disabled={isReadOnly}>
             <SelectTrigger className="w-full">
               <SelectValue />
             </SelectTrigger>
@@ -101,13 +109,15 @@ export const CalendarForm: FC<CalendarFormProps> = ({ action, calendar, onSubmit
         </div>
 
         <div className="grid gap-2">
-          <Label htmlFor="description">Description (optional)</Label>
-          <Textarea {...register('description')} id="description" placeholder="..." />
+          <Label htmlFor="description">Description</Label>
+          <Textarea {...register('description')} id="description" placeholder="..." readOnly={isReadOnly} />
         </div>
 
-        <Button type="submit" className="w-full" disabled={!isValid || isLoading} isLoading={isLoading}>
-          {action === 'add' ? 'Add Calendar' : 'Update Calendar'}
-        </Button>
+        {!isReadOnly && (
+          <Button type="submit" className="w-full" disabled={!isValid || isLoading} isLoading={isLoading}>
+            {action === 'add' ? 'Add Calendar' : 'Update Calendar'}
+          </Button>
+        )}
       </div>
     </form>
   );

@@ -6,9 +6,11 @@ import { Button } from '@/shared/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/shared/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/ui/tabs';
 import { MY_CALENDARS } from '@/shared/constants/query-keys';
+import { useUserStore } from '@/shared/store/user.store';
 
 import { ICalendar } from '../../calendar.interface';
 import { CalendarService } from '../../services/calendar.service';
+import { CalendarParticipants } from '../calendar-participants';
 import { CalendarAttendeesForm } from '../form/calendar-attendees-form';
 import { CalendarForm } from '../form/calendar-form';
 
@@ -21,6 +23,7 @@ interface EditCalendarModalProps {
 
 export const EditCalendarModal: FC<EditCalendarModalProps> = ({ calendar, open, setOpen, onClose }) => {
   const queryClient = useQueryClient();
+  const { user } = useUserStore();
 
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
 
@@ -36,34 +39,45 @@ export const EditCalendarModal: FC<EditCalendarModalProps> = ({ calendar, open, 
     }
   });
 
+  const isCreator = user?.id === calendar?.ownerId;
+
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="h-[450px] flex flex-col">
-          <DialogTitle>Edit {calendar?.name}</DialogTitle>
+          <DialogTitle>{isCreator ? `Edit ${calendar?.name}` : `${calendar?.name}`}</DialogTitle>
 
           <Tabs defaultValue="details" className="h-full">
             <TabsList className="w-full">
               <TabsTrigger value="details">Details</TabsTrigger>
               <TabsTrigger value="participants">Participants</TabsTrigger>
-              <TabsTrigger value="danger">Danger Zone</TabsTrigger>
+              {isCreator && <TabsTrigger value="invitations">Invitations</TabsTrigger>}
+              {isCreator && <TabsTrigger value="danger">Danger Zone</TabsTrigger>}
             </TabsList>
 
             <TabsContent value="details">
-              <CalendarForm action="edit" calendar={calendar || undefined} onSubmit={onClose} />
+              <CalendarForm action="edit" calendar={calendar || undefined} onSubmit={onClose} isReadOnly={!isCreator} />
             </TabsContent>
 
             {calendar?.id && (
-              <TabsContent value="participants" className="flex">
+              <TabsContent value="participants">
+                <CalendarParticipants calendarId={calendar.id} isCreator={isCreator} />
+              </TabsContent>
+            )}
+
+            {calendar?.id && isCreator && (
+              <TabsContent value="invitations" className="flex">
                 <CalendarAttendeesForm calendarId={calendar!.id} />
               </TabsContent>
             )}
 
-            <TabsContent value="danger">
-              <Button variant="outline" onClick={() => setOpenConfirmModal(true)}>
-                Delete {calendar?.name}
-              </Button>
-            </TabsContent>
+            {isCreator && (
+              <TabsContent value="danger">
+                <Button variant="destructive" onClick={() => setOpenConfirmModal(true)}>
+                  Delete {calendar?.name}
+                </Button>
+              </TabsContent>
+            )}
           </Tabs>
         </DialogContent>
       </Dialog>

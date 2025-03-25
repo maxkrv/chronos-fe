@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/compo
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/ui/tabs';
 
 import { ICalendarEvent } from '../../calendar.interface';
+import { EventParticipants } from '../event-participants';
 import { EventAttendeesForm } from '../form/event-attendees-form';
 import { EventForm } from '../form/event-form';
 
@@ -25,6 +26,7 @@ export const EditEventModal: FC<EditEventModalProps> = ({ open, onClose, event }
           <TabsList className="w-full">
             <TabsTrigger value="details">Details</TabsTrigger>
             <TabsTrigger value="participants">Participants</TabsTrigger>
+            <TabsTrigger value="invitations">Invitations</TabsTrigger>
           </TabsList>
 
           <TabsContent value="details">
@@ -32,7 +34,13 @@ export const EditEventModal: FC<EditEventModalProps> = ({ open, onClose, event }
           </TabsContent>
 
           {event?.id && (
-            <TabsContent value="participants" className="flex">
+            <TabsContent value="participants">
+              <EventParticipants event={event} />
+            </TabsContent>
+          )}
+
+          {event?.id && (
+            <TabsContent value="invitations" className="flex">
               <EventAttendeesForm eventId={event.id} />
             </TabsContent>
           )}

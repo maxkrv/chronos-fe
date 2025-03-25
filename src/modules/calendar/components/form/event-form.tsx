@@ -60,7 +60,7 @@ const formatToDate = (date: Date | string | undefined | null) => {
 
 export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, action, onSubmit: onSubmitCb }) => {
   const queryClient = useQueryClient();
-  const { data: myCalendars } = useCalendarData();
+  const { calendarSelect } = useCalendarData();
 
   const {
     register,
@@ -77,7 +77,7 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
       category: event?.category || EventCategory.TASK,
       startAt: formatToDate(event?.startAt || startDate),
       endAt: formatToDate(event?.endAt || endDate),
-      calendarId: event?.calendarId || myCalendars?.find((c) => c.isMain)?.id,
+      calendarId: event?.calendarId || calendarSelect?.find((c) => c.isMain)?.id,
       color: event?.color || getDefaultCategoryColor(event?.category || EventCategory.TASK),
       link: event?.link,
       description: event?.description,
@@ -191,7 +191,7 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {myCalendars?.map((calendar) => (
+              {calendarSelect?.map((calendar) => (
                 <SelectItem key={calendar.id} value={String(calendar.id)}>
                   {calendar.name}
                 </SelectItem>

@@ -2,6 +2,8 @@ import { apiClient } from '@/shared/api/api';
 
 import {
   AddCalendarDto,
+  CalendarParticipant,
+  CalendarRoleSelect,
   EditCalendarDto,
   ICalendar,
   ICalendarInvitation,
@@ -62,5 +64,31 @@ export class CalendarService {
 
   static async delete(id: number) {
     return apiClient.delete(`calendars/${id}`).json();
+  }
+
+  static async getCalendarParticipants(id: number) {
+    return apiClient.get<CalendarParticipant[]>(`calendar-users/${id}/users`).json();
+  }
+
+  static async updateCalendarParticipant({
+    calendarId,
+    userId,
+    role
+  }: {
+    calendarId: number;
+    userId: number;
+    role: CalendarRoleSelect;
+  }) {
+    return apiClient
+      .patch(`calendar-users/${calendarId}/users/${userId}`, {
+        json: {
+          role
+        }
+      })
+      .json();
+  }
+
+  static async removeCalendarParticipant({ calendarId, userId }: { calendarId: number; userId: number }) {
+    return apiClient.delete(`calendar-users/${calendarId}/users/${userId}`).json();
   }
 }

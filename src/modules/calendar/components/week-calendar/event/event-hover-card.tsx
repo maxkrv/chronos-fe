@@ -18,6 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/ui
 import { UserAvatar } from '@/shared/components/user-avatar';
 import { EVENTS } from '@/shared/constants/query-keys';
 import { cn, formatDateDiff } from '@/shared/lib/utils';
+import { useUserStore } from '@/shared/store/user.store';
 
 interface EventHoverCardProps {
   event: ICalendarEvent;
@@ -26,6 +27,7 @@ interface EventHoverCardProps {
 
 export const EventHoverCard: FC<EventHoverCardProps> = ({ event, setIsEditEventOpen }) => {
   const queryClient = useQueryClient();
+  const { user } = useUserStore();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -41,6 +43,7 @@ export const EventHoverCard: FC<EventHoverCardProps> = ({ event, setIsEditEventO
   });
 
   const difference = event.endAt ? formatDateDiff(event.startAt, event.endAt) : null;
+  const isCreator = event.creatorId === user?.id;
 
   return (
     <>
@@ -54,14 +57,16 @@ export const EventHoverCard: FC<EventHoverCardProps> = ({ event, setIsEditEventO
             <p className="line-clamp-1 truncate whitespace-normal">{event.name}</p>
           </div>
 
-          <div className="flex gap-1 items-center">
-            <Button variant="outline" className="h-6 w-6" onClick={() => setIsEditEventOpen(event)}>
-              <FaPen className="h-3! w-3!" />
-            </Button>
-            <Button variant="destructive" className="h-6 w-6" onClick={() => setIsOpen(true)}>
-              <FaTrash className="h-3! w-3!" />
-            </Button>
-          </div>
+          {isCreator && (
+            <div className="flex gap-1 items-center">
+              <Button variant="outline" className="h-6 w-6" onClick={() => setIsEditEventOpen(event)}>
+                <FaPen className="h-3! w-3!" />
+              </Button>
+              <Button variant="destructive" className="h-6 w-6" onClick={() => setIsOpen(true)}>
+                <FaTrash className="h-3! w-3!" />
+              </Button>
+            </div>
+          )}
         </header>
 
         <div className="flex gap-2 items-center text-muted-foreground -ml-1.5">
