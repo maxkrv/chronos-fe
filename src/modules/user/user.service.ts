@@ -8,7 +8,7 @@ export class UserService {
   }
 
   static async updateProfile(dto: EditProfileDto) {
-    return apiClient.patch('users/profile', {
+    return apiClient.patch('users/me', {
       json: dto
     });
   }
