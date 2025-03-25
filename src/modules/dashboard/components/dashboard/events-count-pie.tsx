@@ -63,13 +63,13 @@ const renderActiveShape = (props: PieSectorDataItem) => {
 };
 
 export const EventsCountPie: FC = () => {
-  const pastMonthDate = React.useMemo(
-    () => ({
-      from: dayjs().subtract(1, 'month').toDate(),
-      to: dayjs().subtract(1, 'day').toDate()
-    }),
-    []
-  );
+  const pastMonthDate = React.useMemo(() => {
+    const from = dayjs().subtract(1, 'month').hour(0).minute(0).second(0).millisecond(0);
+    return {
+      from: from.toDate(),
+      to: from.add(1, 'month').subtract(1, 'day').toDate()
+    };
+  }, []);
   const { data: pastMonthEvents = [] } = useQuery({
     queryKey: [EVENTS, pastMonthDate],
     queryFn: () => EventService.findAll([], pastMonthDate.from, pastMonthDate.to),

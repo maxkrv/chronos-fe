@@ -10,6 +10,7 @@ import { useUserStore } from '@/shared/store/user.store';
 
 import { ICalendar } from '../../calendar.interface';
 import { CalendarService } from '../../services/calendar.service';
+import { useCalendarStore } from '../../stores/calendar.store';
 import { CalendarParticipants } from '../calendar-participants';
 import { CalendarAttendeesForm } from '../form/calendar-attendees-form';
 import { CalendarForm } from '../form/calendar-form';
@@ -26,14 +27,14 @@ export const EditCalendarModal: FC<EditCalendarModalProps> = ({ calendar, open, 
   const { user } = useUserStore();
 
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
-
+  const { removeCalendarId } = useCalendarStore();
   const { mutate, isPending } = useMutation({
     mutationFn: CalendarService.delete,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [MY_CALENDARS]
       });
-
+      removeCalendarId(calendar!.id);
       setOpenConfirmModal(false);
       setOpen(false);
     }

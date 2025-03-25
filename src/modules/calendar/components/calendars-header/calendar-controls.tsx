@@ -131,6 +131,7 @@ export const CalendarControls = () => {
           placeholder="Search"
           ref={inputRef}
           value={searchQuery}
+          onBlur={() => searchQuery === '' && closeSearch()}
           onChange={onSearchChange}
           className={cn('w-full min-w-8 ')}
         />

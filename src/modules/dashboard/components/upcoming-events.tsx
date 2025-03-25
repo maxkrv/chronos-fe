@@ -8,13 +8,13 @@ import { cn } from '../../../shared/lib/utils';
 import { EventService } from '../../calendar/services/event.service';
 
 export const UpcomingEvents: FC = () => {
-  const nextDayDate = useMemo(
-    () => ({
-      from: dayjs().toDate(),
-      to: dayjs().add(24, 'hour').toDate()
-    }),
-    []
-  );
+  const nextDayDate = useMemo(() => {
+    const from = dayjs().minute(0).second(0).millisecond(0);
+    return {
+      from: from.toDate(),
+      to: from.add(24, 'hour').toDate()
+    };
+  }, []);
   const { data: nextDayData = [], isLoading } = useQuery({
     queryKey: [EVENTS, nextDayDate],
     queryFn: () => EventService.findAll([], nextDayDate.from, nextDayDate.to),

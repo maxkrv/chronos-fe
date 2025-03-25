@@ -1,13 +1,15 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FC, useState } from 'react';
 import { MdEdit } from 'react-icons/md';
 import Dropzone from 'shadcn-dropzone';
+import { toast } from 'sonner';
 
 import { Button } from '@/shared/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/shared/components/ui/dialog';
 import { cn } from '@/shared/lib/utils';
 import { useUserStore } from '@/shared/store/user.store';
 
+import { USER_ME } from '../../../shared/constants/query-keys';
 import { UserService } from '../user.service';
 
 interface ChangeAvatarProps {
@@ -16,13 +18,17 @@ interface ChangeAvatarProps {
 
 export const ChangeAvatar: FC<ChangeAvatarProps> = ({ className }) => {
   const [open, setOpen] = useState(false);
-
+  const queryClient = useQueryClient();
   const { setAvatar, clearAvatar } = useUserStore();
   const [file, setFile] = useState<File | null>(null);
 
   const { mutate, isPending } = useMutation({
     mutationFn: UserService.updateAvatar,
     onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [USER_ME]
+      });
+      toast.success('Avatar updated successfully');
       setOpen(false);
       setFile(null);
     }

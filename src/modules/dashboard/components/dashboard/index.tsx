@@ -29,29 +29,29 @@ export const Dashboard = () => {
   });
 
   return (
-    <div className="grid grid-cols-6 grid-rows-5 max-xl:grid-cols-4 max-md:grid-cols-2 max-md:grid-rows-10 gap-4 p-4 min-h-[calc(100vh-4rem)] *:rounded-3xl *:shadow max-md:min-h-[calc((100vh)*2-4rem)]">
+    <div className="grid grid-cols-6 grid-rows-5 max-xl:grid-cols-4 max-lg:grid-cols-2 max-lg:grid-rows-10 gap-4 p-4 min-h-[calc(100vh-5rem)] *:rounded-3xl *:shadow max-lg:min-h-[calc((100vh)*2-4rem)]">
       <div className="col-start-1 col-end-2 row-start-1 row-end-2 transition-all hover:ring-3 hover:ring-primary/20">
         <TimeNow />
       </div>
       <div className="col-start-2 col-end-3 row-start-1 row-end-2 transition-all hover:ring-3 hover:ring-primary/20">
         <NewEvent />
       </div>
-      <div className="col-start-3 col-end-3 row-start-1 row-end-1 max-md:col-start-1 max-md:col-end-1 max-md:row-start-2 max-md:row-end-2 transition-all hover:ring-3 hover:ring-primary/20">
+      <div className="col-start-3 col-end-3 row-start-1 row-end-1 max-lg:col-start-1 max-lg:col-end-1 max-lg:row-start-2 max-lg:row-end-2 transition-all hover:ring-3 hover:ring-primary/20">
         <ThemeToggle />
       </div>
-      <div className="col-start-4 col-end-4 row-start-1 row-end-1 max-md:col-start-2 max-md:col-end-2 max-md:row-start-2 max-md:row-end-2 transition-all hover:ring-3 hover:ring-primary/20">
+      <div className="col-start-4 col-end-4 row-start-1 row-end-1 max-lg:col-start-2 max-lg:col-end-2 max-lg:row-start-2 max-lg:row-end-2 transition-all hover:ring-3 hover:ring-primary/20">
         <WeatherWidget />
       </div>
-      <div className="col-start-1 col-end-3 row-start-2 row-end-4 transition-all hover:ring-3 hover:ring-primary/20 max-md:col-start-1 max-md:col-end-3 max-md:row-start-3 max-md:row-end-5">
+      <div className="col-start-1 col-end-3 row-start-2 row-end-4 transition-all hover:ring-3 hover:ring-primary/20 max-lg:col-start-1 max-lg:col-end-3 max-lg:row-start-3 max-lg:row-end-5">
         <Timer />
       </div>
-      <div className="col-start-1 col-end-3 row-start-4 row-end-6 transition-all hover:ring-3 hover:ring-primary/20 max-md:col-start-1 max-md:col-end-3 max-md:row-start-5 max-md:row-end-7">
+      <div className="col-start-1 col-end-3 row-start-4 row-end-6 transition-all hover:ring-3 hover:ring-primary/20 max-lg:col-start-1 max-lg:col-end-3 max-lg:row-start-5 max-lg:row-end-7">
         <EventsCountBar />
       </div>
-      <div className="col-start-3 col-end-5 row-start-2 row-end-4 max-md:col-start-1 max-md:col-end-3 max-md:row-start-9 max-md:row-end-11 transition-all hover:ring-3 hover:ring-primary/20">
+      <div className="col-start-3 col-end-5 row-start-2 row-end-4 max-lg:col-start-1 max-lg:col-end-3 max-lg:row-start-9 max-lg:row-end-11 transition-all hover:ring-3 hover:ring-primary/20">
         <EventsCountPie />
       </div>
-      <div className="col-start-3 col-end-5 row-start-4 row-end-6 max-md:col-start-1 max-md:col-end-3 max-md:row-start-7 max-md:row-end-9 transition-all hover:ring-3 hover:ring-primary/20">
+      <div className="col-start-3 col-end-5 row-start-4 row-end-6 max-lg:col-start-1 max-lg:col-end-3 max-lg:row-start-7 max-lg:row-end-9 transition-all hover:ring-3 hover:ring-primary/20">
         <NoteForToday />
       </div>
       <div className="col-start-5 col-end-7 row-start-1 row-end-6 max-xl:hidden p-2 transition-all hover:ring-3 hover:ring-primary/20">

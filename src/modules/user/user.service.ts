@@ -8,9 +8,11 @@ export class UserService {
   }
 
   static async updateProfile(dto: EditProfileDto) {
-    return apiClient.patch('users/me', {
-      json: dto
-    });
+    return apiClient
+      .patch('users/me', {
+        json: dto
+      })
+      .json();
   }
 
   static async updateAvatar(dto: FormData) {

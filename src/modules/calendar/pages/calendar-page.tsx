@@ -35,7 +35,6 @@ export const CalendarPage = () => {
             to: dayjs(store.selectedDate?.from).add(2, 'day').toDate()
           }
         : store.selectedDate;
-
   const { data: events = [] } = useQuery({
     queryKey: [EVENTS, calendarsIds, selectedDate, searchQuery],
     queryFn: () =>

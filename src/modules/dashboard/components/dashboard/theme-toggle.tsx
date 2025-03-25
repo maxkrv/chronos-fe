@@ -23,11 +23,11 @@ export const ThemeToggle = memo(() => {
         variant="ghost"
         size="icon"
         onClick={() => inverse()}
-        className="rounded-full h-12 w-12 hover:scale-110 transition-transform">
+        className="rounded-full size-16 hover:scale-110 transition-transform">
         {theme === 'dark' ? (
-          <SunIcon className="h-6 w-6 text-yellow-400" />
+          <SunIcon className="size-full text-yellow-400" />
         ) : (
-          <MoonIcon className="h-6 w-6 text-blue-600" />
+          <MoonIcon className="size-full text-blue-600" />
         )}
         <span className="sr-only">Toggle theme</span>
       </Button>

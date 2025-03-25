@@ -29,8 +29,8 @@ export const ChangePasswordModal: FC<ChangePasswordModalProps> = ({ email }) => 
 
   return (
     <>
-      <Button className="w-full" onClick={() => setOpen(true)}>
-        Change password
+      <Button className="grow" onClick={() => setOpen(true)}>
+        Change Password
       </Button>
 
       <ConfirmModal

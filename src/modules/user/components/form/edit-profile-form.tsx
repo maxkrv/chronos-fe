@@ -1,13 +1,15 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 import { Button } from '@/shared/components/ui/button';
 import { Input } from '@/shared/components/ui/input';
 import { Label } from '@/shared/components/ui/label';
 import { useUserStore } from '@/shared/store/user.store';
 
+import { USER_ME } from '../../../../shared/constants/query-keys';
 import { EditProfileDto, EditProfileSchema } from '../../user.interface';
 import { UserService } from '../../user.service';
 
@@ -17,6 +19,7 @@ interface EditProfileFormProps {
 
 export const EditProfileForm: FC<EditProfileFormProps> = ({ className }) => {
   const { user, updateUser } = useUserStore();
+  const queryClient = useQueryClient();
 
   const {
     handleSubmit,
@@ -32,7 +35,13 @@ export const EditProfileForm: FC<EditProfileFormProps> = ({ className }) => {
   });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: UserService.updateProfile
+    mutationFn: UserService.updateProfile,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [USER_ME]
+      });
+      toast.success('Profile updated successfully');
+    }
   });
 
   const onSubmit = (data: EditProfileDto) => {
@@ -50,10 +59,6 @@ export const EditProfileForm: FC<EditProfileFormProps> = ({ className }) => {
         <div className="grid gap-2">
           <Label htmlFor="surname">Surname</Label>
           <Input {...register('surname')} id="surname" errorMessage={errors.surname?.message} />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
-          <Input defaultValue={user?.email} id="email" disabled />
         </div>
 
         <Button type="submit" isLoading={isPending} disabled={!isValid || isPending}>

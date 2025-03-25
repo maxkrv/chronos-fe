@@ -14,7 +14,7 @@ export const CalendarSelect: FC = () => {
 
   return (
     <Select value={store.view} onValueChange={(newValue) => store.setView(newValue as CalendarView)}>
-      <SelectTrigger className="min-w-[6rem]">
+      <SelectTrigger className="min-w-[5.5rem]">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
