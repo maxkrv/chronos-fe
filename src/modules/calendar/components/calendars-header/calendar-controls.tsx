@@ -1,12 +1,49 @@
 import dayjs from 'dayjs';
-import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight } from 'react-icons/md';
+import { useEffect, useRef, useState } from 'react';
+import { IoMdSearch } from 'react-icons/io';
+import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight, MdOutlineSearch } from 'react-icons/md';
+import { useDebounceCallback } from 'usehooks-ts';
+
+import { Input } from '@/shared/components/ui/input';
 
 import { Button } from '../../../../shared/components/ui/button';
 import { useDatePicker } from '../../stores/date-picker-store';
+import { useSearchStore } from '../../stores/search.store';
 import { CalendarView } from './calendar-select';
 
 export const CalendarControls = () => {
   const { store, selectedDays } = useDatePicker();
+  const { searchActive, toggleSearch, setSearchQuery } = useSearchStore();
+  const [searchQuery, setLocalSearchQuery] = useState('');
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (searchActive && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [searchActive]);
+
+  const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLocalSearchQuery(e.target.value);
+  };
+
+  const closeSearch = () => {
+    setLocalSearchQuery('');
+    toggleSearch();
+  };
+
+  const handleBlur = () => {
+    closeSearch();
+  };
+
+  const debouncedSearch = useDebounceCallback((query: string) => {
+    setSearchQuery(query);
+  }, 400);
+
+  useEffect(() => {
+    debouncedSearch(searchQuery);
+  }, [searchQuery]);
 
   const onToday = () => {
     if (store.view === CalendarView.WEEK) {
@@ -75,14 +112,38 @@ export const CalendarControls = () => {
     }
   };
   return (
-    <div className="flex gap-2">
-      <Button variant={'outline'} className="max-sm:hidden" onClick={onToday}>
+    <div className={`flex gap-2 ${searchActive ? 'flex-grow' : ''}`}>
+      {!searchActive && (
+        <Button variant="outline" size="icon" onClick={toggleSearch}>
+          <MdOutlineSearch className="size-5" />
+        </Button>
+      )}
+
+      <div className={`relative flex-grow`}>
+        <div
+          className={`absolute right-0 transition-all duration-400 ${searchActive ? 'w-full' : 'w-0 overflow-hidden'}`}>
+          {searchActive && (
+            <Input
+              icon={<IoMdSearch size="1.25rem" />}
+              iconPosition="left"
+              placeholder="Search"
+              ref={inputRef}
+              value={searchQuery}
+              onChange={onSearchChange}
+              onBlur={handleBlur}
+              className="w-full"
+            />
+          )}
+        </div>
+      </div>
+
+      <Button variant="outline" className="max-sm:hidden" onClick={onToday}>
         Today
       </Button>
-      <Button variant={'outline'} size={'icon'} onClick={onPrev}>
+      <Button variant="outline" size="icon" onClick={onPrev}>
         <MdOutlineKeyboardArrowLeft className="size-8" />
       </Button>
-      <Button variant={'outline'} size={'icon'} onClick={onNext}>
+      <Button variant="outline" size="icon" onClick={onNext}>
         <MdOutlineKeyboardArrowRight className="size-8" />
       </Button>
     </div>
