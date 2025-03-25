@@ -21,13 +21,15 @@ export class EventService {
   static async findAll(
     calendarId: number[],
     fromDate?: Date | string,
-    toDate?: Date | string
+    toDate?: Date | string,
+    searchQuery?: string
   ): Promise<ICalendarEvent[][]> {
     function fetchEvents(id: number | undefined | null) {
       const searchParams = new URLSearchParams();
       id && searchParams.set('calendarId', id.toString());
       fromDate && searchParams.set('fromDate', typeof fromDate === 'string' ? fromDate : fromDate.toISOString());
       toDate && searchParams.set('toDate', typeof toDate === 'string' ? toDate : toDate.toISOString());
+      searchQuery && searchParams.set('search', searchQuery);
 
       return apiClient
         .get<ICalendarEvent[]>('events', {

@@ -16,10 +16,12 @@ import { YearCalendar } from '../components/year-calendar';
 import { EventService } from '../services/event.service';
 import { useCalendarStore } from '../stores/calendar.store';
 import { useDatePicker } from '../stores/date-picker-store';
+import { useSearchStore } from '../stores/search.store';
 
 export const CalendarPage = () => {
   const { store, selectedDays } = useDatePicker();
   const { calendarsIds } = useCalendarStore();
+  const { searchQuery } = useSearchStore();
 
   const selectedDate =
     store.view === CalendarView.MONTH
@@ -35,8 +37,9 @@ export const CalendarPage = () => {
         : store.selectedDate;
 
   const { data: events = [] } = useQuery({
-    queryKey: [EVENTS, calendarsIds, selectedDate],
-    queryFn: () => (selectedDate ? EventService.findAll(calendarsIds, selectedDate.from, selectedDate.to) : []),
+    queryKey: [EVENTS, calendarsIds, selectedDate, searchQuery],
+    queryFn: () =>
+      selectedDate ? EventService.findAll(calendarsIds, selectedDate.from, selectedDate.to, searchQuery) : [],
     select: (events) => events.flat()
   });
 
