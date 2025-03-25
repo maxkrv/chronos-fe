@@ -16,7 +16,7 @@ interface EditProfileFormProps {
 }
 
 export const EditProfileForm: FC<EditProfileFormProps> = ({ className }) => {
-  const { user } = useUserStore();
+  const { user, updateUser } = useUserStore();
 
   const {
     handleSubmit,
@@ -37,6 +37,7 @@ export const EditProfileForm: FC<EditProfileFormProps> = ({ className }) => {
 
   const onSubmit = (data: EditProfileDto) => {
     mutate(data);
+    updateUser(data);
   };
 
   return (

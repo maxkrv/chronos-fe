@@ -15,8 +15,7 @@ export const UserAvatar: FC<UserAvatarProps> = ({ className, user }) => {
     <Avatar className={cn('bg-muted', className)}>
       <AvatarImage src={user?.avatarUrl || ''} />
       <AvatarFallback className="uppercase">
-        {user?.name?.charAt(0)}
-        {user?.surname?.charAt(0)}
+        {!user?.avatarUrl && `${user?.name?.[0] || ''}${user?.surname?.[0] || ''}`}
       </AvatarFallback>
     </Avatar>
   );
