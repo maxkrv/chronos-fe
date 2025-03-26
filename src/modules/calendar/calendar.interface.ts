@@ -100,6 +100,10 @@ export const EventInvitationSchema = z.object({
 });
 export type EventInvitationDto = z.infer<typeof EventInvitationSchema>;
 
+export type CalendarSortBy = 'createdAt' | 'participants';
+
+export type SortOrder = 'asc' | 'desc';
+
 export interface ICalendar {
   id: number;
   name: string;

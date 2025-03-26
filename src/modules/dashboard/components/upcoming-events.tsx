@@ -18,7 +18,7 @@ export const UpcomingEvents: FC = () => {
   const { data: nextDayData = [], isLoading } = useQuery({
     queryKey: [EVENTS, nextDayDate],
     queryFn: () => EventService.findAll([], nextDayDate.from, nextDayDate.to),
-    select: (events) => events.flat()
+    select: (events) => events.flat().sort((a, b) => dayjs(a.startAt).diff(dayjs(b.startAt)))
   });
 
   if (isLoading) return <Loading />;
