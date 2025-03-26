@@ -7,7 +7,7 @@ type LogoProps = {
   className?: string;
 };
 
-export const Logo: FC<LogoProps> = ({ width = '128px', height = '128px', fill = '#000000', className = '' }) => (
+export const Logo: FC<LogoProps> = ({ width = '128px', height = '128px', fill = 'currentColor', className = '' }) => (
   <svg
     version="1.0"
     xmlns="http://www.w3.org/2000/svg"

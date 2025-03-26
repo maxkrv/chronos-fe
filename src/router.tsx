@@ -10,6 +10,7 @@ import { CalendarPage } from './modules/calendar/pages/calendar-page';
 import { DashboardPage } from './modules/dashboard/pages/dashboard-page';
 import { HomePage } from './modules/home/pages/home-page';
 import { InvitationPage } from './modules/invitation/pages/invitation-page';
+import { PublicCalendarsPage } from './modules/public-calendars/pages/public-calendars-page';
 import { AuthGuard } from './shared/guard/auth-guard';
 import NotFoundPage from './shared/pages/not-found-page';
 
@@ -59,6 +60,14 @@ const router = createBrowserRouter([
         element: (
           <AuthGuard>
             <CalendarPage />
+          </AuthGuard>
+        )
+      },
+      {
+        path: '/public-calendars',
+        element: (
+          <AuthGuard>
+            <PublicCalendarsPage />
           </AuthGuard>
         )
       },
