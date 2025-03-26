@@ -46,7 +46,7 @@ export default function Timer() {
   };
 
   return (
-    <div className="flex flex-col items-center p-4 bg-primary rounded-3xl shadow-lg min-w-fit h-full justify-between">
+    <div className="flex flex-col items-center p-4 bg-primary/90 rounded-3xl shadow-lg min-w-fit h-full justify-between">
       <h2 className="text-lg font-semibold mb-2 text-muted-foreground">Stopwatch</h2>
       <div className="text-5xl font-mono mb-4 text-primary-foreground transition-all">{formatTime(time)}</div>
       <div className="flex gap-2 mb-4">

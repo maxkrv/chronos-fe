@@ -19,7 +19,6 @@ import { useCalendarData } from '../hooks/use-calendar';
 import { useDatePicker } from '../stores/date-picker-store';
 import { CalendarAccordion } from './calendar-accordion';
 import { CalendarForm } from './form/calendar-form';
-import { InvitationSidebar } from './invitation-sidebar';
 
 export const CalendarSidebar = () => {
   const { store } = useDatePicker();
@@ -39,7 +38,7 @@ export const CalendarSidebar = () => {
   return (
     <>
       <Sidebar collapsible="icon" className="hidden flex-1 md:flex bg-background max-h-dvh sticky top-0">
-        <SidebarHeader className="h-14 sticky top-0 flex shrink-0 justify-center gap-2 border-b bg-background px-4">
+        <SidebarHeader className="h-14 sticky top-0 flex shrink-0 justify-center gap-2 bg-background px-4">
           <h1 className="text-foreground text-2xl font-medium truncate">Chronos | Calendar</h1>
         </SidebarHeader>
         <SidebarContent>
@@ -80,7 +79,6 @@ export const CalendarSidebar = () => {
                 isLoading={isParticipatingCalendarsLoading}
                 disableEdit
               />
-              <InvitationSidebar />
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>

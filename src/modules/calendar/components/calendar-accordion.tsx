@@ -55,13 +55,13 @@ export const CalendarAccordion: FC<CalendarAccordionProps> = ({ name, items, isL
                 items.map((item) => (
                   <SidebarMenuItem key={item.id} className="flex items-center rounded-md hover:bg-accent h-6">
                     <SidebarMenuButton
-                      className="bg-transparent h-full"
+                      className="h-full"
                       onClick={() => {
                         handleToggle(item);
                       }}>
                       <div
                         data-active={calendarsIds.includes(item.id) || !calendarsIds.length}
-                        className="group/calendar-item flex aspect-square size-4 shrink-0 items-center justify-center rounded-sm border border-sidebar-border text-sidebar-primary-foreground data-[active=true]:border-sidebar-primary data-[active=true]:bg-sidebar-primary">
+                        className="group/calendar-item flex aspect-square size-4 shrink-0 items-center justify-center rounded-sm border border-primary text-primary-foreground data-[active=true]:border-primary data-[active=true]:bg-primary">
                         <Check className="hidden size-3 group-data-[active=true]/calendar-item:block" />
                       </div>
 

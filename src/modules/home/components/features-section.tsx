@@ -1,7 +1,8 @@
 import { FaShareAlt } from 'react-icons/fa';
-import { FaRegCircleCheck } from 'react-icons/fa6';
+import { FaCalendarDays } from 'react-icons/fa6';
 import { IoIosSettings } from 'react-icons/io';
-import { LuAlarmClock, LuCalendarClock } from 'react-icons/lu';
+import { LuCalendarClock } from 'react-icons/lu';
+import { MdDashboard, MdEvent, MdPublic } from 'react-icons/md';
 import { TbDeviceDesktopHeart } from 'react-icons/tb';
 
 import { FeatureCard } from './feature-card';
@@ -10,23 +11,33 @@ import { ScrollReveal } from './scroll-reveal';
 const features = [
   {
     icon: LuCalendarClock,
-    title: 'Smart Scheduling',
-    description: 'Intelligent scheduling suggestions based on your availability and preferences.'
+    title: 'Smart Calendar Management',
+    description: 'Organize your schedule with daily, weekly, monthly, and yearly views for complete time management.'
   },
   {
-    icon: LuAlarmClock,
-    title: 'Reminders & Alerts',
-    description: 'Never miss an important event with customizable notifications.'
+    icon: MdEvent,
+    title: 'Event Categories',
+    description: 'Categorize events as tasks, arrangements, reminders, or occasions for better organization.'
   },
   {
     icon: FaShareAlt,
-    title: 'Seamless Sharing',
-    description: 'Share your calendar with friends, family, or colleagues with just a few clicks.'
+    title: 'Calendar Sharing',
+    description: 'Share your calendars with friends, family, or colleagues and manage permissions easily.'
   },
   {
-    icon: FaRegCircleCheck,
-    title: 'Task Management',
-    description: 'Integrate your to-do list with your calendar for complete productivity.'
+    icon: MdPublic,
+    title: 'Public Calendars',
+    description: 'Discover and subscribe to public calendars for holidays, events, and more.'
+  },
+  {
+    icon: MdDashboard,
+    title: 'Interactive Dashboard',
+    description: 'Get insights into your schedule with visual analytics and event distribution charts.'
+  },
+  {
+    icon: FaCalendarDays,
+    title: 'Holiday Integration',
+    description: 'Automatically import holidays for your country into your calendar.'
   },
   {
     icon: TbDeviceDesktopHeart,
@@ -35,8 +46,8 @@ const features = [
   },
   {
     icon: IoIosSettings,
-    title: 'Customizable Views',
-    description: 'Personalize your calendar with daily, weekly, or monthly views to suit your needs.'
+    title: 'Customizable Interface',
+    description: 'Personalize your calendar with color coding, themes, and layout options.'
   }
 ];
 
@@ -61,7 +72,7 @@ export const FeaturesSection = () => {
           </div>
         </ScrollReveal>
 
-        <div className="mx-auto grid max-w-5xl gap-6 py-12 md:grid-cols-2">
+        <div className="mx-auto grid max-w-7xl gap-6 py-12 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {features.map((feature, index) => (
             <ScrollReveal
               key={index}

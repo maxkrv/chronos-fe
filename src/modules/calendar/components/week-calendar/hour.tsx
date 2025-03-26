@@ -25,14 +25,14 @@ export const Hour: FC<HourProps> = ({ setDate, hour, isActive = false }) => {
   return (
     <div
       className={cn(
-        'relative border border-neutral-200 flex flex-col group',
+        'relative border flex flex-col group',
         isActive && 'hover:bg-red-400/30 hover:cursor-pointer hover:border-dashed hover:border-red-600 hover:rounded-lg'
       )}
       style={{ height: CALENDAR_HOUR_HEIGHT }}
       onClick={() => isActive && handleSetDate()}>
       <div
         style={{ height: CALENDAR_HOUR_HEIGHT / 2 }}
-        className={cn('border-b border-neutral-200', isActive && 'group-hover:border-none')}
+        className={cn('border-b', isActive && 'group-hover:border-none')}
       />
 
       <div

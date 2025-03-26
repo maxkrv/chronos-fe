@@ -32,10 +32,10 @@ export const MonthCalendarDay: FC<MonthCalendarDayProps> = ({ day, events, isAct
       className={cn(
         ' @container/day flex flex-col gap-2 rounded-2xl border text-secondary-foreground p-1  @max-[3rem]:gap-0.5 justify-center aspect-square hover:bg-accent transition-colors hover:border-accent-foreground cursor-pointer',
         !isActualMonth &&
-          'bg-[repeating-linear-gradient(135deg,var(--color-accent),var(--color-accent)_10px,var(--color-white)_10px,var(--color-white)_20px)] text-muted-foreground',
+          'bg-[repeating-linear-gradient(135deg,var(--color-background),var(--color-background)_10px,var(--color-border)_10px,var(--color-border)_20px)] text-accent-foreground',
         dayjs(day).isToday() && 'text-primary-foreground bg-primary hover:bg-neutral-500'
       )}>
-      <div className={cn('flex flex-col items-center gap-1  min-h-22', hideEvents && 'hidden')}>
+      <div className={cn('flex flex-col items-center gap-1  min-h-22 w-full max-w-full', hideEvents && 'hidden')}>
         <MonthCalendarDayTasks events={events} day={day} />
         <MonthCalendarDayMeetings events={events} day={day} />
         <MonthCalendarDayReminders events={events} day={day} />

@@ -63,26 +63,25 @@ const renderActiveShape = (props: PieSectorDataItem) => {
 };
 
 export const EventsCountPie: FC = () => {
-  const pastMonthDate = React.useMemo(() => {
-    const from = dayjs().subtract(1, 'month').hour(0).minute(0).second(0).millisecond(0);
+  const thatMonthDate = React.useMemo(() => {
     return {
-      from: from.toDate(),
-      to: from.add(1, 'month').subtract(1, 'day').toDate()
+      from: dayjs().startOf('month').toDate(),
+      to: dayjs().endOf('month').toDate()
     };
   }, []);
-  const { data: pastMonthEvents = [] } = useQuery({
-    queryKey: [EVENTS, pastMonthDate],
-    queryFn: () => EventService.findAll([], pastMonthDate.from, pastMonthDate.to),
+  const { data: thatMonthEvents = [] } = useQuery({
+    queryKey: [EVENTS, thatMonthDate],
+    queryFn: () => EventService.findAll([], thatMonthDate.from, thatMonthDate.to),
     select: (events) => events.flat()
   });
   const { arrangements, reminders, tasks, occasions } = React.useMemo(
     () => ({
-      arrangements: pastMonthEvents.filter((event) => event.category === EventCategory.ARRANGEMENT).length,
-      reminders: pastMonthEvents.filter((event) => event.category === EventCategory.REMINDER).length,
-      tasks: pastMonthEvents.filter((event) => event.category === EventCategory.TASK).length,
-      occasions: pastMonthEvents.filter((event) => event.category === EventCategory.OCCASION).length
+      arrangements: thatMonthEvents.filter((event) => event.category === EventCategory.ARRANGEMENT).length,
+      reminders: thatMonthEvents.filter((event) => event.category === EventCategory.REMINDER).length,
+      tasks: thatMonthEvents.filter((event) => event.category === EventCategory.TASK).length,
+      occasions: thatMonthEvents.filter((event) => event.category === EventCategory.OCCASION).length
     }),
-    [pastMonthEvents]
+    [thatMonthEvents]
   );
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
 
@@ -110,7 +109,7 @@ export const EventsCountPie: FC = () => {
   };
 
   return (
-    <div className="bg-card rounded-3xl shadow p-4 h-full flex flex-col">
+    <div className="bg-card rounded-3xl shadow shadow-border p-4 h-full flex flex-col">
       <div className="flex-1 h-full overflow-hidden">
         <ChartContainer config={chartConfig} className="h-full w-full">
           <PieChart margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
@@ -143,7 +142,7 @@ export const EventsCountPie: FC = () => {
                         x={viewBox.cx}
                         y={(viewBox.cy || 0) + 24}
                         className="fill-muted-foreground text-sm text-center block">
-                        For the month
+                        {dayjs(thatMonthDate.from).format('MMM YYYY')}
                       </tspan>
                     </text>
                   );

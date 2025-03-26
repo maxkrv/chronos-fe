@@ -38,7 +38,7 @@ export default function NoteForToday() {
   };
 
   return (
-    <div className="bg-primary shadow-lg rounded-3xl p-4 w-full h-full flex flex-col gap-2 text-yellow-400">
+    <div className="bg-primary/90 shadow-lg rounded-3xl p-4 w-full h-full flex flex-col gap-2 text-yellow-400 dark:text-yellow-800">
       <div className="flex w-full gap-2 items-center justify-between">
         <div className="flex items-center gap-2">
           <FaNotesMedical />

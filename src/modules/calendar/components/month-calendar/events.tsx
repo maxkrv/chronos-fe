@@ -32,7 +32,7 @@ const MonthCalendarDayEvents: FC<MonthCalendarDayEventsProps> = ({ events, day, 
     return (
       <div
         className={cn(
-          'flex items-center gap-1 rounded-md p-0.5 text-gray bg-mix-primary-30 justify-between overflow-hidden min-h-4 min-w-4 w-full @max-[8rem]/day:h-5 @max-[3rem]/day:w-auto',
+          'flex items-center gap-1 rounded-md p-0.5 text-gray bg-mix-primary-30 justify-between overflow-hidden min-h-4 min-w-4 w-full @max-[8rem]/day:h-5 @max-[3rem]/day:w-auto max-w-full box-border',
           className
         )}>
         <Icon className="shrink-0  @max-[3rem]/day:hidden" />
@@ -49,7 +49,7 @@ const MonthCalendarDayEvents: FC<MonthCalendarDayEventsProps> = ({ events, day, 
   return (
     <div
       className={cn(
-        'flex items-center gap-1 rounded-md p-0.5 text-gray bg-mix-primary-30 justify-between overflow-hidden min-h-4 min-w-4 w-full @max-[8rem]/day:h-5 @max-[3rem]/day:w-auto',
+        'flex items-center gap-1 rounded-md p-0.5 text-gray bg-mix-primary-30 justify-between overflow-hidden min-h-4 min-w-4 w-full @max-[8rem]/day:h-5 @max-[3rem]/day:w-auto max-w-full box-border',
         className
       )}>
       <Icon className="shrink-0  @max-[3rem]/day:hidden" />

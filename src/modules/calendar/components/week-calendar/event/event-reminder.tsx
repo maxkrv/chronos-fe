@@ -89,7 +89,7 @@ export const EventReminder: FC<EventReminderProps> = ({ event, indentTop, onUpda
         </div>
       </HoverCardTrigger>
 
-      <HoverCardContent side="right" className="w-96">
+      <HoverCardContent className="w-96">
         <EventHoverCard event={event} setIsEditEventOpen={setIsEditEventOpen} />
       </HoverCardContent>
     </HoverCard>
