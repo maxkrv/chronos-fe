@@ -125,7 +125,7 @@ export const EventsCountBar: FC = memo(() => {
     };
   }, []);
 
-  const { data: weeklyData = [] } = useQuery({
+  const { data: weeklyData = [], isLoading: isWeeklyLoading } = useQuery({
     queryKey: [EVENTS, next7DaysDate],
     queryFn: () => EventService.findAll([], next7DaysDate.from, next7DaysDate.to),
     select: (events) => formatEventsByDay(events.flat(), next7DaysDate.from, next7DaysDate.to)
@@ -138,7 +138,7 @@ export const EventsCountBar: FC = memo(() => {
     };
   }, []);
 
-  const { data: monthlyData = [] } = useQuery({
+  const { data: monthlyData = [], isLoading: isMonthlyLoading } = useQuery({
     queryKey: [EVENTS, next4WeeksDate],
     queryFn: () => EventService.findAll([], next4WeeksDate.from, next4WeeksDate.to),
     select: (events) => formatEventsByWeek(events.flat(), next4WeeksDate.from, next4WeeksDate.to)

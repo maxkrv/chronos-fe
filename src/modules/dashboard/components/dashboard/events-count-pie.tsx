@@ -79,7 +79,7 @@ export const EventsCountPie: FC = () => {
       to: dayjs().endOf('month').toDate()
     };
   }, []);
-  const { data: thatMonthEvents = [] } = useQuery({
+  const { data: thatMonthEvents = [], isLoading } = useQuery({
     queryKey: [EVENTS, thatMonthDate],
     queryFn: () => EventService.findAll([], thatMonthDate.from, thatMonthDate.to),
     select: (events) => events.flat()
