@@ -9,6 +9,7 @@ import { CalendarService } from './modules/calendar/services/calendar.service';
 import { UserService } from './modules/user/user.service';
 import { BoxBordersSwitch } from './shared/components/dev/box-borders-switch';
 import { TailwindIndicator } from './shared/components/dev/tailwindIndicator';
+import { ErrorBoundary } from './shared/components/error-boundary/error-bounday';
 import { LoadingOverlay } from './shared/components/loading-overlay';
 import { NotActivatedAccount } from './shared/components/not-activated-account';
 import { Toaster } from './shared/components/ui/sonner';
@@ -70,7 +71,7 @@ export const App = () => {
   }, [isSuccess]);
 
   return (
-    <>
+    <ErrorBoundary>
       {user && !user?.isActive && <NotActivatedAccount />}
       {isLoading ? <LoadingOverlay /> : <Outlet />}
       <Toaster />
@@ -82,6 +83,6 @@ export const App = () => {
           <ReactQueryDevtools initialIsOpen={false} />
         </>
       )}
-    </>
+    </ErrorBoundary>
   );
 };
