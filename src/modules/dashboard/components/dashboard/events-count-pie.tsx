@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import * as React from 'react';
 import { type FC, useState } from 'react';
+import { CgSpinner } from 'react-icons/cg';
 import { Cell, Label, Pie, PieChart, Sector } from 'recharts';
 import { PieSectorDataItem } from 'recharts/types/polar/Pie';
 
@@ -33,9 +34,18 @@ const chartConfig = {
   }
 } satisfies ChartConfig;
 
-const renderActiveShape = (props: PieSectorDataItem) => {
-  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props;
-
+const renderActiveShape = ({
+  cx,
+  cy,
+  innerRadius,
+  outerRadius,
+  startAngle,
+  endAngle,
+  fill,
+  payload,
+  percent,
+  value
+}: PieSectorDataItem) => {
   if (!cx || !cy || !percent || !outerRadius) return <g />;
 
   return (
@@ -70,11 +80,12 @@ export const EventsCountPie: FC = () => {
       to: from.add(1, 'month').subtract(1, 'day').toDate()
     };
   }, []);
-  const { data: pastMonthEvents = [] } = useQuery({
+  const { data: pastMonthEvents = [], isLoading } = useQuery({
     queryKey: [EVENTS, pastMonthDate],
     queryFn: () => EventService.findAll([], pastMonthDate.from, pastMonthDate.to),
     select: (events) => events.flat()
   });
+
   const { arrangements, reminders, tasks, occasions } = React.useMemo(
     () => ({
       arrangements: pastMonthEvents.filter((event) => event.category === EventCategory.ARRANGEMENT).length,
@@ -111,48 +122,56 @@ export const EventsCountPie: FC = () => {
 
   return (
     <div className="bg-card rounded-3xl shadow p-4 h-full flex flex-col">
-      <div className="flex-1 h-full overflow-hidden">
-        <ChartContainer config={chartConfig} className="h-full w-full">
-          <PieChart margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
-            <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-            <Pie
-              data={data}
-              dataKey="value"
-              nameKey="name"
-              innerRadius={60}
-              outerRadius={80}
-              activeIndex={activeIndex}
-              activeShape={renderActiveShape}
-              onMouseEnter={onPieEnter}
-              onMouseLeave={onPieLeave}
-              animationDuration={1000}
-              animationBegin={0}>
-              {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.fill} strokeWidth={activeIndex === index ? 2 : 0} />
-              ))}
-              <Label
-                content={({ viewBox }) => {
-                  if (activeIndex !== undefined || !viewBox || !('cx' in viewBox) || !('cy' in viewBox)) return null;
+      {!isLoading && (
+        <div className="flex-1 h-full overflow-hidden">
+          <ChartContainer config={chartConfig} className="h-full w-full">
+            <PieChart margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
+              <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+              <Pie
+                data={data}
+                dataKey="value"
+                nameKey="name"
+                innerRadius={60}
+                outerRadius={80}
+                activeIndex={activeIndex}
+                activeShape={renderActiveShape}
+                onMouseEnter={onPieEnter}
+                onMouseLeave={onPieLeave}
+                animationDuration={1000}
+                animationBegin={0}>
+                {data.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.fill} strokeWidth={activeIndex === index ? 2 : 0} />
+                ))}
+                <Label
+                  content={({ viewBox }) => {
+                    if (activeIndex !== undefined || !viewBox || !('cx' in viewBox) || !('cy' in viewBox)) return null;
 
-                  return (
-                    <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle">
-                      <tspan x={viewBox.cx} y={viewBox.cy} className="fill-foreground text-3xl font-bold">
-                        {totalEvents.toLocaleString()}
-                      </tspan>
-                      <tspan
-                        x={viewBox.cx}
-                        y={(viewBox.cy || 0) + 24}
-                        className="fill-muted-foreground text-sm text-center block">
-                        For the month
-                      </tspan>
-                    </text>
-                  );
-                }}
-              />
-            </Pie>
-          </PieChart>
-        </ChartContainer>
-      </div>
+                    return (
+                      <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle">
+                        <tspan x={viewBox.cx} y={viewBox.cy} className="fill-foreground text-3xl font-bold">
+                          {totalEvents.toLocaleString()}
+                        </tspan>
+                        <tspan
+                          x={viewBox.cx}
+                          y={(viewBox.cy || 0) + 24}
+                          className="fill-muted-foreground text-sm text-center block">
+                          For the month
+                        </tspan>
+                      </text>
+                    );
+                  }}
+                />
+              </Pie>
+            </PieChart>
+          </ChartContainer>
+        </div>
+      )}
+
+      {isLoading && (
+        <div className="h-full flex items-center justify-center">
+          <CgSpinner className="animate-spin h-10 w-10 mx-auto" />
+        </div>
+      )}
     </div>
   );
 };

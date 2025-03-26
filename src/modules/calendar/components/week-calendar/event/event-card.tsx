@@ -1,6 +1,7 @@
 import { FC, useEffect, useRef, useState } from 'react';
 
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/shared/components/ui/hover-card.tsx';
+import { useUserStore } from '@/shared/store/user.store.ts';
 
 import dayjs from '../../../../../shared/lib/dayjs';
 import { cn } from '../../../../../shared/lib/utils';
@@ -37,13 +38,17 @@ export const EventCard: FC<EventCardProps> = ({
   onUpdate,
   onEdit: setIsEditEventOpen
 }) => {
+  const { user } = useUserStore();
+
   const [isHovered, setIsHovered] = useState(false);
   const [height, setHeight] = useState(eventHeight);
   const [startOffset, setStartOffset] = useState(indentTop);
   const initialRef = useRef({ startY: 0, originalHeight: eventHeight, originalOffset: indentTop });
   const eventStateRef = useRef({ height, startOffset });
   const isResizeable =
-    dayjs(event.startAt).isSame(day, 'day') && (event.endAt ? dayjs(event.endAt).isSame(day, 'day') : true);
+    dayjs(event.startAt).isSame(day, 'day') &&
+    (event.endAt ? dayjs(event.endAt).isSame(day, 'day') : true) &&
+    event.creatorId === user?.id;
 
   useEffect(() => {
     eventStateRef.current.height = height;

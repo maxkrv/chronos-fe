@@ -47,6 +47,7 @@ export interface ICalendarEvent {
   users: {
     id: number;
     user: User;
+    role: CalendarRoleSelect;
   }[];
   eventRepeat?: {
     frequency: RepeatType;
