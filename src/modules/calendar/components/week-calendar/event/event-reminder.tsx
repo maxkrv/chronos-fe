@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 import { FC, useEffect, useRef, useState } from 'react';
 
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/shared/components/ui/hover-card';
+import { useUserStore } from '@/shared/store/user.store';
 
 import { ICalendarEvent } from '../../../calendar.interface';
 import { CALENDAR_DAY_HEIGHT } from '../hour';
@@ -18,6 +19,10 @@ interface EventReminderProps {
 }
 
 export const EventReminder: FC<EventReminderProps> = ({ event, indentTop, onUpdate, setIsEditEventOpen }) => {
+  const { user } = useUserStore();
+
+  const isOwner = event.creatorId === user?.id;
+
   const [startOffset, setStartOffset] = useState(indentTop);
   const [isHovered, setIsHovered] = useState(false);
   const initialRef = useRef({ startY: 0, originalOffset: indentTop });
@@ -44,6 +49,8 @@ export const EventReminder: FC<EventReminderProps> = ({ event, indentTop, onUpda
   };
 
   const handleDragStart = (e: React.MouseEvent) => {
+    if (!isOwner) return;
+
     e.preventDefault();
     initialRef.current = { startY: e.clientY, originalOffset: startOffset };
     const controller = new AbortController();
