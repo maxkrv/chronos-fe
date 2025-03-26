@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { type FC, memo, useMemo, useState } from 'react';
+import { CgSpinner } from 'react-icons/cg';
 import { Bar, BarChart, CartesianGrid, Tooltip, XAxis } from 'recharts';
 
 import {
@@ -144,6 +145,8 @@ export const EventsCountBar: FC = memo(() => {
   });
   const activeData = activeTab === 'daily' ? weeklyData : monthlyData;
 
+  const isLoading = isWeeklyLoading || isMonthlyLoading;
+
   return (
     <div className="h-full flex flex-col bg-card rounded-3xl shadow shadow-border p-4 @container">
       <div className="flex justify-between items-center mb-2">
@@ -157,52 +160,60 @@ export const EventsCountBar: FC = memo(() => {
       </div>
 
       <div className="flex-1 h-[calc(100%-3rem)] overflow-hidden">
-        <ChartContainer config={chartConfig} className="h-full w-full">
-          <BarChart data={activeData} margin={{ top: 10, right: 10, left: 0, bottom: 10 }}>
-            <CartesianGrid vertical={false} strokeDasharray="3 3" />
-            <XAxis
-              dataKey="day"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
-            <Tooltip content={<ChartTooltipContent hideLabel />} />
-            <ChartLegend content={<ChartLegendContent />} />
-            <Bar
-              dataKey="tasks"
-              stackId="a"
-              fill={chartConfig.tasks.color}
-              radius={[0, 0, 4, 4]}
-              animationDuration={1000}
-              animationBegin={0}
-            />
-            <Bar
-              dataKey="reminders"
-              stackId="a"
-              fill={chartConfig.reminders.color}
-              radius={[4, 4, 0, 0]}
-              animationDuration={1000}
-              animationBegin={200}
-            />
-            <Bar
-              dataKey="arrangements"
-              stackId="a"
-              fill={chartConfig.arrangements.color}
-              radius={[4, 4, 0, 0]}
-              animationDuration={1000}
-              animationBegin={400}
-            />
-            <Bar
-              dataKey="occasions"
-              stackId="a"
-              fill={chartConfig.occasions.color}
-              radius={[4, 4, 0, 0]}
-              animationDuration={1000}
-              animationBegin={400}
-            />
-          </BarChart>
-        </ChartContainer>
+        {!isLoading && (
+          <ChartContainer config={chartConfig} className="h-full w-full">
+            <BarChart data={activeData} margin={{ top: 10, right: 10, left: 0, bottom: 10 }}>
+              <CartesianGrid vertical={false} strokeDasharray="3 3" />
+              <XAxis
+                dataKey="day"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                tickFormatter={(value) => value.slice(0, 3)}
+              />
+              <Tooltip content={<ChartTooltipContent hideLabel />} />
+              <ChartLegend content={<ChartLegendContent />} />
+              <Bar
+                dataKey="tasks"
+                stackId="a"
+                fill={chartConfig.tasks.color}
+                radius={[0, 0, 4, 4]}
+                animationDuration={1000}
+                animationBegin={0}
+              />
+              <Bar
+                dataKey="reminders"
+                stackId="a"
+                fill={chartConfig.reminders.color}
+                radius={[4, 4, 0, 0]}
+                animationDuration={1000}
+                animationBegin={200}
+              />
+              <Bar
+                dataKey="arrangements"
+                stackId="a"
+                fill={chartConfig.arrangements.color}
+                radius={[4, 4, 0, 0]}
+                animationDuration={1000}
+                animationBegin={400}
+              />
+              <Bar
+                dataKey="occasions"
+                stackId="a"
+                fill={chartConfig.occasions.color}
+                radius={[4, 4, 0, 0]}
+                animationDuration={1000}
+                animationBegin={400}
+              />
+            </BarChart>
+          </ChartContainer>
+        )}
+
+        {isLoading && (
+          <div className="h-full flex items-center justify-center">
+            <CgSpinner className="animate-spin h-10 w-10 mx-auto" />
+          </div>
+        )}
       </div>
     </div>
   );
