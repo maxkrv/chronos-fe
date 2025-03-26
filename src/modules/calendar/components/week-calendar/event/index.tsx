@@ -8,7 +8,7 @@ import { MINUTES_IN_DAY } from '../now';
 import { EventCard } from './event-card';
 import { EventReminder } from './event-reminder';
 
-const getOccurrenceToday = (startAt: Date, repeatAfter?: number, nowTime: Date = new Date()): Date | null => {
+export const getOccurrenceToday = (startAt: Date, repeatAfter?: number, nowTime: Date = new Date()): Date | null => {
   if (!repeatAfter || repeatAfter <= 0) return null;
   const now = dayjs(nowTime);
   const todayStart = now.startOf('day');

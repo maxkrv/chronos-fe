@@ -31,7 +31,7 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
         defaultValue={defaultValue || (colors.length > 0 ? colors[0].value : '')}
         value={value}
         onValueChange={handleValueChange}
-        className={cn('flex items-center gap-3', className)}
+        className={cn('flex items-center gap-3 w-full flex-wrap', className)}
         disabled={disabled}
         {...props}>
         {colors.map((color) => (

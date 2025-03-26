@@ -22,7 +22,7 @@ export const UpcomingEvents: FC = () => {
       to: from.add(24, 'hour').toDate()
     };
   }, []);
-
+  
   const { data: nextDayData = [], isLoading } = useQuery({
     queryKey: [EVENTS, nextDayDate],
     queryFn: () => EventService.findAll([], nextDayDate.from, nextDayDate.to),

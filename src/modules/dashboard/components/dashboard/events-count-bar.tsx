@@ -48,106 +48,113 @@ interface EventsCountBarLine {
 }
 
 // Helper function to format events by day
-const formatEventsByDay = (events: ICalendarEvent[]): EventsCountBarLine[] => {
-  // Group events by day
-  const eventsByDay = events.reduce<Record<string, ICalendarEvent[]>>((acc, event) => {
-    const day = dayjs(event.startAt).format('YYYY-MM-DD');
-    if (!acc[day]) {
-      acc[day] = [];
+const formatEventsByDay = (events: ICalendarEvent[], from: Date, to: Date): EventsCountBarLine[] => {
+  const formatString = 'DD';
+  const data = new Array(dayjs(to).diff(from, 'day') + 1)
+    .fill(0)
+    .map((_, i) => ({ day: dayjs(from).add(i, 'day'), tasks: 0, reminders: 0, arrangements: 0, occasions: 0 }));
+
+  for (const event of events) {
+    const index = dayjs(event.startAt).diff(from, 'day');
+    if (index >= 0 && index < data.length) {
+      switch (event.category) {
+        case EventCategory.TASK:
+          data[index].tasks++;
+          break;
+        case EventCategory.REMINDER:
+          data[index].reminders++;
+          break;
+        case EventCategory.ARRANGEMENT:
+          data[index].arrangements++;
+          break;
+        case EventCategory.OCCASION:
+          data[index].occasions++;
+          break;
+      }
     }
-    acc[day].push(event);
-    return acc;
-  }, {});
+  }
 
-  // Sort days chronologically
-  const sortedDays = Object.keys(eventsByDay).sort();
-
-  // Create EventsCountBarLine for each day
-  return sortedDays.map((day) => {
-    const dayEvents = eventsByDay[day];
-
-    return {
-      day: dayjs(day).format('ddd, MMM D'), // Format: Mon, Jan 1
-      tasks: dayEvents.filter((event) => event.category === EventCategory.TASK).length,
-      reminders: dayEvents.filter((event) => event.category === EventCategory.REMINDER).length,
-      arrangements: dayEvents.filter((event) => event.category === EventCategory.ARRANGEMENT).length,
-      occasions: dayEvents.filter((event) => event.category === EventCategory.OCCASION).length
-    };
-  });
+  return data.map((d) => ({
+    ...d,
+    day: d.day.format(formatString)
+  }));
 };
 
 // Helper function to format events by week
-const formatEventsByWeek = (events: ICalendarEvent[]): EventsCountBarLine[] => {
-  // Group events by week (using the first day of the week)
-  const eventsByWeek = events.reduce<Record<string, ICalendarEvent[]>>((acc, event) => {
-    const date = dayjs(event.startAt);
-    const startOfWeek = date.startOf('week').format('YYYY-MM-DD');
+const formatEventsByWeek = (events: ICalendarEvent[], from: Date, to: Date): EventsCountBarLine[] => {
+  const data = new Array(dayjs(to).diff(from, 'week') + 1).fill(0).map((_, i) => ({
+    day: dayjs(from).add(i, 'week'),
+    tasks: 0,
+    reminders: 0,
+    arrangements: 0,
+    occasions: 0
+  }));
 
-    if (!acc[startOfWeek]) {
-      acc[startOfWeek] = [];
+  for (const event of events) {
+    const index = dayjs(event.startAt).diff(data[0].day, 'week');
+    if (index >= 0 && index < data.length) {
+      switch (event.category) {
+        case EventCategory.TASK:
+          data[index].tasks++;
+          break;
+        case EventCategory.REMINDER:
+          data[index].reminders++;
+          break;
+        case EventCategory.ARRANGEMENT:
+          data[index].arrangements++;
+          break;
+        case EventCategory.OCCASION:
+          data[index].occasions++;
+          break;
+      }
     }
-    acc[startOfWeek].push(event);
-    return acc;
-  }, {});
+  }
 
-  // Sort weeks chronologically
-  const sortedWeeks = Object.keys(eventsByWeek).sort();
-
-  // Create EventsCountBarLine for each week
-  return sortedWeeks.map((weekStart) => {
-    const weekEvents = eventsByWeek[weekStart];
-
-    return {
-      day: dayjs(weekStart).format('MMM D'), // Format: Jan 1 (first day of week)
-      tasks: weekEvents.filter((event) => event.category === EventCategory.TASK).length,
-      reminders: weekEvents.filter((event) => event.category === EventCategory.REMINDER).length,
-      arrangements: weekEvents.filter((event) => event.category === EventCategory.ARRANGEMENT).length,
-      occasions: weekEvents.filter((event) => event.category === EventCategory.OCCASION).length
-    };
-  });
+  return data.map((d) => ({
+    ...d,
+    day: d.day.format('DD')
+  }));
 };
 
 export const EventsCountBar: FC = memo(() => {
-  const [activeTab, setActiveTab] = useState('weekly');
-  const last7DaysDate = useMemo(() => {
-    const from = dayjs().subtract(8, 'day').hour(0).minute(0).second(0).millisecond(0);
+  const [activeTab, setActiveTab] = useState('daily');
+  const next7DaysDate = useMemo(() => {
     return {
-      from: from.toDate(),
-      to: from.add(7, 'day').toDate()
+      from: dayjs().startOf('day').toDate(),
+      to: dayjs().add(6, 'day').endOf('day').toDate()
     };
   }, []);
 
   const { data: weeklyData = [], isLoading: isWeeklyLoading } = useQuery({
-    queryKey: [EVENTS, last7DaysDate],
-    queryFn: () => EventService.findAll([], last7DaysDate.from, last7DaysDate.to),
-    select: (events) => formatEventsByDay(events.flat())
+    queryKey: [EVENTS, next7DaysDate],
+    queryFn: () => EventService.findAll([], next7DaysDate.from, next7DaysDate.to),
+    select: (events) => formatEventsByDay(events.flat(), next7DaysDate.from, next7DaysDate.to)
   });
 
-  const last4WeeksDate = useMemo(() => {
-    const from = dayjs().subtract(4, 'week').hour(0).minute(0).second(0).millisecond(0);
+  const next4WeeksDate = useMemo(() => {
     return {
-      from: from.toDate(),
-      to: from.add(4, 'week').subtract(1, 'day').toDate()
+      from: dayjs().startOf('week').toDate(),
+      to: dayjs().startOf('week').add(3, 'week').endOf('week').toDate()
     };
   }, []);
 
   const { data: monthlyData = [], isLoading: isMonthlyLoading } = useQuery({
-    queryKey: [EVENTS, last4WeeksDate],
-    queryFn: () => EventService.findAll([], last4WeeksDate.from, last4WeeksDate.to),
-    select: (events) => formatEventsByWeek(events.flat())
+    queryKey: [EVENTS, next4WeeksDate],
+    queryFn: () => EventService.findAll([], next4WeeksDate.from, next4WeeksDate.to),
+    select: (events) => formatEventsByWeek(events.flat(), next4WeeksDate.from, next4WeeksDate.to)
   });
-  const activeData = activeTab === 'weekly' ? weeklyData : monthlyData;
+  const activeData = activeTab === 'daily' ? weeklyData : monthlyData;
 
   const isLoading = isWeeklyLoading || isMonthlyLoading;
 
   return (
-    <div className="h-full flex flex-col bg-card rounded-3xl shadow p-4 @container">
+    <div className="h-full flex flex-col bg-card rounded-3xl shadow shadow-border p-4 @container">
       <div className="flex justify-between items-center mb-2">
         <h3 className="text-lg font-semibold">Event Distribution</h3>
         <Tabs defaultValue="weekly" className="@max-3xs:hidden" value={activeTab} onValueChange={setActiveTab}>
           <TabsList>
+            <TabsTrigger value="daily">Daily</TabsTrigger>
             <TabsTrigger value="weekly">Weekly</TabsTrigger>
-            <TabsTrigger value="monthly">Monthly</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>

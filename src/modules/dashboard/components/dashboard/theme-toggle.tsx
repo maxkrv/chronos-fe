@@ -23,7 +23,7 @@ export const ThemeToggle = memo(() => {
         variant="ghost"
         size="icon"
         onClick={() => inverse()}
-        className="rounded-full size-16 hover:scale-110 transition-transform">
+        className="rounded-full size-16 hover:scale-110 transition-transform hover:bg-transparent">
         {theme === 'dark' ? (
           <SunIcon className="size-full text-yellow-400" />
         ) : (

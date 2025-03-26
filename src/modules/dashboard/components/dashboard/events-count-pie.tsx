@@ -73,27 +73,26 @@ const renderActiveShape = ({
 };
 
 export const EventsCountPie: FC = () => {
-  const pastMonthDate = React.useMemo(() => {
-    const from = dayjs().subtract(1, 'month').hour(0).minute(0).second(0).millisecond(0);
+  const thatMonthDate = React.useMemo(() => {
     return {
-      from: from.toDate(),
-      to: from.add(1, 'month').subtract(1, 'day').toDate()
+      from: dayjs().startOf('month').toDate(),
+      to: dayjs().endOf('month').toDate()
     };
   }, []);
-  const { data: pastMonthEvents = [], isLoading } = useQuery({
-    queryKey: [EVENTS, pastMonthDate],
-    queryFn: () => EventService.findAll([], pastMonthDate.from, pastMonthDate.to),
+  const { data: thatMonthEvents = [], isLoading } = useQuery({
+    queryKey: [EVENTS, thatMonthDate],
+    queryFn: () => EventService.findAll([], thatMonthDate.from, thatMonthDate.to),
     select: (events) => events.flat()
   });
 
   const { arrangements, reminders, tasks, occasions } = React.useMemo(
     () => ({
-      arrangements: pastMonthEvents.filter((event) => event.category === EventCategory.ARRANGEMENT).length,
-      reminders: pastMonthEvents.filter((event) => event.category === EventCategory.REMINDER).length,
-      tasks: pastMonthEvents.filter((event) => event.category === EventCategory.TASK).length,
-      occasions: pastMonthEvents.filter((event) => event.category === EventCategory.OCCASION).length
+      arrangements: thatMonthEvents.filter((event) => event.category === EventCategory.ARRANGEMENT).length,
+      reminders: thatMonthEvents.filter((event) => event.category === EventCategory.REMINDER).length,
+      tasks: thatMonthEvents.filter((event) => event.category === EventCategory.TASK).length,
+      occasions: thatMonthEvents.filter((event) => event.category === EventCategory.OCCASION).length
     }),
-    [pastMonthEvents]
+    [thatMonthEvents]
   );
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
 
@@ -155,7 +154,7 @@ export const EventsCountPie: FC = () => {
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground text-sm text-center block">
-                          For the month
+                          {dayjs(thatMonthDate.from).format('MMM YYYY')}
                         </tspan>
                       </text>
                     );

@@ -54,7 +54,7 @@ export const Dashboard = () => {
       <div className="col-start-3 col-end-5 row-start-4 row-end-6 max-lg:col-start-1 max-lg:col-end-3 max-lg:row-start-7 max-lg:row-end-9 transition-all hover:ring-3 hover:ring-primary/20">
         <NoteForToday />
       </div>
-      <div className="col-start-5 col-end-7 row-start-1 row-end-6 max-xl:hidden p-2 transition-all hover:ring-3 hover:ring-primary/20">
+      <div className="col-start-5 col-end-7 row-start-1 row-end-6 shadow shadow-border max-xl:hidden p-2 transition-all hover:ring-3 hover:ring-primary/20">
         <MonthCalendar events={monthEvents} />
       </div>
     </div>

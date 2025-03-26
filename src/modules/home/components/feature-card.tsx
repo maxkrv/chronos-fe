@@ -12,8 +12,8 @@ export const FeatureCard = ({ icon: Icon, title, description }: FeatureCardProps
       <div className="rounded-full bg-primary/10 p-3 transition-all duration-300 hover:bg-primary/20 group">
         <Icon className="h-6 w-6 text-primary transition-all duration-300 group-hover:scale-110" />
       </div>
-      <h3 className="text-xl font-bold">{title}</h3>
-      <p className="text-center text-muted-foreground">{description}</p>
+      <h3 className="text-xl font-bold text-center">{title}</h3>
+      <p className="text-muted-foreground text-center">{description}</p>
     </div>
   );
 };

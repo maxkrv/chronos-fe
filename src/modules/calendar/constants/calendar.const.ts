@@ -2,24 +2,43 @@ import { Color } from '@/shared/types/interfaces';
 
 export const DEFAULT_COLORS: Color[] = [
   {
-    value: '#16c47f'
+    value: '#16c47f' // Green
   },
   {
-    value: '#ffaf61'
+    value: '#ffaf61' // Yellow/Orange
   },
   {
-    value: '#ff70ab'
+    value: '#ff70ab' // Pink
   },
   {
-    value: '#ffa38f'
+    value: '#4635b1' // Purple
   },
   {
-    value: '#4635b1'
+    value: '#f93827' // Red
   },
   {
-    value: '#f93827'
+    value: '#9bb0c1' // Gray
+  },
+  // New colors
+  {
+    value: '#4793af' // Blue
   },
   {
-    value: '#9bb0c1'
+    value: '#8a2be2' // BlueViolet
+  },
+  {
+    value: '#00ced1' // DarkTurquoise
+  },
+  {
+    value: '#ff8c00' // DarkOrange
+  },
+  {
+    value: '#ff6347' // Tomato
+  },
+  {
+    value: '#20b2aa' // LightSeaGreen
+  },
+  {
+    value: '#ba55d3' // MediumOrchid
   }
 ];
