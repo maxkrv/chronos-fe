@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useRef, useState } from 'react';
 import { BiSolidRightArrow } from 'react-icons/bi';
 import { FaHistory, FaSquare } from 'react-icons/fa';

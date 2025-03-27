@@ -1,5 +1,3 @@
-'use client';
-
 import dayjs from 'dayjs';
 import { useEffect, useMemo } from 'react';
 import type { DateRange } from 'react-day-picker';

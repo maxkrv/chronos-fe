@@ -1,5 +1,3 @@
-'use client';
-
 import { ProfileView } from '@/modules/user/view/profile-view';
 
 import { useUserStore } from '../store/user.store';

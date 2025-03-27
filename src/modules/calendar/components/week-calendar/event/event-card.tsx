@@ -1,4 +1,7 @@
-import { FC, useEffect, useRef, useState } from 'react';
+'use client';
+
+import type React from 'react';
+import { type FC, useEffect, useRef, useState } from 'react';
 
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/shared/components/ui/hover-card.tsx';
 import { useUserStore } from '@/shared/store/user.store.ts';
@@ -9,7 +12,7 @@ import { CALENDAR_DAY_HEIGHT, CALENDAR_HOUR_HEIGHT, CALENDAR_MINUTE_HEIGHT } fro
 import { MINUTES_IN_DAY } from '../now';
 import { EventContent } from './event-content';
 import { EventHoverCard } from './event-hover-card.tsx';
-import { CalendarEvent } from './index.tsx';
+import type { CalendarEvent } from './index.tsx';
 
 const PIXELS_PER_5_MIN = CALENDAR_MINUTE_HEIGHT * 5;
 
@@ -28,6 +31,8 @@ interface EventCardProps extends React.ComponentProps<typeof CalendarEvent> {
   eventHeight: number;
   indentTop: number;
   now?: Date;
+  activeEventId: number | null;
+  setActiveEventId: (id: number | null) => void;
 }
 
 export const EventCard: FC<EventCardProps> = ({
@@ -36,7 +41,9 @@ export const EventCard: FC<EventCardProps> = ({
   event,
   day,
   onUpdate,
-  onEdit: setIsEditEventOpen
+  onEdit: setIsEditEventOpen,
+  activeEventId,
+  setActiveEventId
 }) => {
   const { user } = useUserStore();
 
@@ -46,8 +53,11 @@ export const EventCard: FC<EventCardProps> = ({
   const eventStateRef = useRef({ height, startOffset });
   const isResizeable =
     dayjs(event.startAt).isSame(day, 'day') &&
-    (event.endAt ? dayjs(event.endAt).isSame(day, 'day') : true) &&
+    (event.endAt ? dayjs(event.endAt).subtract(1, 'minute').isSame(day, 'day') : true) &&
     event.creatorId === user?.id;
+
+  // Determine if this event's hover card should be open
+  const isHoverCardOpen = activeEventId === event.id;
 
   useEffect(() => {
     eventStateRef.current.height = height;
@@ -83,12 +93,24 @@ export const EventCard: FC<EventCardProps> = ({
   const handleResizeOrDrag = (e: React.MouseEvent, direction?: 'top' | 'bottom') => {
     e.preventDefault();
     if (!isResizeable) return;
-    initialRef.current = { startY: e.clientY, originalHeight: height, originalOffset: startOffset };
+
+    // Get the client Y position from mouse event
+    const clientY = e.clientY;
+
+    initialRef.current = {
+      startY: clientY,
+      originalHeight: height,
+      originalOffset: startOffset
+    };
+
     const controller = new AbortController();
     const signal = controller.signal;
 
-    const handleMouseMove = (moveEvent: MouseEvent) => {
-      const delta = Math.floor((moveEvent.clientY - initialRef.current.startY) / PIXELS_PER_5_MIN) * PIXELS_PER_5_MIN;
+    const handleMove = (moveEvent: MouseEvent) => {
+      moveEvent.preventDefault();
+
+      const moveClientY = moveEvent.clientY;
+      const delta = Math.floor((moveClientY - initialRef.current.startY) / PIXELS_PER_5_MIN) * PIXELS_PER_5_MIN;
       let newHeight = height;
       let newOffset = startOffset;
 
@@ -115,26 +137,49 @@ export const EventCard: FC<EventCardProps> = ({
       eventStateRef.current = { height: newHeight, startOffset: newOffset };
     };
 
-    const handleMouseUp = () => {
+    const handleEnd = () => {
       controller.abort();
       updateEventTime();
     };
 
-    window.addEventListener('mousemove', handleMouseMove, { signal });
-    window.addEventListener('mouseup', handleMouseUp, { signal });
+    window.addEventListener('mousemove', handleMove, { signal });
+    window.addEventListener('mouseup', handleEnd, { signal });
   };
+
+  // Simplify the handleTouchEnd function to just toggle the hover card
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Toggle the hover card
+    if (activeEventId === event.id) {
+      setActiveEventId(null);
+    } else {
+      setActiveEventId(event.id);
+    }
+  };
+
   return (
-    <HoverCard openDelay={0}>
+    <HoverCard
+      open={isHoverCardOpen}
+      onOpenChange={(open) => {
+        if (open) {
+          setActiveEventId(event.id);
+        } else if (activeEventId === event.id) {
+          setActiveEventId(null);
+        }
+      }}>
       <HoverCardTrigger asChild>
         <div
-          className="absolute p-0.75 w-full h-full overflow-hidden grow-0 shrink-0 select-none hover:z-[5000]!"
+          className="absolute p-0.75 w-full h-full overflow-hidden grow-0 shrink-0 select-none hover:z-[5000]! calendar-event"
           style={{
             height,
             top: startOffset,
             color: event.color,
             minHeight: CALENDAR_HOUR_HEIGHT / 2,
             zIndex: Math.max(CALENDAR_DAY_HEIGHT - eventHeight, 0)
-          }}>
+          }}
+          onTouchEnd={handleTouchEnd}>
           <div
             className={cn(
               'flex flex-row w-full gap-2 px-1 py-2 cursor-pointer rounded-lg overflow-hidden bg-mix-primary-20 border-2 border-transparent hover:border-current max-h-full h-full relative group min-h-1.5',
@@ -160,7 +205,7 @@ export const EventCard: FC<EventCardProps> = ({
         </div>
       </HoverCardTrigger>
 
-      <HoverCardContent className="w-96">
+      <HoverCardContent className="w-[90vw] max-w-96 z-[9999]">
         <EventHoverCard setIsEditEventOpen={setIsEditEventOpen} event={event} />
       </HoverCardContent>
     </HoverCard>

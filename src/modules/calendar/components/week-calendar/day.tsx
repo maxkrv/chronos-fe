@@ -1,11 +1,13 @@
+'use client';
+
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
-import { FC } from 'react';
-import { DateRange } from 'react-day-picker';
+import type { FC } from 'react';
+import type { DateRange } from 'react-day-picker';
 import { toast } from 'sonner';
 
 import { EVENTS } from '../../../../shared/constants/query-keys';
-import { ICalendarEvent } from '../../calendar.interface';
+import type { ICalendarEvent } from '../../calendar.interface';
 import { EventService } from '../../services/event.service';
 import { CalendarEvent, getTodayEvent } from './event';
 import { CALENDAR_DAY_HEIGHT, Hour } from './hour';
@@ -15,8 +17,10 @@ interface DayProps {
   day: Date;
   onEdit: (event: ICalendarEvent) => void;
   onAdd: (event: DateRange) => void;
+  activeEventId: number | null;
+  setActiveEventId: (id: number | null) => void;
 }
-export const Day: FC<DayProps> = ({ events, day, onEdit, onAdd }) => {
+export const Day: FC<DayProps> = ({ events, day, onEdit, onAdd, activeEventId, setActiveEventId }) => {
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation({
@@ -48,6 +52,7 @@ export const Day: FC<DayProps> = ({ events, day, onEdit, onAdd }) => {
     }
     onAdd({ from, to });
   };
+
   return (
     <>
       <div
@@ -64,6 +69,8 @@ export const Day: FC<DayProps> = ({ events, day, onEdit, onAdd }) => {
               event={event}
               day={day}
               onUpdate={onUpdate}
+              activeEventId={activeEventId}
+              setActiveEventId={setActiveEventId}
               onEdit={(event) => {
                 onEdit(event);
               }}

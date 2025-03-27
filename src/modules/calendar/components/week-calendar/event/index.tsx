@@ -1,8 +1,8 @@
-import { FC } from 'react';
-import { DateRange } from 'react-day-picker';
+import type { FC } from 'react';
+import type { DateRange } from 'react-day-picker';
 
 import dayjs from '../../../../../shared/lib/dayjs';
-import { EventCategory, ICalendarEvent } from '../../../calendar.interface';
+import { EventCategory, type ICalendarEvent } from '../../../calendar.interface';
 import { CALENDAR_DAY_HEIGHT } from '../hour';
 import { MINUTES_IN_DAY } from '../now';
 import { EventCard } from './event-card';
@@ -61,9 +61,18 @@ interface CalendarEventProps {
   day: Date;
   onUpdate: (event: ICalendarEvent) => void;
   onEdit: (event: ICalendarEvent) => void;
+  activeEventId: number | null;
+  setActiveEventId: (id: number | null) => void;
 }
 
-export const CalendarEvent: FC<CalendarEventProps> = ({ event, day, onUpdate, onEdit }) => {
+export const CalendarEvent: FC<CalendarEventProps> = ({
+  event,
+  day,
+  onUpdate,
+  onEdit,
+  activeEventId,
+  setActiveEventId
+}) => {
   if (event.category === EventCategory.OCCASION) {
     return null;
   }
@@ -95,6 +104,8 @@ export const CalendarEvent: FC<CalendarEventProps> = ({ event, day, onUpdate, on
         indentTop={indentTop}
         onUpdate={onUpdate}
         setIsEditEventOpen={onEdit}
+        activeEventId={activeEventId}
+        setActiveEventId={setActiveEventId}
       />
     );
   }
@@ -116,6 +127,8 @@ export const CalendarEvent: FC<CalendarEventProps> = ({ event, day, onUpdate, on
       indentTop={indentTop}
       onUpdate={onUpdate}
       onEdit={onEdit}
+      activeEventId={activeEventId}
+      setActiveEventId={setActiveEventId}
     />
   );
 };

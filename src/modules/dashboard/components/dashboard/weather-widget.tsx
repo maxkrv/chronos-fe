@@ -1,5 +1,3 @@
-'use client';
-
 import { useQuery } from '@tanstack/react-query';
 import { FaCloud, FaCloudRain, FaCloudShowersHeavy, FaCloudSun, FaSnowflake, FaSun } from 'react-icons/fa';
 import { FaTemperatureHalf } from 'react-icons/fa6';

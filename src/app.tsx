@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import dayjs from 'dayjs';
 import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -20,6 +21,7 @@ import { useUserStore } from './shared/store/user.store';
 import { getMyCountryCode } from './shared/utils/country-code';
 
 const { isDevelopment } = config;
+const HOLIDAYS_LOAD_YEARS_RANGE = 5;
 
 export const App = () => {
   const { user, setUser } = useUserStore();
@@ -46,7 +48,13 @@ export const App = () => {
   });
 
   const { mutate } = useMutation({
-    mutationFn: async () => countryCode && CalendarService.loadHolidays(countryCode, new Date().getFullYear()),
+    mutationFn: async () =>
+      countryCode &&
+      CalendarService.loadHolidaysForRange(
+        countryCode,
+        dayjs().subtract(HOLIDAYS_LOAD_YEARS_RANGE, 'year').toDate(),
+        dayjs().add(HOLIDAYS_LOAD_YEARS_RANGE, 'year').toDate()
+      ),
     onSuccess: () => {
       toast.success('Holidays loaded successfully');
       queryClient.invalidateQueries({
@@ -58,14 +66,14 @@ export const App = () => {
   useTheme();
 
   useEffect(() => {
-    if (myCalendars.isSuccess && isCountryCodeReady && countryCode && isLoggedIn()) {
+    if (myCalendars.isSuccess && isCountryCodeReady && countryCode && data) {
       const hasHolidaysCalendar = myCalendars.data.some((calendar) => calendar.name === `${countryCode} Holidays`);
       if (!hasHolidaysCalendar) {
         toast.info('You do not have a calendar with holidays. Creating one for you.');
         mutate();
       }
     }
-  }, [myCalendars.isSuccess, isCountryCodeReady]);
+  }, [myCalendars.isSuccess, isCountryCodeReady, isLoading]);
 
   useEffect(() => {
     if (isSuccess) {

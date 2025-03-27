@@ -1,8 +1,8 @@
-import { FC, useEffect, useRef, useState } from 'react';
-import { DateRange } from 'react-day-picker';
+import { type FC, useEffect, useRef, useState } from 'react';
+import type { DateRange } from 'react-day-picker';
 
 import dayjs from '../../../../shared/lib/dayjs';
-import { EventCategory, ICalendarEvent } from '../../calendar.interface';
+import { EventCategory, type ICalendarEvent } from '../../calendar.interface';
 import { AddEventModal } from '../modal/add-event-modal';
 import { EditEventModal } from '../modal/edit-event-modal';
 import { Day } from './day';
@@ -26,12 +26,20 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({ events = [], fromDay = new
   const [editedEvent, setEditedEvent] = useState<ICalendarEvent | undefined>(undefined);
   const [isAddEventModalOpen, setIsAddEventModalOpen] = useState<boolean>(false);
   const [addDateRange, setAddDateRange] = useState<DateRange | undefined>(undefined);
+  // Track active event for mobile
+  const [activeEventId, setActiveEventId] = useState<number | null>(null);
 
   useEffect(() => {
     if (containerRef.current) {
       containerRef.current.scrollTo({ top: CALENDAR_HOUR_HEIGHT * 8 }); //scroll 8 hours
     }
   }, []);
+
+  const handleEditEvent = (e: ICalendarEvent) => {
+    setActiveEventId(e.id);
+    setIsEditEventModalOpen(true);
+    setEditedEvent(e);
+  };
 
   const fullDayEvents = events.filter(
     (e) => e.category === EventCategory.OCCASION || dayjs(e.endAt).diff(e.startAt) >= MILISECONDS_IN_DAY
@@ -74,10 +82,9 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({ events = [], fromDay = new
                     <FullDayEvent
                       key={event.id}
                       event={event}
-                      onEdit={(event) => {
-                        setIsEditEventModalOpen(true);
-                        setEditedEvent(event);
-                      }}
+                      onEdit={handleEditEvent}
+                      activeEventId={activeEventId}
+                      setActiveEventId={setActiveEventId}
                     />
                   ))}
               </div>
@@ -94,10 +101,9 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({ events = [], fromDay = new
                   key={dayjs(fromDay).add(i, 'day').toDate().toISOString()}
                   day={dayjs(fromDay).add(i, 'day').toDate()}
                   events={events}
-                  onEdit={(e) => {
-                    setIsEditEventModalOpen(true);
-                    setEditedEvent(e);
-                  }}
+                  onEdit={handleEditEvent}
+                  activeEventId={activeEventId}
+                  setActiveEventId={setActiveEventId}
                   onAdd={(dateRange) => {
                     setAddDateRange(dateRange);
                     setIsAddEventModalOpen(true);

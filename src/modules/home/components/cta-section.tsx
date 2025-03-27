@@ -1,4 +1,5 @@
 import { FaArrowRight } from 'react-icons/fa6';
+import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@/shared/components/ui/button';
 
@@ -7,6 +8,7 @@ import { ScrollReveal } from './scroll-reveal';
 
 export const CTASection = () => {
   const isUserLoggedIn = isLoggedIn();
+  const nav = useNavigate();
 
   return (
     <section className="w-full h-screen py-12 md:py-24 lg:py-32 grid snap-start snap-always relative overflow-hidden">
@@ -35,10 +37,14 @@ export const CTASection = () => {
               <Button
                 size="lg"
                 variant="outline"
-                className="transition-all duration-300 hover:bg-primary/10 hover:border-primary">
+                className="transition-all duration-300 hover:bg-primary/10 hover:border-primary"
+                onClick={() => nav('/login')}>
                 Login
               </Button>
-              <Button size="lg" className="gap-1 transition-all duration-300 hover:scale-105 hover:shadow-lg group">
+              <Button
+                size="lg"
+                className="gap-1 transition-all duration-300 hover:scale-105 hover:shadow-lg group"
+                onClick={() => nav('/sign-up')}>
                 Register
                 <FaArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Button>

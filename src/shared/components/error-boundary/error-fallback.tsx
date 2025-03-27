@@ -1,5 +1,3 @@
-'use client';
-
 import { AlertTriangle, ArrowRight, RefreshCw } from 'lucide-react';
 import { type FC, useState } from 'react';
 

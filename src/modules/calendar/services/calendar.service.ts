@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 import { apiClient } from '@/shared/api/api';
 
 import { PaginationDto, PaginationResponse } from '../../../shared/types/interfaces';
@@ -59,6 +61,19 @@ export class CalendarService {
     return apiClient.post(`calendars/holidays/${countryCode}`, { searchParams: { year } }).json();
   }
 
+  static async loadHolidaysForRange(countryCode: string, startDate: Date, endDate: Date) {
+    const range: Array<Date> = Array.from({ length: dayjs(endDate).diff(dayjs(startDate), 'year') + 1 }, (_, index) =>
+      dayjs(startDate).add(index, 'year').toDate()
+    );
+
+    return await Promise.all(
+      range.map((year) => {
+        return apiClient.post(`calendars/holidays/${countryCode}`, {
+          searchParams: { year: dayjs(year).year() }
+        });
+      })
+    );
+  }
   static async acceptInvitation(id: number) {
     return apiClient.patch(`calendar-invitations/${id}/accept`).json();
   }

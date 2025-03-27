@@ -1,10 +1,13 @@
+'use client';
+
 import dayjs from 'dayjs';
-import { FC, useEffect, useRef, useState } from 'react';
+import type React from 'react';
+import { type FC, useEffect, useRef, useState } from 'react';
 
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/shared/components/ui/hover-card';
 import { useUserStore } from '@/shared/store/user.store';
 
-import { ICalendarEvent } from '../../../calendar.interface';
+import type { ICalendarEvent } from '../../../calendar.interface';
 import { CALENDAR_DAY_HEIGHT } from '../hour';
 import { MINUTES_IN_DAY } from '../now';
 import { EventHoverCard } from './event-hover-card';
@@ -16,9 +19,18 @@ interface EventReminderProps {
   indentTop: number;
   onUpdate: (event: ICalendarEvent) => void;
   setIsEditEventOpen: (event: ICalendarEvent) => void;
+  activeEventId: number | null;
+  setActiveEventId: (id: number | null) => void;
 }
 
-export const EventReminder: FC<EventReminderProps> = ({ event, indentTop, onUpdate, setIsEditEventOpen }) => {
+export const EventReminder: FC<EventReminderProps> = ({
+  event,
+  indentTop,
+  onUpdate,
+  setIsEditEventOpen,
+  activeEventId,
+  setActiveEventId
+}) => {
   const { user } = useUserStore();
 
   const isOwner = event.creatorId === user?.id;
@@ -27,6 +39,9 @@ export const EventReminder: FC<EventReminderProps> = ({ event, indentTop, onUpda
   const [isHovered, setIsHovered] = useState(false);
   const initialRef = useRef({ startY: 0, originalOffset: indentTop });
   const offsetRef = useRef(startOffset);
+
+  // Determine if this event's hover card should be open
+  const isHoverCardOpen = activeEventId === event.id;
 
   useEffect(() => {
     offsetRef.current = startOffset;
@@ -56,7 +71,9 @@ export const EventReminder: FC<EventReminderProps> = ({ event, indentTop, onUpda
     const controller = new AbortController();
     const signal = controller.signal;
 
-    const handleMouseMove = (moveEvent: MouseEvent) => {
+    const handleMove = (moveEvent: MouseEvent) => {
+      moveEvent.preventDefault();
+
       const delta = moveEvent.clientY - initialRef.current.startY;
       const newOffset = Math.max(
         Math.min(initialRef.current.originalOffset + delta, CALENDAR_DAY_HEIGHT - REMINDER_HEIGHT),
@@ -66,20 +83,41 @@ export const EventReminder: FC<EventReminderProps> = ({ event, indentTop, onUpda
       offsetRef.current = newOffset;
     };
 
-    const handleMouseUp = () => {
+    const handleEnd = () => {
       controller.abort();
       updateEventTime();
     };
 
-    window.addEventListener('mousemove', handleMouseMove, { signal });
-    window.addEventListener('mouseup', handleMouseUp, { signal });
+    window.addEventListener('mousemove', handleMove, { signal });
+    window.addEventListener('mouseup', handleEnd, { signal });
+  };
+
+  // Simplify the handleTouchEnd function to just toggle the hover card
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Toggle the hover card
+    if (activeEventId === event.id) {
+      setActiveEventId(null);
+    } else {
+      setActiveEventId(event.id);
+    }
   };
 
   return (
-    <HoverCard openDelay={0}>
+    <HoverCard
+      open={isHoverCardOpen}
+      onOpenChange={(open) => {
+        if (open) {
+          setActiveEventId(event.id);
+        } else if (activeEventId === event.id) {
+          setActiveEventId(null);
+        }
+      }}>
       <HoverCardTrigger asChild>
         <div
-          className="absolute p-0.75 w-full max-h-10 h-full shrink-0 transform -translate-y-2/5 cursor-move"
+          className="absolute p-0.75 w-full max-h-10 h-full shrink-0 transform -translate-y-2/5 cursor-move calendar-event"
           style={{
             top: startOffset,
             color: event.color,
@@ -87,6 +125,7 @@ export const EventReminder: FC<EventReminderProps> = ({ event, indentTop, onUpda
             zIndex: isHovered ? CALENDAR_DAY_HEIGHT : CALENDAR_DAY_HEIGHT - REMINDER_HEIGHT
           }}
           onMouseDown={handleDragStart}
+          onTouchEnd={handleTouchEnd}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}>
           <div className="flex flex-row w-full gap-2 p-1 rounded-lg overflow-hidden border-2 border-transparent hover:border-dashed hover:border-current max-h-full items-center hover:bg-mix-primary-20">
@@ -96,7 +135,7 @@ export const EventReminder: FC<EventReminderProps> = ({ event, indentTop, onUpda
         </div>
       </HoverCardTrigger>
 
-      <HoverCardContent className="w-96">
+      <HoverCardContent className="w-[90vw] max-w-96 z-[9999]">
         <EventHoverCard event={event} setIsEditEventOpen={setIsEditEventOpen} />
       </HoverCardContent>
     </HoverCard>

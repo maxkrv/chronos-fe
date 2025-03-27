@@ -1,10 +1,11 @@
-import dayjs, { Dayjs } from 'dayjs';
-import { FC } from 'react';
+import dayjs, { type Dayjs } from 'dayjs';
+import type React from 'react';
+import type { FC } from 'react';
 import { FaTasks } from 'react-icons/fa';
 import { SiGooglemeet } from 'react-icons/si';
 
 import { cn } from '../../../../../shared/lib/utils';
-import { ICalendarEvent } from '../../../calendar.interface';
+import type { ICalendarEvent } from '../../../calendar.interface';
 import { CALENDAR_HOUR_HEIGHT } from '../hour';
 import { AttendeeAvatars } from './attendee-avatars';
 
