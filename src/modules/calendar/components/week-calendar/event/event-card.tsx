@@ -77,11 +77,11 @@ export const EventCard: FC<EventCardProps> = ({
 
   const updateEventTime = () => {
     const { height: latestHeight, startOffset: latestOffset } = eventStateRef.current;
-    const newStart = dayjs(event.startAt)
+    const newStart = dayjs(day)
       .startOf('day')
       .add((latestOffset / CALENDAR_DAY_HEIGHT) * MINUTES_IN_DAY, 'minute')
       .toDate();
-    const newEnd = dayjs(event.endAt)
+    const newEnd = dayjs(day)
       .startOf('day')
       .add(((latestOffset + latestHeight) / CALENDAR_DAY_HEIGHT) * MINUTES_IN_DAY, 'minute')
       .toDate();
