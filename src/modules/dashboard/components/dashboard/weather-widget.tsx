@@ -4,6 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { FaCloud, FaCloudRain, FaCloudShowersHeavy, FaCloudSun, FaSnowflake, FaSun } from 'react-icons/fa';
 import { FaTemperatureHalf } from 'react-icons/fa6';
 
+import { USER_LOCATION } from '../../../../shared/constants/query-keys';
+
 const WEATHER_API_URL = 'https://api.open-meteo.com/v1/forecast';
 const LOCATION_API_URL = 'https://ipapi.co/json/';
 
@@ -45,6 +47,20 @@ const fetchWeather = async (latitude: number, longitude: number): Promise<Weathe
 };
 
 const fetchLocation = async (): Promise<{ latitude: number; longitude: number; city?: string }> => {
+  const fetchApiLocation = async () => {
+    const locationRes = await fetch(LOCATION_API_URL);
+    const locationData = await locationRes.json();
+    const { city, latitude, longitude } = locationData;
+    if (latitude && longitude) {
+      return {
+        latitude,
+        longitude,
+        city: city || 'Unknown Location'
+      };
+    }
+    throw new Error('Location information is incomplete.');
+  };
+
   return new Promise((resolve, reject) => {
     // First, attempt geolocation
     if (navigator.geolocation) {
@@ -52,25 +68,14 @@ const fetchLocation = async (): Promise<{ latitude: number; longitude: number; c
         resolve({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude
-        });
+        }),
+          () => {
+            fetchApiLocation().then(resolve).catch(reject);
+          };
       });
     }
     // If geolocation isn't supported, fall back to IP-based location
-    fetch(LOCATION_API_URL)
-      .then((res) => res.json())
-      .then((data) => {
-        const { city, latitude, longitude } = data;
-        if (latitude && longitude) {
-          resolve({
-            latitude,
-            longitude,
-            city: city || 'Unknown Location'
-          });
-        } else {
-          reject('Location information is incomplete.');
-        }
-      })
-      .catch(() => reject('Failed to fetch location data.'));
+    fetchApiLocation().then(resolve).catch(reject);
   });
 };
 
@@ -80,7 +85,7 @@ export const WeatherWidget = () => {
     isLoading: locationLoading,
     error: locationError
   } = useQuery({
-    queryKey: ['location'],
+    queryKey: [USER_LOCATION],
     queryFn: fetchLocation,
     retry: false // Don't retry the location fetch
   });

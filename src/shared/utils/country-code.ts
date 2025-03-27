@@ -133,7 +133,6 @@ export const getMyCountryCode = async (): Promise<CountryCode | string | null> =
     }
     return response.country_code || null;
   } catch (error) {
-    toast.error('Failed to fetch country code');
     return null;
   }
 };

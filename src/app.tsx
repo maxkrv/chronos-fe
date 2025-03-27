@@ -15,6 +15,7 @@ import { NotActivatedAccount } from './shared/components/not-activated-account';
 import { Toaster } from './shared/components/ui/sonner';
 import { COUNTRY_CODE, MY_CALENDARS, USER_ME } from './shared/constants/query-keys';
 import { useAuth } from './shared/store/auth.store';
+import { useTheme } from './shared/store/theme.store';
 import { useUserStore } from './shared/store/user.store';
 import { getMyCountryCode } from './shared/utils/country-code';
 
@@ -53,6 +54,8 @@ export const App = () => {
       });
     }
   });
+
+  useTheme();
 
   useEffect(() => {
     if (myCalendars.isSuccess && isCountryCodeReady && countryCode && isLoggedIn()) {

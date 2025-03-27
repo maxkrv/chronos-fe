@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { Button } from '@/shared/components/ui/button';
 
 import { Logo } from '../../../assets/logos/logo';
+import { ThemeSwitcher } from '../../../shared/components/theme-switcher';
 import { isLoggedIn } from '../../../shared/lib/utils';
 import { useAuth } from '../../../shared/store/auth.store';
 import { useUserStore } from '../../../shared/store/user.store';
@@ -111,6 +112,7 @@ export const Header = () => {
               {item.title}
             </a>
           ))}
+          <ThemeSwitcher />
           <Button
             size="lg"
             variant="outline"

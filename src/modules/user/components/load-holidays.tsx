@@ -33,6 +33,7 @@ export const LoadHolidays = () => {
   const { data: countryCode, isPending: isCodeFetching } = useQuery({
     queryKey: [COUNTRY_CODE],
     refetchInterval: false,
+    refetchOnWindowFocus: false,
     retry: 1,
     queryFn: getMyCountryCode
   });
