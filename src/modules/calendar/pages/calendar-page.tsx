@@ -13,6 +13,7 @@ import { CalendarView } from '../components/calendars-header/calendar-select';
 import { MonthCalendar } from '../components/month-calendar';
 import { WeekCalendar } from '../components/week-calendar';
 import { YearCalendar } from '../components/year-calendar';
+import { useCalendarData } from '../hooks/use-calendar';
 import { EventService } from '../services/event.service';
 import { useCalendarStore } from '../stores/calendar.store';
 import { useDatePicker } from '../stores/date-picker-store';
@@ -20,8 +21,14 @@ import { useSearchStore } from '../stores/search.store';
 
 export const CalendarPage = () => {
   const { store, selectedDays } = useDatePicker();
-  const { calendarsIds } = useCalendarStore();
+  const { calendarsIds: calendarIdsData } = useCalendarStore();
   const { searchQuery } = useSearchStore();
+  const { myCalendars, participatingCalendars } = useCalendarData();
+
+  const generalCalendars = [...(myCalendars.data || []), ...(participatingCalendars.data || [])].map(
+    (calendar) => calendar.id
+  );
+  const selectedCalendarsIds = calendarIdsData.filter((id) => generalCalendars.includes(id));
 
   const selectedDate =
     store.view === CalendarView.MONTH
@@ -37,10 +44,11 @@ export const CalendarPage = () => {
               .toDate()
           }
         : undefined;
+
   const { data: events = [] } = useQuery({
-    queryKey: [EVENTS, calendarsIds, selectedDate, searchQuery],
+    queryKey: [EVENTS, selectedCalendarsIds, selectedDate, searchQuery],
     queryFn: () =>
-      selectedDate ? EventService.findAll(calendarsIds, selectedDate.from, selectedDate.to, searchQuery) : [],
+      selectedDate ? EventService.findAll(selectedCalendarsIds, selectedDate.from, selectedDate.to, searchQuery) : [],
     select: (events) => events.flat()
   });
 

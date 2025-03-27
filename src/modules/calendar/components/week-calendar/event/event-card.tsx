@@ -40,7 +40,6 @@ export const EventCard: FC<EventCardProps> = ({
 }) => {
   const { user } = useUserStore();
 
-  const [isHovered, setIsHovered] = useState(false);
   const [height, setHeight] = useState(eventHeight);
   const [startOffset, setStartOffset] = useState(indentTop);
   const initialRef = useRef({ startY: 0, originalHeight: eventHeight, originalOffset: indentTop });
@@ -128,22 +127,13 @@ export const EventCard: FC<EventCardProps> = ({
     <HoverCard openDelay={0}>
       <HoverCardTrigger asChild>
         <div
-          className={cn(
-            'absolute p-0.75 w-full h-full overflow-hidden grow-0 shrink-0 select-none',
-            isHovered && 'z-5000'
-          )}
+          className="absolute p-0.75 w-full h-full overflow-hidden grow-0 shrink-0 select-none hover:z-[5000]!"
           style={{
             height,
             top: startOffset,
             color: event.color,
             minHeight: CALENDAR_HOUR_HEIGHT / 2,
             zIndex: Math.max(CALENDAR_DAY_HEIGHT - eventHeight, 0)
-          }}
-          onMouseEnter={() => {
-            setIsHovered(true);
-          }}
-          onMouseLeave={() => {
-            setIsHovered(false);
           }}>
           <div
             className={cn(

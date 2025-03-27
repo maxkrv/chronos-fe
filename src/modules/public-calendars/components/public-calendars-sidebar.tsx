@@ -77,9 +77,9 @@ export const PublicCalendarSidebar = () => {
           <SidebarGroupContent className="h-full gap-4 flex flex-col min-w-70 px-2">
             <Tabs defaultValue="calendar" className="flex flex-col h-full">
               <div className="space-y-4">
-                <div className="flex items-center gap-1 grow">
-                  <span className="relative text-center grow text-lg font-semibold ">Pending Invitations</span>
-                  {hasInvitations && <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />}
+                <div className="flex items-center justify-center gap-1 grow">
+                  <span className="relative text-center text-lg font-semibold ">Pending Invitations</span>
+                  {hasInvitations && <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse -mt-2" />}
                 </div>
                 <TabsList className="w-full">
                   <TabsTrigger value="calendar">Calendars</TabsTrigger>
