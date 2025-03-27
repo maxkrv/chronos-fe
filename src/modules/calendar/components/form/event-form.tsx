@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import dayjs from 'dayjs';
 import { CalendarIcon } from 'lucide-react';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaArrowRight, FaLink } from 'react-icons/fa6';
 import { TbRepeat } from 'react-icons/tb';
@@ -85,6 +85,14 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
       interval: event?.eventRepeat?.interval
     }
   });
+
+  useEffect(() => {
+    if (calendarSelect && !getValues('calendarId')) {
+      const mainCalendar = calendarSelect.find((c) => c.isMain);
+
+      mainCalendar && setValue('calendarId', mainCalendar.id);
+    }
+  }, [calendarSelect]);
 
   const { mutate: createMutate, isPending: isCreatePending } = useMutation({
     mutationFn: EventService.create,
@@ -185,7 +193,10 @@ export const EventForm: FC<AddEventFormProps> = ({ startDate, endDate, event, ac
 
         <div className="grid gap-2 flex-1">
           <Label>Calendar</Label>
-          <Select onValueChange={(value) => setValue('calendarId', +value)} defaultValue={String(watch('calendarId'))}>
+          <Select
+            onValueChange={(value) => setValue('calendarId', +value)}
+            defaultValue={String(watch('calendarId'))}
+            value={String(watch('calendarId'))}>
             <SelectTrigger className="flex! w-full line-clamp-1 truncate">
               <SelectValue />
             </SelectTrigger>

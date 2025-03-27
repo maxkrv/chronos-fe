@@ -26,15 +26,17 @@ export const CalendarPage = () => {
   const selectedDate =
     store.view === CalendarView.MONTH
       ? {
-          from: dayjs(store.month).startOf('month').add(1, 'day').toDate(),
+          from: dayjs(store.month).startOf('month').toDate(),
           to: dayjs(store.month).endOf('month').toDate()
         }
-      : store.view === CalendarView.WEEK && !store.selectedDate?.to
+      : store.view === CalendarView.WEEK
         ? {
-            from: store.selectedDate?.from,
-            to: dayjs(store.selectedDate?.from).add(2, 'day').toDate()
+            from: dayjs(store.selectedDate?.from).subtract(1, 'day').toDate(),
+            to: dayjs(store.selectedDate?.to ? store.selectedDate.to : store.selectedDate?.from)
+              .add(1, 'day')
+              .toDate()
           }
-        : store.selectedDate;
+        : undefined;
   const { data: events = [] } = useQuery({
     queryKey: [EVENTS, calendarsIds, selectedDate, searchQuery],
     queryFn: () =>

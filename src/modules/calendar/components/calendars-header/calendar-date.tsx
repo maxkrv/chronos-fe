@@ -29,7 +29,7 @@ export const CalendarDate = () => {
     const { from, to } = store.selectedDate;
 
     return (
-      <div className="text-lg font-semibold text-center max-sm:hidden">
+      <div className="text-lg font-semibold text-center max-lg:hidden">
         <div className="space-x-2">
           <DateButton
             date={from}
@@ -82,7 +82,7 @@ export const CalendarDate = () => {
   }
 
   return (
-    <div className="text-lg font-semibold text-center max-[30rem]:hidden">
+    <div className="text-lg font-semibold text-center max-md:hidden">
       {store.view === CalendarView.WEEK && (
         <div className="space-x-2">
           <DateButton date={store.month} onClick={() => store.setView(CalendarView.MONTH)} format="MMM," />

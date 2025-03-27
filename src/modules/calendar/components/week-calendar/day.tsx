@@ -37,6 +37,15 @@ export const Day: FC<DayProps> = ({ events, day, onEdit, onAdd }) => {
     const from = dayjs(day).hour(timeStart).minute(0).second(0).millisecond(0).toDate();
     const to = dayjs(day).hour(timeEnd).minute(0).second(0).millisecond(0).toDate();
 
+    if (isNaN(from.getTime()) || isNaN(to.getTime())) {
+      // If dates are invalid, use current time as fallback
+      const currentDate = new Date();
+      onAdd({
+        from: dayjs(currentDate).hour(timeStart).minute(0).second(0).millisecond(0).toDate(),
+        to: dayjs(currentDate).hour(timeEnd).minute(0).second(0).millisecond(0).toDate()
+      });
+      return;
+    }
     onAdd({ from, to });
   };
   return (

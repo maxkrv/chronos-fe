@@ -1,9 +1,12 @@
+'use client';
+
 import dayjs from 'dayjs';
 import { useEffect, useMemo } from 'react';
-import { DateRange } from 'react-day-picker';
+import type { DateRange } from 'react-day-picker';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+import { useIsDesktop, useIsTablet } from '../../../shared/hooks/use-breakpoint';
 import { createSearchParamsStorage } from '../../../shared/store/search-param-storage';
 import { CalendarView } from '../components/calendars-header/calendar-select';
 
@@ -11,14 +14,12 @@ const STORAGE_KEY = 'date-picker';
 const MAX_SELECTED_DAYS = 7;
 const MAX_SELECTED_DAY_LAPTOP = 3;
 const MAX_SELECTED_DAY_MOBILE = 1;
-const isLaptop = () => window.innerWidth <= 1140;
-const isMobile = () => window.innerWidth <= 640;
 
 interface IDatePickerStore {
   view: CalendarView;
   setView: (view: CalendarView) => void;
   selectedDate: DateRange | undefined;
-  setSelectedDate: (date: DateRange | undefined) => void;
+  setSelectedDate: (date: DateRange | undefined, maxDays: number) => void;
   month: Date | undefined;
   setMonth: (month: Date) => void;
   year: Date | undefined;
@@ -32,10 +33,8 @@ const useDatePickerStore = create(
       setView: (view) => {
         set({ view, selectedDate: view === CalendarView.WEEK ? get().selectedDate : undefined });
       },
-      selectedDate: isMobile()
-        ? { from: new Date() }
-        : { from: dayjs().subtract(1, 'day').toDate(), to: dayjs().add(1, 'day').toDate() },
-      setSelectedDate: (date) => {
+      selectedDate: undefined, // We'll set this in the hook based on device
+      setSelectedDate: (date, maxDays) => {
         if (!date) {
           set({ selectedDate: undefined });
           return;
@@ -43,7 +42,7 @@ const useDatePickerStore = create(
 
         const { from, to } = date;
         let finalRange = date;
-        const maxDays = isMobile() ? MAX_SELECTED_DAY_MOBILE : isLaptop() ? MAX_SELECTED_DAY_LAPTOP : MAX_SELECTED_DAYS;
+
         if (to && dayjs(to).diff(from, 'days') >= maxDays) {
           const newTo = dayjs(to).isAfter(get()?.selectedDate?.to)
             ? dayjs(to).toDate()
@@ -74,10 +73,35 @@ const useDatePickerStore = create(
 
 export const useDatePicker = () => {
   const store = useDatePickerStore();
+  const isMobile = useIsTablet();
+  const isLaptop = useIsDesktop();
+
+  const maxDays = useMemo(() => {
+    if (isMobile) return MAX_SELECTED_DAY_MOBILE;
+    if (isLaptop) return MAX_SELECTED_DAY_LAPTOP;
+    return MAX_SELECTED_DAYS;
+  }, [isMobile, isLaptop]);
+
   const selectedDays = useMemo(() => {
     const { from, to } = store.selectedDate || {};
     return from && to ? dayjs(to).diff(from, 'days') + 1 : 1;
   }, [store.selectedDate]);
+
+  // Initialize default selected date based on device
+  useEffect(() => {
+    if (store.view === CalendarView.WEEK && (!store.selectedDate || selectedDays > maxDays)) {
+      const defaultDate = isMobile
+        ? { from: new Date() }
+        : { from: dayjs().subtract(1, 'day').toDate(), to: dayjs().add(1, 'day').toDate() };
+
+      store.setSelectedDate(defaultDate, maxDays);
+    }
+  }, [isMobile, maxDays, store]);
+
+  // Wrapper for setSelectedDate that includes the maxDays
+  const setSelectedDate = (date: DateRange | undefined) => {
+    store.setSelectedDate(date, maxDays);
+  };
 
   useEffect(() => {
     if (selectedDays > 1) {
@@ -91,5 +115,12 @@ export const useDatePicker = () => {
     );
   }, [store.selectedDate]);
 
-  return { store, selectedDays };
+  return {
+    store: {
+      ...store,
+      setSelectedDate: (date: DateRange | undefined) => setSelectedDate(date)
+    },
+    selectedDays,
+    maxDays
+  };
 };
