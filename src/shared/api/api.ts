@@ -2,9 +2,9 @@
 import ky, { HTTPError } from 'ky';
 
 import { config } from '@/config/config';
-import { TokenPair } from '@/modules/auth/auth.interface';
+import { TokenPair } from '@/modules/auth/interfaces/auth.interface';
 
-import { addTokens, getAccessToken, getRefreshToken, removeTokens } from '../lib/utils';
+import { authStore } from '../store/auth.store';
 
 export const apiClient = ky.create({
   prefixUrl: config.apiUrl,
@@ -13,7 +13,7 @@ export const apiClient = ky.create({
       async (request) => {
         if (request.url.includes('auth/refresh') || request.url.includes('auth/logout')) return request;
 
-        const accessToken = getAccessToken();
+        const accessToken = authStore.getState().tokens?.accessToken;
 
         if (accessToken) {
           request.headers.set('Authorization', `Bearer ${accessToken}`);
@@ -30,15 +30,14 @@ export const apiClient = ky.create({
     ],
     beforeRetry: [
       async ({ request, error }) => {
-        if ((error as any).statusCode !== 401) return;
+        if ((error as any).status !== 401) return;
+        const refreshToken = authStore.getState().tokens?.refreshToken;
 
         if (request.url.includes('auth/refresh')) {
-          removeTokens();
+          authStore.getState().deleteTokens();
           window.location.href = '/';
           return;
         }
-
-        const refreshToken = getRefreshToken();
 
         if (!refreshToken) return;
 
@@ -50,7 +49,7 @@ export const apiClient = ky.create({
           })
           .json<TokenPair>();
 
-        addTokens(res);
+        authStore.getState().setTokens(res);
         request.headers.set('Authorization', `Bearer ${res.accessToken}`);
       }
     ]
