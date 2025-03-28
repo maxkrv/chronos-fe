@@ -1,5 +1,3 @@
-'use client';
-
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import type { FC } from 'react';
@@ -17,10 +15,8 @@ interface DayProps {
   day: Date;
   onEdit: (event: ICalendarEvent) => void;
   onAdd: (event: DateRange) => void;
-  activeEventId: number | null;
-  setActiveEventId: (id: number | null) => void;
 }
-export const Day: FC<DayProps> = ({ events, day, onEdit, onAdd, activeEventId, setActiveEventId }) => {
+export const Day: FC<DayProps> = ({ events, day, onEdit, onAdd }) => {
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation({
@@ -69,8 +65,6 @@ export const Day: FC<DayProps> = ({ events, day, onEdit, onAdd, activeEventId, s
               event={event}
               day={day}
               onUpdate={onUpdate}
-              activeEventId={activeEventId}
-              setActiveEventId={setActiveEventId}
               onEdit={(event) => {
                 onEdit(event);
               }}

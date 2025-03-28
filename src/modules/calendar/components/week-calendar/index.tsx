@@ -26,8 +26,6 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({ events = [], fromDay = new
   const [editedEvent, setEditedEvent] = useState<ICalendarEvent | undefined>(undefined);
   const [isAddEventModalOpen, setIsAddEventModalOpen] = useState<boolean>(false);
   const [addDateRange, setAddDateRange] = useState<DateRange | undefined>(undefined);
-  // Track active event for mobile
-  const [activeEventId, setActiveEventId] = useState<number | null>(null);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -36,7 +34,6 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({ events = [], fromDay = new
   }, []);
 
   const handleEditEvent = (e: ICalendarEvent) => {
-    setActiveEventId(e.id);
     setIsEditEventModalOpen(true);
     setEditedEvent(e);
   };
@@ -79,13 +76,7 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({ events = [], fromDay = new
                     return false;
                   })
                   .map((event) => (
-                    <FullDayEvent
-                      key={event.id}
-                      event={event}
-                      onEdit={handleEditEvent}
-                      activeEventId={activeEventId}
-                      setActiveEventId={setActiveEventId}
-                    />
+                    <FullDayEvent key={event.id} event={event} onEdit={handleEditEvent} />
                   ))}
               </div>
             ))}
@@ -102,8 +93,6 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({ events = [], fromDay = new
                   day={dayjs(fromDay).add(i, 'day').toDate()}
                   events={events}
                   onEdit={handleEditEvent}
-                  activeEventId={activeEventId}
-                  setActiveEventId={setActiveEventId}
                   onAdd={(dateRange) => {
                     setAddDateRange(dateRange);
                     setIsAddEventModalOpen(true);

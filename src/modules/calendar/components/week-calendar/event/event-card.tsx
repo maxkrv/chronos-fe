@@ -1,7 +1,6 @@
-'use client';
-
 import type React from 'react';
 import { type FC, useEffect, useRef, useState } from 'react';
+import { useToggle } from 'usehooks-ts';
 
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/shared/components/ui/hover-card.tsx';
 import { useUserStore } from '@/shared/store/user.store.ts';
@@ -31,8 +30,6 @@ interface EventCardProps extends React.ComponentProps<typeof CalendarEvent> {
   eventHeight: number;
   indentTop: number;
   now?: Date;
-  activeEventId: number | null;
-  setActiveEventId: (id: number | null) => void;
 }
 
 export const EventCard: FC<EventCardProps> = ({
@@ -41,12 +38,10 @@ export const EventCard: FC<EventCardProps> = ({
   event,
   day,
   onUpdate,
-  onEdit: setIsEditEventOpen,
-  activeEventId,
-  setActiveEventId
+  onEdit: setIsEditEventOpen
 }) => {
   const { user } = useUserStore();
-
+  const [isCardOpen, toggleCardOpen, setCardOpen] = useToggle(false);
   const [height, setHeight] = useState(eventHeight);
   const [startOffset, setStartOffset] = useState(indentTop);
   const initialRef = useRef({ startY: 0, originalHeight: eventHeight, originalOffset: indentTop });
@@ -55,9 +50,6 @@ export const EventCard: FC<EventCardProps> = ({
     dayjs(event.startAt).isSame(day, 'day') &&
     (event.endAt ? dayjs(event.endAt).subtract(1, 'minute').isSame(day, 'day') : true) &&
     event.creatorId === user?.id;
-
-  // Determine if this event's hover card should be open
-  const isHoverCardOpen = activeEventId === event.id;
 
   useEffect(() => {
     eventStateRef.current.height = height;
@@ -146,40 +138,25 @@ export const EventCard: FC<EventCardProps> = ({
     window.addEventListener('mouseup', handleEnd, { signal });
   };
 
-  // Simplify the handleTouchEnd function to just toggle the hover card
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    // Toggle the hover card
-    if (activeEventId === event.id) {
-      setActiveEventId(null);
-    } else {
-      setActiveEventId(event.id);
-    }
-  };
-
   return (
-    <HoverCard
-      open={isHoverCardOpen}
-      onOpenChange={(open) => {
-        if (open) {
-          setActiveEventId(event.id);
-        } else if (activeEventId === event.id) {
-          setActiveEventId(null);
-        }
-      }}>
+    <HoverCard open={isCardOpen} onOpenChange={setCardOpen}>
       <HoverCardTrigger asChild>
         <div
-          className="absolute p-0.75 w-full h-full overflow-hidden grow-0 shrink-0 select-none hover:z-[5000]! calendar-event"
+          className={cn(
+            'absolute p-0.75 w-full h-full overflow-hidden grow-0 shrink-0 select-none hover:z-[5000]! calendar-event',
+            isCardOpen && 'z-[5000]!'
+          )}
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleCardOpen();
+          }}
           style={{
             height,
             top: startOffset,
             color: event.color,
             minHeight: CALENDAR_HOUR_HEIGHT / 2,
             zIndex: Math.max(CALENDAR_DAY_HEIGHT - eventHeight, 0)
-          }}
-          onTouchEnd={handleTouchEnd}>
+          }}>
           <div
             className={cn(
               'flex flex-row w-full gap-2 px-1 py-2 cursor-pointer rounded-lg overflow-hidden bg-mix-primary-20 border-2 border-transparent hover:border-current max-h-full h-full relative group min-h-1.5',

@@ -27,7 +27,7 @@ export const getOccurrenceToday = (startAt: Date, repeatAfter?: number, nowTime:
   return null;
 };
 
-export const getTodayEvent = (event: ICalendarEvent, day: Date): DateRange | null => {
+export const getTodayEvent = (event: ICalendarEvent, day: Date): (DateRange & { eventId?: number }) | null => {
   const now = dayjs(day).hour(0).minute(0).second(0).millisecond(0);
   const startAt = dayjs(event.startAt);
   const endAt = event.endAt ? dayjs(event.endAt) : null;
@@ -61,18 +61,9 @@ interface CalendarEventProps {
   day: Date;
   onUpdate: (event: ICalendarEvent) => void;
   onEdit: (event: ICalendarEvent) => void;
-  activeEventId: number | null;
-  setActiveEventId: (id: number | null) => void;
 }
 
-export const CalendarEvent: FC<CalendarEventProps> = ({
-  event,
-  day,
-  onUpdate,
-  onEdit,
-  activeEventId,
-  setActiveEventId
-}) => {
+export const CalendarEvent: FC<CalendarEventProps> = ({ event, day, onUpdate, onEdit }) => {
   if (event.category === EventCategory.OCCASION) {
     return null;
   }
@@ -104,8 +95,6 @@ export const CalendarEvent: FC<CalendarEventProps> = ({
         indentTop={indentTop}
         onUpdate={onUpdate}
         setIsEditEventOpen={onEdit}
-        activeEventId={activeEventId}
-        setActiveEventId={setActiveEventId}
       />
     );
   }
@@ -119,6 +108,7 @@ export const CalendarEvent: FC<CalendarEventProps> = ({
   if (eventHeight > CALENDAR_DAY_HEIGHT - indentTop) {
     eventHeight = CALENDAR_DAY_HEIGHT - indentTop;
   }
+
   return (
     <EventCard
       event={{ ...event, startAt: todayEvent.from || event.startAt, endAt: todayEvent.to }}
@@ -127,8 +117,6 @@ export const CalendarEvent: FC<CalendarEventProps> = ({
       indentTop={indentTop}
       onUpdate={onUpdate}
       onEdit={onEdit}
-      activeEventId={activeEventId}
-      setActiveEventId={setActiveEventId}
     />
   );
 };
